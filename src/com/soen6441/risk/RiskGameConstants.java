@@ -6,6 +6,7 @@ package com.soen6441.risk;
  *
  */
 public class RiskGameConstants {
-
-	public static String MAP_IMAGE = "/Map.jpg";
+	
+	public static String COUNTRIES_FILE = "/resources/countries.txt";
+	public static String MAP_IMAGE = "/resources/Map.jpg";
 }

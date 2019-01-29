@@ -99,6 +99,8 @@ public class LoadGame extends JFrame {
 		JButton loadGameButton = new JButton("Load Game");
 		loadGameButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				frame.setVisible(false);
+				new BoardFrame(playerCountCombo.getSelectedItem().toString());
 			}
 		});
 		
