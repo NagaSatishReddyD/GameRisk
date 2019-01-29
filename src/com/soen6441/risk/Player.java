@@ -12,9 +12,27 @@ public class Player {
 	
 	String playerName;
 	List<Country> territoryOccupied = new ArrayList<>();
-	
-	public Player(String playerName) {
+	int armyCountAvailable;
+
+	public Player(String playerName, int initalArmiesAssigned) {
 		this.playerName = playerName;
+		this.armyCountAvailable = initalArmiesAssigned;
+	}
+	
+	public void incrementArmy(int number) {
+		armyCountAvailable += number;
+	}
+	
+	public void decrementArmy(int number) {
+		armyCountAvailable -= number;
+	}
+	
+	public int getArmyCountAvailable() {
+		return armyCountAvailable;
+	}
+
+	public void setArmyCountAvailable(int armyCountAvailable) {
+		this.armyCountAvailable = armyCountAvailable;
 	}
 
 	public String getPlayerName() {

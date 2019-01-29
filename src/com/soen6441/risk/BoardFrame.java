@@ -1,7 +1,5 @@
 package com.soen6441.risk;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,13 +9,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
 
 public class BoardFrame extends JFrame {
 
 	private JPanel contentPane;
 	BoardFrame frame;
+	JLabel playerTurnLabel;
 	
 	List<Player> playersData = new ArrayList<>();
 	/**
@@ -31,13 +30,25 @@ public class BoardFrame extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1800, 900);
 		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
-		assignCountriesToPlayers(Integer.parseInt(playersCount));
 		
+		playerTurnLabel = new JLabel("");
+		contentPane.add(playerTurnLabel);
+		assignCountriesToPlayers(Integer.parseInt(playersCount));
+		startGame();
 	}
 	
+	/**
+	 * startGame method starts the actual game after the initial setup.
+	 */
+	private void startGame() {
+		initialeReinforcementSetup();
+	}
+
+	private void initialeReinforcementSetup() {
+		playerTurnLabel.setText("Player ");
+	}
+
 	/**
 	 * assignCountriesToPlayers method assigns the territories or countries to player which starting the game.
 	 * @param playersCount 
@@ -45,7 +56,9 @@ public class BoardFrame extends JFrame {
 	public void assignCountriesToPlayers(int playersCount) {
 		int index = 0;
 		while(index<playersCount) {
-			playersData.add(new Player("Player "+ ++index));
+			String playerName = "Player "+ ++index;
+			int initalArmiesAssigned = 5 * (10 - playersCount);
+			playersData.add(new Player(playerName, initalArmiesAssigned));
 		}
 		
 		File countriesFile = new File(System.getProperty("user.dir")+RiskGameConstants.COUNTRIES_FILE);
