@@ -10,8 +10,25 @@ import java.util.List;
 public class Country {
 	
 	String countryName;
+	String playerName;
 	List<Country> adjacentCountries;
 	
+	public String getPlayerName() {
+		return playerName;
+	}
+
+	public void setPlayerName(String playerName) {
+		this.playerName = playerName;
+	}
+
+	public List<Country> getAdjacentCountries() {
+		return adjacentCountries;
+	}
+
+	public void setAdjacentCountries(List<Country> adjacentCountries) {
+		this.adjacentCountries = adjacentCountries;
+	}
+
 	public Country(String countryName) {
 		this.countryName = countryName;
 	}

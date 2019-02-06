@@ -1,4 +1,4 @@
-package com.soen6441.risk;
+package com.soen6441.risk.ui;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -17,8 +17,11 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import com.soen6441.risk.RiskGameConstants;
+
 /**
- * LoadGame class is used to initalize the game
+ * LoadGame class is used to initalize the game. It gives the menu options and can start the game.
+ * It also contains the event handles of the available on the available frames.
  * @author Naga Satish Reddy
  *
  */
@@ -63,7 +66,6 @@ public class LoadGame extends JFrame {
 			}
 
 		});
-		
 		
 		startContentPanel.add(startGameButton, BorderLayout.CENTER);
 	}

@@ -11,12 +11,13 @@ import java.util.List;
 public class Player {
 	
 	String playerName;
-	List<Country> territoryOccupied = new ArrayList<>();
+	List<Country> territoryOccupied;
 	int armyCountAvailable;
 
 	public Player(String playerName, int initalArmiesAssigned) {
 		this.playerName = playerName;
 		this.armyCountAvailable = initalArmiesAssigned;
+		this.territoryOccupied = new ArrayList<>();
 	}
 	
 	public void incrementArmy(int number) {
