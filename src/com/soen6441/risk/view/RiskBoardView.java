@@ -21,7 +21,6 @@ public class RiskBoardView extends JFrame {
 
 	private JPanel contentPane;
 	private JFrame boardFrame;
-	private JTextField Noofarmies_textField;
 
 	/**
 	 * Create the frame.
@@ -37,54 +36,58 @@ public class RiskBoardView extends JFrame {
 		boardFrame.getContentPane().add(contentPane);
 		contentPane.setLayout(null);
 		
-		JPanel continent_panel = new JPanel();
-		continent_panel.setBounds(616, 6, 387, 776);
-		contentPane.add(continent_panel);
+		JPanel continentPanel = new JPanel();
+		continentPanel.setBounds(616, 6, 387, 723);
+		contentPane.add(continentPanel);
+		continentPanel.setLayout(null);
 		
-		JLabel Player_label = new JLabel("Player 1 ");
-		Player_label.setBounds(23, 17, 110, 16);
-		contentPane.add(Player_label);
+		JTextArea continentTextArea = new JTextArea();
+		continentTextArea.setBounds(10, 5, 355, 322);
+		continentPanel.add(continentTextArea);
 		
-		JComboBox country_comboBox = new JComboBox();
-		country_comboBox.setModel(new DefaultComboBoxModel(new String[] {"Algeria", "Afghanistan", "Berlin", "China", "Canada", "Denmark"}));
-		country_comboBox.setBounds(183, 75, 119, 27);
-		contentPane.add(country_comboBox);
+		JLabel playerLabel = new JLabel("Player 1 ");
+		playerLabel.setBounds(23, 17, 110, 16);
+		contentPane.add(playerLabel);
 		
-		JTextArea countrylist_textArea = new JTextArea();
-		countrylist_textArea.setBounds(173, 151, 129, 73);
-		contentPane.add(countrylist_textArea);
+		JComboBox countryComboBox = new JComboBox();
+		countryComboBox.setModel(new DefaultComboBoxModel(new String[] {"Algeria", "Afghanistan", "Berlin", "China", "Canada", "Denmark"}));
+		countryComboBox.setBounds(183, 75, 119, 27);
+		contentPane.add(countryComboBox);
 		
-		JLabel lblNumberOfArmies = new JLabel("Number of Armies");
-		lblNumberOfArmies.setBounds(22, 271, 127, 27);
-		contentPane.add(lblNumberOfArmies);
+		JTextArea countryListTextArea = new JTextArea();
+		countryListTextArea.setBounds(173, 151, 129, 73);
+		contentPane.add(countryListTextArea);
 		
-		Noofarmies_textField = new JTextField();
-		Noofarmies_textField.setBounds(173, 271, 130, 26);
-		contentPane.add(Noofarmies_textField);
-		Noofarmies_textField.setColumns(10);
-		
-		JButton Reinforce_btn = new JButton("Reinforce");
-		Reinforce_btn.addActionListener(new ActionListener() {
+		JButton reinforceBtn = new JButton("Reinforce");
+		reinforceBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			}
 		});
-		Reinforce_btn.setBounds(364, 12, 117, 29);
-		contentPane.add(Reinforce_btn);
+		reinforceBtn.setBounds(364, 12, 117, 29);
+		contentPane.add(reinforceBtn);
 		
-		JButton attack_btn = new JButton("Attack");
-		attack_btn.setBounds(364, 74, 117, 29);
-		contentPane.add(attack_btn);
+		JButton attackBtn = new JButton("Attack");
+		attackBtn.setBounds(364, 74, 117, 29);
+		contentPane.add(attackBtn);
 		
-		JButton Addarmies_btn = new JButton("Add Armies");
-		Addarmies_btn.setBounds(364, 146, 117, 29);
-		contentPane.add(Addarmies_btn);
+		JButton addArmiesBtn = new JButton("Add Armies");
+		addArmiesBtn.setBounds(364, 146, 117, 29);
+		contentPane.add(addArmiesBtn);
 		
-		JLabel lblOwnCountries = new JLabel("Own Countries");
-		lblOwnCountries.setBounds(20, 76, 98, 23);
-		contentPane.add(lblOwnCountries);
+		JLabel adjacentCountriesLabel = new JLabel("Adjacent Countries");
+		adjacentCountriesLabel.setBounds(23, 177, 138, 16);
+		contentPane.add(adjacentCountriesLabel);
 		
-		JLabel lblAdjacentCountries = new JLabel("Adjacent Countries");
-		lblAdjacentCountries.setBounds(23, 177, 138, 16);
-		contentPane.add(lblAdjacentCountries);
+		JLabel numberOfArmiesLabel = new JLabel("Number Of Armies");
+		numberOfArmiesLabel.setBounds(148, 295, 88, 27);
+		contentPane.add(numberOfArmiesLabel);
+		
+		Label lableNumberOfArmies = new Label("Number Of Armies");
+		lableNumberOfArmies.setBounds(10, 295, 132, 22);
+		contentPane.add(lableNumberOfArmies);
+		
+		Label ownCountriesLabel = new Label("Own Countries");
+		ownCountriesLabel.setBounds(23, 75, 119, 22);
+		contentPane.add(ownCountriesLabel);
 	}
 }
