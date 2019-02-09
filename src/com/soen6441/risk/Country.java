@@ -1,5 +1,6 @@
 package com.soen6441.risk;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,6 +13,11 @@ public class Country {
 	String countryName;
 	String playerName;
 	List<Country> adjacentCountries;
+	
+	public Country(String countryName) {
+		this.countryName = countryName;
+		this.adjacentCountries = new ArrayList<>();
+	}
 	
 	public String getPlayerName() {
 		return playerName;
@@ -29,8 +35,8 @@ public class Country {
 		this.adjacentCountries = adjacentCountries;
 	}
 
-	public Country(String countryName) {
-		this.countryName = countryName;
+	public void addAdjacentCountry(Country country) {
+		this.adjacentCountries.add(country);
 	}
 
 	public String getCountryName() {

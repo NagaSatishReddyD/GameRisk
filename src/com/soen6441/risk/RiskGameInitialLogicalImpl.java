@@ -50,7 +50,9 @@ public class RiskGameInitialLogicalImpl {
 			for(index = 0; assignedCountriesList.size() != 0;index++) {
 				int countryIndex = random.nextInt(assignedCountriesList.size());
 				Player player = playersData.get(index % playersCount);
-				player.addTerritory(player, countriesList.get(assignedCountriesList.get(countryIndex)));
+				Country country = countriesList.get(assignedCountriesList.get(countryIndex));
+				country.setPlayerName(player.getPlayerName());
+				player.addTerritory(player, country);
 				assignedCountriesList.remove(countryIndex);
 			}
 			reader.close();
@@ -60,5 +62,4 @@ public class RiskGameInitialLogicalImpl {
 			System.out.println("Something goes wrong while reading countries file..");
 		}		
 	}
-
 }
