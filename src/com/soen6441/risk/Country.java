@@ -12,13 +12,26 @@ public class Country {
 	
 	String countryName;
 	String playerName;
+	int armiesOnCountry;
 	List<Country> adjacentCountries;
 	
 	public Country(String countryName) {
 		this.countryName = countryName;
 		this.adjacentCountries = new ArrayList<>();
+		this.armiesOnCountry = 0;
 	}
 	
+	
+	public int getArmiesOnCountry() {
+		return armiesOnCountry;
+	}
+
+	public void setArmiesOnCountry(int armiesOnCountry) {
+		this.armiesOnCountry = armiesOnCountry;
+	}
+
+
+
 	public String getPlayerName() {
 		return playerName;
 	}

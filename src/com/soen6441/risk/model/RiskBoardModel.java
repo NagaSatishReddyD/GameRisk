@@ -51,7 +51,7 @@ public class RiskBoardModel {
 					findTheSectionToParseData(section, line);
 				}
 			}
-			countriesMap = countriesList.stream().collect(Collectors.toMap(Country::getCountryName, Function.identity()));
+			//			countriesMap = countriesList.stream().collect(Collectors.toMap(Country::getCountryName, Function.identity()));
 		} catch (FileNotFoundException e) {
 			System.out.println("Problem with the file. Couldn't read the file");
 		} catch (IOException e) {
@@ -100,10 +100,10 @@ public class RiskBoardModel {
 				country.addAdjacentCountry(adjacentCountry);
 				countriesMap.put(countryNameAdjacent, adjacentCountry);
 			}
-			Continent continent = continentsMap.get(continentName);
-			continent.addCountryInContinent(country);
 			index++;
 		}
+		Continent continent = continentsMap.get(continentName);
+		continent.addCountryInContinent(country);
 		countriesMap.put(countryName, country);
 		countriesList.add(country);
 	}
@@ -163,7 +163,25 @@ public class RiskBoardModel {
 	public void updateTheBoardScreenData(int currentPlayerValue, RiskBoardView view) {
 		Player currentPlayer = playersData.get(currentPlayerValue);
 		view.getCurrentPlayerTurnLabel().setText(currentPlayer.getPlayerName()+" Turn !!");
+		view.getArmiesCountAvailableLabel().setText(String.valueOf(currentPlayer.getArmyCountAvailable()));
 		updateCountriesComboBox(currentPlayer, view);
+		updateAllCountriesData(view);
+	}
+
+	/**
+	 * updateAllCountriesData updates the countries and continents details in the board view screen.
+	 * @param view 
+	 */
+	private void updateAllCountriesData(RiskBoardView view) {
+		StringBuilder continentsData = new StringBuilder();
+		continentsMap.keySet().forEach(continentKey -> {
+			continentsData.append("<b>").append(continentKey).append("<b>").append("<br/>");
+			List<Country> countriesAvailable = continentsMap.get(continentKey).getCountriesInContinent();
+			countriesAvailable.stream().forEach(country -> {
+				continentsData.append(country.getCountryName()).append("  ").append(country.getArmiesOnCountry()).append("<br/>");
+			});
+		});
+		view.getContinentTextArea().setText(continentsData.toString());
 	}
 
 	/**

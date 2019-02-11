@@ -5,8 +5,10 @@ import java.awt.Toolkit;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
+import javax.swing.JEditorPane;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JTextArea;
 import java.awt.Label;
@@ -15,6 +17,8 @@ import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.URL;
 import java.awt.event.ActionEvent;
 
 public class RiskBoardView extends JFrame {
@@ -24,6 +28,11 @@ public class RiskBoardView extends JFrame {
 	private JComboBox countryComboBox;
 	private JLabel currentPlayerTurnLabel;
 	private JComboBox adjacentCountryComboBox;
+	private Label armiesCountAvailableLabel;
+	private JButton reinforceBtn;
+	private JButton attackBtn;
+	private JButton addArmiesBtn;
+	private JEditorPane continentTextArea;
 
 	/**
 	 * Create the frame.
@@ -40,13 +49,24 @@ public class RiskBoardView extends JFrame {
 		contentPane.setLayout(null);
 		
 		JPanel continentPanel = new JPanel();
-		continentPanel.setBounds(616, 6, 387, 723);
+		continentPanel.setBounds(616, 6, 387, 799);
 		contentPane.add(continentPanel);
 		continentPanel.setLayout(null);
 		
-		JTextArea continentTextArea = new JTextArea();
-		continentTextArea.setBounds(10, 5, 355, 322);
-		continentPanel.add(continentTextArea);
+		continentTextArea = new JEditorPane("text/html","");
+		continentTextArea.setBounds(10, 5, 367, 784);
+		continentTextArea.setEditable(false);
+		URL url= RiskBoardView.class.getResource("test.htm");
+
+	      try {   
+	    	  continentTextArea.setPage(url);
+	    	  
+	      } catch (IOException e) { 
+	      }
+	      JScrollPane jScrollPane = new JScrollPane(continentTextArea);
+	      jScrollPane.setBounds(10, 5, 367, 784);
+
+	      continentPanel.add(jScrollPane);
 		
 		currentPlayerTurnLabel = new JLabel("Player 1 ");
 		currentPlayerTurnLabel.setBounds(23, 17, 110, 16);
@@ -60,20 +80,19 @@ public class RiskBoardView extends JFrame {
 		adjacentCountryComboBox.setBounds(183, 172, 129, 27);
 		contentPane.add(adjacentCountryComboBox);
 		
-		JButton reinforceBtn = new JButton("Reinforce");
-		reinforceBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
+		reinforceBtn = new JButton("Reinforce");
 		reinforceBtn.setBounds(364, 12, 117, 29);
+		reinforceBtn.setVisible(false);
 		contentPane.add(reinforceBtn);
 		
-		JButton attackBtn = new JButton("Attack");
+		attackBtn = new JButton("Attack");
 		attackBtn.setBounds(364, 74, 117, 29);
+		attackBtn.setVisible(false);
 		contentPane.add(attackBtn);
 		
-		JButton addArmiesBtn = new JButton("Add Armies");
+		addArmiesBtn = new JButton("Add Armies");
 		addArmiesBtn.setBounds(364, 146, 117, 29);
+		addArmiesBtn.setVisible(false);
 		contentPane.add(addArmiesBtn);
 		
 		JLabel adjacentCountriesLabel = new JLabel("Adjacent Countries");
@@ -81,12 +100,12 @@ public class RiskBoardView extends JFrame {
 		contentPane.add(adjacentCountriesLabel);
 		
 		JLabel numberOfArmiesLabel = new JLabel("Number Of Armies");
-		numberOfArmiesLabel.setBounds(148, 295, 88, 27);
+		numberOfArmiesLabel.setBounds(10, 295, 132, 22);
 		contentPane.add(numberOfArmiesLabel);
 		
-		Label lableNumberOfArmies = new Label("Number Of Armies");
-		lableNumberOfArmies.setBounds(10, 295, 132, 22);
-		contentPane.add(lableNumberOfArmies);
+		armiesCountAvailableLabel = new Label();
+		armiesCountAvailableLabel.setBounds(148, 295, 88, 27);
+		contentPane.add(armiesCountAvailableLabel);
 		
 		Label ownCountriesLabel = new Label("Own Countries");
 		ownCountriesLabel.setBounds(23, 75, 119, 22);
@@ -137,6 +156,54 @@ public class RiskBoardView extends JFrame {
 	public void setAdjacentCountryComboBox(JComboBox adjacentCountryComboBox) {
 		this.adjacentCountryComboBox = adjacentCountryComboBox;
 	}
-	
-	
+
+
+	public Label getArmiesCountAvailableLabel() {
+		return armiesCountAvailableLabel;
+	}
+
+
+	public void setArmiesCountAvailableLabel(Label armiesCountAvailableLabel) {
+		this.armiesCountAvailableLabel = armiesCountAvailableLabel;
+	}
+
+
+	public JButton getReinforceBtn() {
+		return reinforceBtn;
+	}
+
+
+	public void setReinforceBtn(JButton reinforceBtn) {
+		this.reinforceBtn = reinforceBtn;
+	}
+
+
+	public JButton getAttackBtn() {
+		return attackBtn;
+	}
+
+
+	public void setAttackBtn(JButton attackBtn) {
+		this.attackBtn = attackBtn;
+	}
+
+
+	public JButton getAddArmiesBtn() {
+		return addArmiesBtn;
+	}
+
+
+	public void setAddArmiesBtn(JButton addArmiesBtn) {
+		this.addArmiesBtn = addArmiesBtn;
+	}
+
+
+	public JEditorPane getContinentTextArea() {
+		return continentTextArea;
+	}
+
+
+	public void setContinentTextArea(JEditorPane continentTextArea) {
+		this.continentTextArea = continentTextArea;
+	}
 }
