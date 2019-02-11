@@ -14,9 +14,17 @@ public class RiskBoardController {
 		this.view = riskBoardView;
 	}
 
-	public void intializeBoardGame(String playerCount) throws IOException {
+	public void intializeBoardGame(int playerCount) throws IOException {
 		this.model.loadRequiredData();
-		this.model.assignCountriesToPlayers(Integer.parseInt(playerCount));
+		this.model.assignCountriesToPlayers(playerCount);
+		addActionListenersToComponents();
+		//initial army set up phase
+		int index=0;
+		this.model.updateTheBoardScreenData(index, this.view);
+	}
+
+	private void addActionListenersToComponents() {
+		this.view.getCountryComboBox().addActionListener(e -> this.model.getAdjacentCountriesForComboCountry(this.view));
 	}
 
 }

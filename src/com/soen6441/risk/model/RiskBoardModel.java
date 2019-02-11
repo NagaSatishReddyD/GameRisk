@@ -10,11 +10,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.swing.DefaultComboBoxModel;
 
 import com.soen6441.risk.Continent;
 import com.soen6441.risk.Country;
 import com.soen6441.risk.Player;
 import com.soen6441.risk.RiskGameConstants;
+import com.soen6441.risk.view.RiskBoardView;
 
 /**
  * RiskBoardModel is used to handle the actions in the board frame.
@@ -24,7 +29,7 @@ import com.soen6441.risk.RiskGameConstants;
 public class RiskBoardModel {
 	String imageName;
 	Map<String, Continent> continentsMap;
-	Map<String, Country> contriesMap;
+	Map<String, Country> countriesMap;
 	List<Country> countriesList;
 	private List<Player> playersData;
 
@@ -46,6 +51,7 @@ public class RiskBoardModel {
 					findTheSectionToParseData(section, line);
 				}
 			}
+			countriesMap = countriesList.stream().collect(Collectors.toMap(Country::getCountryName, Function.identity()));
 		} catch (FileNotFoundException e) {
 			System.out.println("Problem with the file. Couldn't read the file");
 		} catch (IOException e) {
@@ -76,8 +82,8 @@ public class RiskBoardModel {
 	 * @param line
 	 */
 	private void createContries(String line) {
-		if(contriesMap == null) {
-			contriesMap = new HashMap<>();
+		if(countriesMap == null) {
+			countriesMap = new HashMap<>();
 			countriesList = new ArrayList<>();
 		}
 		String[] territoryDetails = line.split(",");
@@ -87,18 +93,18 @@ public class RiskBoardModel {
 		int index = 4;
 		while(index < territoryDetails.length) {
 			String countryNameAdjacent = territoryDetails[index];
-			if(contriesMap.containsKey(continentName)) {
-				country.addAdjacentCountry(contriesMap.get(countryName));
+			if(countriesMap.containsKey(continentName)) {
+				country.addAdjacentCountry(countriesMap.get(countryName));
 			}else {
-				Country adjacentCountry = new Country(countryName);
-				country.addAdjacentCountry(country);
-				contriesMap.put(countryNameAdjacent, adjacentCountry);
+				Country adjacentCountry = new Country(countryNameAdjacent);
+				country.addAdjacentCountry(adjacentCountry);
+				countriesMap.put(countryNameAdjacent, adjacentCountry);
 			}
 			Continent continent = continentsMap.get(continentName);
 			continent.addCountryInContinent(country);
 			index++;
 		}
-		contriesMap.put(countryName, country);
+		countriesMap.put(countryName, country);
 		countriesList.add(country);
 	}
 
@@ -147,5 +153,42 @@ public class RiskBoardModel {
 			player.addTerritory(player, country);
 			assignedCountriesList.remove(countryIndex);
 		}
+	}
+
+	/**
+	 * updateTheBoardScreenData method is used to handle the actions done before the each turn for the player
+	 * @param currentPlayerValue
+	 * @param view
+	 */
+	public void updateTheBoardScreenData(int currentPlayerValue, RiskBoardView view) {
+		Player currentPlayer = playersData.get(currentPlayerValue);
+		view.getCurrentPlayerTurnLabel().setText(currentPlayer.getPlayerName()+" Turn !!");
+		updateCountriesComboBox(currentPlayer, view);
+	}
+
+	/**
+	 * updateCountriesComboBox method is used to update the countries list based on the player turn
+	 * @param currentPlayer
+	 * @param view
+	 */
+	private void updateCountriesComboBox(Player currentPlayer, RiskBoardView view) {
+		List<String> playerCountriesNames = currentPlayer.getTerritoryOccupied().stream().map(countey -> countey.getCountryName()).collect(Collectors.toList());
+		DefaultComboBoxModel<String> comboBoxModel = (DefaultComboBoxModel<String>) view.getCountryComboBox().getModel();
+		comboBoxModel.removeAllElements();
+		playerCountriesNames.stream().forEach(comboBoxModel::addElement);
+		view.getCountryComboBox().setModel(comboBoxModel);
+	}
+
+	/**
+	 * getAdjacentCountriesForComboCountry method is used to load the adjacent countries data in the board.
+	 * @param view
+	 */
+	public void getAdjacentCountriesForComboCountry(RiskBoardView view) {
+		Country selectedCountry = countriesMap.get(view.getCountryComboBox().getSelectedItem().toString());
+		List<Country> adjacentCountriesList = selectedCountry.getAdjacentCountries();
+		DefaultComboBoxModel<String> comboBoxModel = (DefaultComboBoxModel<String>) view.getAdjacentCountryComboBox().getModel();
+		comboBoxModel.removeAllElements();
+		adjacentCountriesList.stream().forEach(country -> comboBoxModel.addElement(country.getCountryName()));
+		view.getAdjacentCountryComboBox().setModel(comboBoxModel);
 	}
 }

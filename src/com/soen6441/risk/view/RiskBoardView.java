@@ -21,6 +21,9 @@ public class RiskBoardView extends JFrame {
 
 	private JPanel contentPane;
 	private JFrame boardFrame;
+	private JComboBox countryComboBox;
+	private JLabel currentPlayerTurnLabel;
+	private JComboBox adjacentCountryComboBox;
 
 	/**
 	 * Create the frame.
@@ -45,18 +48,17 @@ public class RiskBoardView extends JFrame {
 		continentTextArea.setBounds(10, 5, 355, 322);
 		continentPanel.add(continentTextArea);
 		
-		JLabel playerLabel = new JLabel("Player 1 ");
-		playerLabel.setBounds(23, 17, 110, 16);
-		contentPane.add(playerLabel);
+		currentPlayerTurnLabel = new JLabel("Player 1 ");
+		currentPlayerTurnLabel.setBounds(23, 17, 110, 16);
+		contentPane.add(currentPlayerTurnLabel);
 		
-		JComboBox countryComboBox = new JComboBox();
-		countryComboBox.setModel(new DefaultComboBoxModel(new String[] {"Algeria", "Afghanistan", "Berlin", "China", "Canada", "Denmark"}));
-		countryComboBox.setBounds(183, 75, 119, 27);
+		countryComboBox = new JComboBox();
+		countryComboBox.setBounds(183, 75, 129, 27);
 		contentPane.add(countryComboBox);
 		
-		JTextArea countryListTextArea = new JTextArea();
-		countryListTextArea.setBounds(173, 151, 129, 73);
-		contentPane.add(countryListTextArea);
+		adjacentCountryComboBox = new JComboBox();
+		adjacentCountryComboBox.setBounds(183, 172, 129, 27);
+		contentPane.add(adjacentCountryComboBox);
 		
 		JButton reinforceBtn = new JButton("Reinforce");
 		reinforceBtn.addActionListener(new ActionListener() {
@@ -90,4 +92,51 @@ public class RiskBoardView extends JFrame {
 		ownCountriesLabel.setBounds(23, 75, 119, 22);
 		contentPane.add(ownCountriesLabel);
 	}
+
+	
+	public JLabel getCurrentPlayerTurnLabel() {
+		return currentPlayerTurnLabel;
+	}
+
+
+	public void setCurrentPlayerTurnLabel(JLabel currentPlayerTurnLabel) {
+		this.currentPlayerTurnLabel = currentPlayerTurnLabel;
+	}
+
+
+	public JPanel getContentPane() {
+		return contentPane;
+	}
+
+	public void setContentPane(JPanel contentPane) {
+		this.contentPane = contentPane;
+	}
+
+	public JFrame getBoardFrame() {
+		return boardFrame;
+	}
+
+	public void setBoardFrame(JFrame boardFrame) {
+		this.boardFrame = boardFrame;
+	}
+
+	public JComboBox getCountryComboBox() {
+		return countryComboBox;
+	}
+
+	public void setCountryComboBox(JComboBox countryComboBox) {
+		this.countryComboBox = countryComboBox;
+	}
+
+
+	public JComboBox getAdjacentCountryComboBox() {
+		return adjacentCountryComboBox;
+	}
+
+
+	public void setAdjacentCountryComboBox(JComboBox adjacentCountryComboBox) {
+		this.adjacentCountryComboBox = adjacentCountryComboBox;
+	}
+	
+	
 }

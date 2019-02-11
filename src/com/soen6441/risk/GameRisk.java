@@ -13,7 +13,6 @@ public class GameRisk {
 
 	public static void main(String[] args) {
 		System.out.println("Starting the game...");
-//		LoadGame loadGame = new LoadGame();
 		RiskGameModel riskModel = new RiskGameModel();
 		RiskGameView riskGameView = new RiskGameView();
 		RiskGameController riskGameController = new RiskGameController(riskModel, riskGameView);
