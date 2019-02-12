@@ -93,8 +93,8 @@ public class RiskBoardModel {
 		int index = 4;
 		while(index < territoryDetails.length) {
 			String countryNameAdjacent = territoryDetails[index];
-			if(countriesMap.containsKey(continentName)) {
-				country.addAdjacentCountry(countriesMap.get(countryName));
+			if(countriesMap.containsKey(countryNameAdjacent)) {
+				country.addAdjacentCountry(countriesMap.get(countryNameAdjacent));
 			}else {
 				Country adjacentCountry = new Country(countryNameAdjacent);
 				country.addAdjacentCountry(adjacentCountry);
@@ -102,10 +102,9 @@ public class RiskBoardModel {
 			}
 			index++;
 		}
-		Continent continent = continentsMap.get(continentName);
-		continent.addCountryInContinent(country);
 		countriesMap.put(countryName, country);
 		countriesList.add(country);
+		continentsMap.get(continentName).addCountryInContinent(country);
 	}
 
 	/**
@@ -162,6 +161,7 @@ public class RiskBoardModel {
 	 */
 	public void updateTheBoardScreenData(int currentPlayerValue, RiskBoardView view) {
 		Player currentPlayer = playersData.get(currentPlayerValue);
+		view.getReinforceBtn().setVisible(true);
 		view.getCurrentPlayerTurnLabel().setText(currentPlayer.getPlayerName()+" Turn !!");
 		view.getArmiesCountAvailableLabel().setText(String.valueOf(currentPlayer.getArmyCountAvailable()));
 		updateCountriesComboBox(currentPlayer, view);
@@ -178,7 +178,7 @@ public class RiskBoardModel {
 			continentsData.append("<b>").append(continentKey).append("<b>").append("<br/>");
 			List<Country> countriesAvailable = continentsMap.get(continentKey).getCountriesInContinent();
 			countriesAvailable.stream().forEach(country -> {
-				continentsData.append(country.getCountryName()).append("  ").append(country.getArmiesOnCountry()).append("<br/>");
+				continentsData.append(country.getCountryName()).append("  ").append(country.getArmiesOnCountry()).append('{').append(country.getPlayerName()).append('}').append("<br/>");
 			});
 		});
 		view.getContinentTextArea().setText(continentsData.toString());
