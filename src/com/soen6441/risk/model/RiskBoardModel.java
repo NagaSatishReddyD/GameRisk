@@ -176,10 +176,11 @@ public class RiskBoardModel {
 	private void updateAllCountriesData(RiskBoardView view) {
 		StringBuilder continentsData = new StringBuilder();
 		continentsMap.keySet().forEach(continentKey -> {
-			continentsData.append("<b>").append(continentKey).append("<b>").append("<br/>");
+			continentsData.append("<h1>").append(continentKey).append("</h1>").append("<br/>");
 			List<Country> countriesAvailable = continentsMap.get(continentKey).getCountriesInContinent();
 			countriesAvailable.stream().forEach(country -> {
-				continentsData.append(country.getCountryName()).append("  ").append(country.getArmiesOnCountry()).append('{').append(country.getPlayerName()).append('}').append("<br/>");
+				String data = country.getCountryName()+"\t"+country.getArmiesOnCountry()+"\t"+country.getPlayerName();
+				continentsData.append("<pre>").append(data).append("</pre>").append("<br/>");
 			});
 		});
 		view.getContinentTextArea().setText(continentsData.toString());
