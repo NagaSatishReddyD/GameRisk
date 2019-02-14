@@ -239,6 +239,11 @@ public class RiskBoardModel {
 	     }
 	}
 	
+	/**
+	 * updateTheFortificationData method is used to handle the actions done before the each player's fortification
+	 * phase turn
+	 * @param view
+	 */
 	public void updateFortificationData(RiskBoardView view) {
 		Player currentPlayer = playersData.get(currentPlayerIndex % playersData.size());
 		int armies = 0;
@@ -254,6 +259,10 @@ public class RiskBoardModel {
 		updateAllCountriesData(view);
 	}
 	
+	/**
+	 * moveArmiesBetweenInCountries method is used to move armies between neighboring countries
+	 * @param view
+	 */
 	public void moveArmiesBetweenCountries(RiskBoardView view) {
 		Player currentPlayer = playersData.get(currentPlayerIndex);
 		int armies = 0;
@@ -292,6 +301,10 @@ public class RiskBoardModel {
 		
 	}
 	
+	/**
+	 * nextPlayerFortification method is used to trigger next player fortification turn.
+	 * @param view
+	 */
 	public void nextPlayerFortification(RiskBoardView view) {
 		currentPlayerIndex++;
 		JOptionPane.showMessageDialog(view.getBoardFrame(), "Next Player Fortification Turn");
