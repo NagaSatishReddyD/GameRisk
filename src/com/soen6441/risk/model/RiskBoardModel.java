@@ -162,7 +162,17 @@ public class RiskBoardModel {
 	 */
 	public void updateTheBoardScreenData(RiskBoardView view) {
 		Player currentPlayer = playersData.get(currentPlayerIndex % playersData.size());
+		if(currentPlayer.getArmyCountAvailable() == 0) {
+			int Reinforcement = (int) Math.floor(currentPlayer.getTerritoryOccupied().size() / 3);
+			if(Reinforcement >= 3) {
+				currentPlayer.setArmyCountAvailable(Reinforcement);
+			}else {
+				currentPlayer.setArmyCountAvailable(3);
+			}
+		}
 		view.getReinforceBtn().setVisible(true);
+		view.getMoveArmiesBtn().setVisible(false);
+		view.getEndFortificationBtn().setVisible(false);
 		view.getCurrentPlayerTurnLabel().setText(currentPlayer.getPlayerName()+" Turn !!");
 		view.getArmiesCountAvailableLabel().setText(String.valueOf(currentPlayer.getArmyCountAvailable()));
 		updateCountriesComboBox(currentPlayer, view);
@@ -278,8 +288,12 @@ public class RiskBoardModel {
 	     
 	     Country country = countriesMap.get(view.getCountryComboBox().getSelectedItem().toString());
 	     Country adjCountry = countriesMap.get(view.getAdjacentCountryComboBox().getSelectedItem().toString());
-	     country.decreaseArmiesOnCountry(selectedValue);
-	     adjCountry.setArmiesOnCountry(selectedValue);
+	     if(selectedValue < country.getArmiesOnCountry()) {
+	    	 country.decreaseArmiesOnCountry(selectedValue);
+	    	 adjCountry.setArmiesOnCountry(selectedValue);
+	     }else {
+	    	 JOptionPane.showMessageDialog(view.getBoardFrame(), "Cannot move armies!");
+	     }
 	     view.getArmiesCountAvailableLabel().setText(String.valueOf(armies));
 	     updateAllCountriesData(view);
 	     
@@ -307,7 +321,14 @@ public class RiskBoardModel {
 	 */
 	public void nextPlayerFortification(RiskBoardView view) {
 		currentPlayerIndex++;
-		JOptionPane.showMessageDialog(view.getBoardFrame(), "Next Player Fortification Turn");
-		updateFortificationData(view);
+		if(currentPlayerIndex == playersData.size()) {
+			currentPlayerIndex = 0;
+			JOptionPane.showMessageDialog(view.getBoardFrame(), "Next Player Turn");
+	    	updateTheBoardScreenData(view);
+		}else {
+			JOptionPane.showMessageDialog(view.getBoardFrame(), "Next Player Fortification Turn");
+			updateFortificationData(view);
+		}
+		
 	}
 }
