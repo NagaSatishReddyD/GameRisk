@@ -43,7 +43,7 @@ public class RiskBoardView extends JFrame {
 		contentPane.setLayout(null);
 
 		JPanel continentPanel = new JPanel();
-		continentPanel.setBounds(616, 6, 387, 799);
+		continentPanel.setBounds(616, 6, 610, 799);
 		contentPane.add(continentPanel);
 		continentPanel.setLayout(null);
 
@@ -56,7 +56,7 @@ public class RiskBoardView extends JFrame {
 		} catch (IOException e) { 
 		}
 		JScrollPane jScrollPane = new JScrollPane(continentTextArea);
-		jScrollPane.setBounds(10, 5, 367, 784);
+		jScrollPane.setBounds(10, 5, 590, 784);
 
 		continentPanel.add(jScrollPane);
 
