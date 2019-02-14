@@ -19,12 +19,12 @@ public class RiskBoardController {
 		this.model.assignCountriesToPlayers(playerCount);
 		addActionListenersToComponents();
 		//initial army set up phase
-		int index=0;
-		this.model.updateTheBoardScreenData(index, this.view);
+		this.model.updateTheBoardScreenData(this.view);
 	}
 
 	private void addActionListenersToComponents() {
 		this.view.getCountryComboBox().addActionListener(e -> this.model.getAdjacentCountriesForComboCountry(this.view));
+		this.view.getReinforceBtn().addActionListener(action -> this.model.updateArmiesInCountries(this.view));
 	}
 
 }

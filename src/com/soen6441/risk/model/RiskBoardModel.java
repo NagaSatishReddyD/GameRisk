@@ -13,6 +13,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
 
 import com.soen6441.risk.Continent;
 import com.soen6441.risk.Country;
@@ -31,6 +32,7 @@ public class RiskBoardModel {
 	Map<String, Country> countriesMap;
 	List<Country> countriesList;
 	private List<Player> playersData;
+	int currentPlayerIndex = 0;
 
 	public void loadRequiredData() throws IOException {
 		File configFile = new File(System.getProperty("user.dir")+"/resources/config.map");
@@ -158,8 +160,8 @@ public class RiskBoardModel {
 	 * @param currentPlayerValue
 	 * @param view
 	 */
-	public void updateTheBoardScreenData(int currentPlayerValue, RiskBoardView view) {
-		Player currentPlayer = playersData.get(currentPlayerValue);
+	public void updateTheBoardScreenData(RiskBoardView view) {
+		Player currentPlayer = playersData.get(currentPlayerIndex);
 		view.getReinforceBtn().setVisible(true);
 		view.getCurrentPlayerTurnLabel().setText(currentPlayer.getPlayerName()+" Turn !!");
 		view.getArmiesCountAvailableLabel().setText(String.valueOf(currentPlayer.getArmyCountAvailable()));
@@ -207,5 +209,40 @@ public class RiskBoardModel {
 		comboBoxModel.removeAllElements();
 		adjacentCountriesList.stream().forEach(country -> comboBoxModel.addElement(country.getCountryName()));
 		view.getAdjacentCountryComboBox().setModel(comboBoxModel);
+	}
+
+	/**
+	 * updateArmiesInCountries method is used to update the armies in the contries by using a dialog
+	 * @param view
+	 * @return
+	 */
+	public void updateArmiesInCountries(RiskBoardView view) {
+		Player currentPlayer = playersData.get(currentPlayerIndex);
+		
+	     Object [] possibilities = new Object [currentPlayer.getArmyCountAvailable()];
+	     for(int index = 0; index < currentPlayer.getArmyCountAvailable(); index++) {
+	    	 possibilities[index] = index+1;
+	     }
+	     Integer selectedValue = (Integer)JOptionPane.showInputDialog(view.getBoardFrame(),"Please enter armies to be added", "Armies To Add",
+	    		 JOptionPane.INFORMATION_MESSAGE, null,possibilities, possibilities[0]);
+	     
+	     Country country = countriesMap.get(view.getCountryComboBox().getSelectedItem().toString());
+	     country.setArmiesOnCountry(selectedValue);
+	     currentPlayer.decrementArmy(selectedValue);
+	     view.getArmiesCountAvailableLabel().setText(String.valueOf(currentPlayer.getArmyCountAvailable()));
+	     updateAllCountriesData(view);
+	     if(currentPlayer.getArmyCountAvailable() == 0) {
+	    	 JOptionPane.showInputDialog("Next Player Turn");
+	    	 nextPlayer(view);
+	     }
+	}
+
+	/**
+	 * nextPlayer method is used to trigger next player chance.
+	 * @param view, boardview object to access board components
+	 */
+	private void nextPlayer(RiskBoardView view) {
+		currentPlayerIndex++;
+		updateAllCountriesData(view);
 	}
 }

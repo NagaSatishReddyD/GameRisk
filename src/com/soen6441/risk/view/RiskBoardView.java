@@ -73,7 +73,6 @@ public class RiskBoardView extends JFrame {
 
 		reinforceBtn = new JButton("Reinforce");
 		reinforceBtn.setBounds(364, 12, 117, 29);
-		reinforceBtn.setVisible(false);
 		contentPane.add(reinforceBtn);
 
 		attackBtn = new JButton("Attack");
