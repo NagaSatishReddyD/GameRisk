@@ -161,7 +161,7 @@ public class RiskBoardModel {
 	 * @param view
 	 */
 	public void updateTheBoardScreenData(RiskBoardView view) {
-		Player currentPlayer = playersData.get(currentPlayerIndex);
+		Player currentPlayer = playersData.get(currentPlayerIndex % playersData.size());
 		view.getReinforceBtn().setVisible(true);
 		view.getCurrentPlayerTurnLabel().setText(currentPlayer.getPlayerName()+" Turn !!");
 		view.getArmiesCountAvailableLabel().setText(String.valueOf(currentPlayer.getArmyCountAvailable()));
@@ -203,12 +203,14 @@ public class RiskBoardModel {
 	 * @param view
 	 */
 	public void getAdjacentCountriesForComboCountry(RiskBoardView view) {
-		Country selectedCountry = countriesMap.get(view.getCountryComboBox().getSelectedItem().toString());
-		List<Country> adjacentCountriesList = selectedCountry.getAdjacentCountries();
-		DefaultComboBoxModel<String> comboBoxModel = (DefaultComboBoxModel<String>) view.getAdjacentCountryComboBox().getModel();
-		comboBoxModel.removeAllElements();
-		adjacentCountriesList.stream().forEach(country -> comboBoxModel.addElement(country.getCountryName()));
-		view.getAdjacentCountryComboBox().setModel(comboBoxModel);
+		if(view.getCountryComboBox().getSelectedItem() != null) {
+			Country selectedCountry = countriesMap.get(view.getCountryComboBox().getSelectedItem().toString());
+			List<Country> adjacentCountriesList = selectedCountry.getAdjacentCountries();
+			DefaultComboBoxModel<String> comboBoxModel = (DefaultComboBoxModel<String>) view.getAdjacentCountryComboBox().getModel();
+			comboBoxModel.removeAllElements();
+			adjacentCountriesList.stream().forEach(country -> comboBoxModel.addElement(country.getCountryName()));
+			view.getAdjacentCountryComboBox().setModel(comboBoxModel);
+		}
 	}
 
 	/**
@@ -232,7 +234,7 @@ public class RiskBoardModel {
 	     view.getArmiesCountAvailableLabel().setText(String.valueOf(currentPlayer.getArmyCountAvailable()));
 	     updateAllCountriesData(view);
 	     if(currentPlayer.getArmyCountAvailable() == 0) {
-	    	 JOptionPane.showInputDialog("Next Player Turn");
+	    	 JOptionPane.showMessageDialog(view.getBoardFrame(), "Next Player Turn");
 	    	 nextPlayer(view);
 	     }
 	}
@@ -243,6 +245,6 @@ public class RiskBoardModel {
 	 */
 	private void nextPlayer(RiskBoardView view) {
 		currentPlayerIndex++;
-		updateAllCountriesData(view);
+		updateTheBoardScreenData(view);
 	}
 }
