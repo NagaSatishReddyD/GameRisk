@@ -24,7 +24,8 @@ public class RiskBoardView extends JFrame {
 	private Label armiesCountAvailableLabel;
 	private JButton reinforceBtn;
 	private JButton attackBtn;
-	private JButton addArmiesBtn;
+	private JButton moveArmiesBtn;
+	private JButton endFortificationBtn;
 	private JEditorPane continentTextArea;
 
 	/**
@@ -80,10 +81,10 @@ public class RiskBoardView extends JFrame {
 		attackBtn.setVisible(false);
 		contentPane.add(attackBtn);
 
-		addArmiesBtn = new JButton("Add Armies");
-		addArmiesBtn.setBounds(364, 146, 117, 29);
-		addArmiesBtn.setVisible(false);
-		contentPane.add(addArmiesBtn);
+		moveArmiesBtn = new JButton("Move Armies");
+		moveArmiesBtn.setBounds(364, 146, 117, 29);
+		moveArmiesBtn.setVisible(false);
+		contentPane.add(moveArmiesBtn);
 
 		JLabel adjacentCountriesLabel = new JLabel("Adjacent Countries");
 		adjacentCountriesLabel.setBounds(23, 177, 138, 16);
@@ -100,6 +101,11 @@ public class RiskBoardView extends JFrame {
 		Label ownCountriesLabel = new Label("Own Countries");
 		ownCountriesLabel.setBounds(23, 75, 119, 22);
 		contentPane.add(ownCountriesLabel);
+		
+		endFortificationBtn = new JButton("End Fortification");
+		endFortificationBtn.setBounds(364, 215, 117, 29);
+		endFortificationBtn.setVisible(false);
+		contentPane.add(endFortificationBtn);
 	}
 
 
@@ -178,15 +184,22 @@ public class RiskBoardView extends JFrame {
 	}
 
 
-	public JButton getAddArmiesBtn() {
-		return addArmiesBtn;
+	public JButton getMoveArmiesBtn() {
+		return moveArmiesBtn;
 	}
 
 
-	public void setAddArmiesBtn(JButton addArmiesBtn) {
-		this.addArmiesBtn = addArmiesBtn;
+	public void setMoveArmiesBtn(JButton moveArmiesBtn) {
+		this.moveArmiesBtn = moveArmiesBtn;
+	}
+	
+	public JButton getEndFortificationBtn() {
+		return endFortificationBtn;
 	}
 
+	public void setEndFortificationBtn(JButton endFortificationBtn) {
+		this.endFortificationBtn = endFortificationBtn;
+	}
 
 	public JEditorPane getContinentTextArea() {
 		return continentTextArea;

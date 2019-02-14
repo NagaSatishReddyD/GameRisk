@@ -25,6 +25,8 @@ public class RiskBoardController {
 	private void addActionListenersToComponents() {
 		this.view.getCountryComboBox().addActionListener(e -> this.model.getAdjacentCountriesForComboCountry(this.view));
 		this.view.getReinforceBtn().addActionListener(action -> this.model.updateArmiesInCountries(this.view));
+		this.view.getMoveArmiesBtn().addActionListener(m -> this.model.moveArmiesBetweenCountries(view));
+		this.view.getEndFortificationBtn().addActionListener(end -> this.model.nextPlayerFortification(view));
 	}
 
 }

@@ -238,6 +238,43 @@ public class RiskBoardModel {
 	    	 nextPlayer(view);
 	     }
 	}
+	
+	public void updateFortificationData(RiskBoardView view) {
+		Player currentPlayer = playersData.get(currentPlayerIndex % playersData.size());
+		int armies = 0;
+		for(int i = 0; i < currentPlayer.getTerritoryOccupied().size(); i++) {
+			armies += currentPlayer.getTerritoryOccupied().get(i).getArmiesOnCountry();
+		}
+		view.getReinforceBtn().setVisible(false);
+		view.getMoveArmiesBtn().setVisible(true);
+		view.getEndFortificationBtn().setVisible(true);
+		view.getCurrentPlayerTurnLabel().setText(currentPlayer.getPlayerName()+" Turn !!");
+		view.getArmiesCountAvailableLabel().setText(String.valueOf(armies));
+		updateCountriesComboBox(currentPlayer, view);
+		updateAllCountriesData(view);
+	}
+	
+	public void moveArmiesBetweenCountries(RiskBoardView view) {
+		Player currentPlayer = playersData.get(currentPlayerIndex);
+		int armies = 0;
+		for(int i = 0; i < currentPlayer.getTerritoryOccupied().size(); i++) {
+			armies += currentPlayer.getTerritoryOccupied().get(i).getArmiesOnCountry();
+		}
+	     Object [] possibilities = new Object [armies];
+	     for(int index = 0; index < armies; index++) {
+	    	 possibilities[index] = index+1;
+	     }
+	     Integer selectedValue = (Integer)JOptionPane.showInputDialog(view.getBoardFrame(),"Please enter armies to be added", "Armies To Add",
+	    		 JOptionPane.INFORMATION_MESSAGE, null,possibilities, possibilities[0]);
+	     
+	     Country country = countriesMap.get(view.getCountryComboBox().getSelectedItem().toString());
+	     Country adjCountry = countriesMap.get(view.getAdjacentCountryComboBox().getSelectedItem().toString());
+	     country.decreaseArmiesOnCountry(selectedValue);
+	     adjCountry.setArmiesOnCountry(selectedValue);
+	     view.getArmiesCountAvailableLabel().setText(String.valueOf(armies));
+	     updateAllCountriesData(view);
+	     
+	}
 
 	/**
 	 * nextPlayer method is used to trigger next player chance.
@@ -245,6 +282,19 @@ public class RiskBoardModel {
 	 */
 	private void nextPlayer(RiskBoardView view) {
 		currentPlayerIndex++;
-		updateTheBoardScreenData(view);
+		if(currentPlayerIndex < playersData.size()) {
+			updateTheBoardScreenData(view);
+		}else {
+			currentPlayerIndex = 0;
+			JOptionPane.showMessageDialog(view.getBoardFrame(), "Fortification phase begins!");
+			updateFortificationData(view);
+		}
+		
+	}
+	
+	public void nextPlayerFortification(RiskBoardView view) {
+		currentPlayerIndex++;
+		JOptionPane.showMessageDialog(view.getBoardFrame(), "Next Player Fortification Turn");
+		updateFortificationData(view);
 	}
 }

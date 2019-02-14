@@ -30,7 +30,9 @@ public class Country {
 		this.armiesOnCountry += armiesOnCountry;
 	}
 
-
+	public void decreaseArmiesOnCountry(int decreaseQuantity) {
+		this.armiesOnCountry -= decreaseQuantity;
+	}
 
 	public String getPlayerName() {
 		return playerName;
