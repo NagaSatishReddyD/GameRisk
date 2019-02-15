@@ -231,25 +231,27 @@ public class RiskBoardModel {
 	 */
 	public void updateArmiesInCountries(RiskBoardView view) {
 		Player currentPlayer = playersData.get(currentPlayerIndex);
-		
-	     Object [] possibilities = new Object [currentPlayer.getArmyCountAvailable()];
-	     for(int index = 0; index < currentPlayer.getArmyCountAvailable(); index++) {
-	    	 possibilities[index] = index+1;
-	     }
-	     Integer selectedValue = (Integer)JOptionPane.showInputDialog(view.getBoardFrame(),"Please enter armies to be added", "Armies To Add",
-	    		 JOptionPane.INFORMATION_MESSAGE, null,possibilities, possibilities[0]);
-	     
-	     Country country = countriesMap.get(view.getCountryComboBox().getSelectedItem().toString());
-	     country.setArmiesOnCountry(selectedValue);
-	     currentPlayer.decrementArmy(selectedValue);
-	     view.getArmiesCountAvailableLabel().setText(String.valueOf(currentPlayer.getArmyCountAvailable()));
-	     updateAllCountriesData(view);
-	     if(currentPlayer.getArmyCountAvailable() == 0) {
-	    	 JOptionPane.showMessageDialog(view.getBoardFrame(), "Next Player Turn");
-	    	 nextPlayer(view);
-	     }
+
+		Object [] possibilities = new Object [currentPlayer.getArmyCountAvailable()];
+		for(int index = 0; index < currentPlayer.getArmyCountAvailable(); index++) {
+			possibilities[index] = index+1;
+		}
+		Integer selectedValue = (Integer)JOptionPane.showInputDialog(view.getBoardFrame(),"Please enter armies to be added", "Armies To Add",
+				JOptionPane.INFORMATION_MESSAGE, null,possibilities, possibilities[0]);
+
+		if(selectedValue != null) {
+			Country country = countriesMap.get(view.getCountryComboBox().getSelectedItem().toString());
+			country.setArmiesOnCountry(selectedValue);
+			currentPlayer.decrementArmy(selectedValue);
+			view.getArmiesCountAvailableLabel().setText(String.valueOf(currentPlayer.getArmyCountAvailable()));
+			updateAllCountriesData(view);
+			if(currentPlayer.getArmyCountAvailable() == 0) {
+				JOptionPane.showMessageDialog(view.getBoardFrame(), "Next Player Turn");
+				nextPlayer(view);
+			}
+		}
 	}
-	
+
 	/**
 	 * updateTheFortificationData method is used to handle the actions done before the each player's fortification
 	 * phase turn
@@ -257,47 +259,52 @@ public class RiskBoardModel {
 	 */
 	public void updateFortificationData(RiskBoardView view) {
 		Player currentPlayer = playersData.get(currentPlayerIndex % playersData.size());
-		int armies = 0;
-		for(int i = 0; i < currentPlayer.getTerritoryOccupied().size(); i++) {
-			armies += currentPlayer.getTerritoryOccupied().get(i).getArmiesOnCountry();
-		}
 		view.getReinforceBtn().setVisible(false);
 		view.getMoveArmiesBtn().setVisible(true);
 		view.getEndFortificationBtn().setVisible(true);
 		view.getCurrentPlayerTurnLabel().setText(currentPlayer.getPlayerName()+" Turn !!");
-		view.getArmiesCountAvailableLabel().setText(String.valueOf(armies));
+		view.getArmiesCountAvailableLabel().setText(String.valueOf(currentPlayer.getArmyCountAvailable()));
 		updateCountriesComboBox(currentPlayer, view);
 		updateAllCountriesData(view);
 	}
-	
+
 	/**
 	 * moveArmiesBetweenInCountries method is used to move armies between neighboring countries
 	 * @param view
 	 */
 	public void moveArmiesBetweenCountries(RiskBoardView view) {
 		Player currentPlayer = playersData.get(currentPlayerIndex);
-		int armies = 0;
-		for(int i = 0; i < currentPlayer.getTerritoryOccupied().size(); i++) {
-			armies += currentPlayer.getTerritoryOccupied().get(i).getArmiesOnCountry();
+		Country country = countriesMap.get(view.getCountryComboBox().getSelectedItem().toString());
+		Country adjacentCountry = countriesMap.get(view.getAdjacentCountryComboBox().getSelectedItem().toString());
+		if(country.getArmiesOnCountry() == 0){
+			JOptionPane.showMessageDialog(view.getBoardFrame(), "No armies on selected country to move");
+		}else if(!isCountriesOwnedByPlayers(country, adjacentCountry)) {
+			JOptionPane.showMessageDialog(view.getBoardFrame(), "Selected Adjacent Country is owned by another player");
+		}else {
+			Object [] possibilities = new Object [country.getArmiesOnCountry()];
+			for(int index = 0; index < country.getArmiesOnCountry(); index++) {
+				possibilities[index] = index+1;
+			}
+			Integer selectedValue = (Integer)JOptionPane.showInputDialog(view.getBoardFrame(),"Please enter armies to be added", "Armies To Add",
+					JOptionPane.INFORMATION_MESSAGE, null,possibilities, possibilities[0]);
+
+			if(selectedValue != null) {
+				country.decreaseArmiesOnCountry(selectedValue);
+				adjacentCountry.incrementArmiesOnCountry(selectedValue);
+				view.getArmiesCountAvailableLabel().setText(String.valueOf(currentPlayer.getArmyCountAvailable()));
+				updateAllCountriesData(view);
+			}
 		}
-	     Object [] possibilities = new Object [armies];
-	     for(int index = 0; index < armies; index++) {
-	    	 possibilities[index] = index+1;
-	     }
-	     Integer selectedValue = (Integer)JOptionPane.showInputDialog(view.getBoardFrame(),"Please enter armies to be added", "Armies To Add",
-	    		 JOptionPane.INFORMATION_MESSAGE, null,possibilities, possibilities[0]);
-	     
-	     Country country = countriesMap.get(view.getCountryComboBox().getSelectedItem().toString());
-	     Country adjCountry = countriesMap.get(view.getAdjacentCountryComboBox().getSelectedItem().toString());
-	     if(selectedValue < country.getArmiesOnCountry()) {
-	    	 country.decreaseArmiesOnCountry(selectedValue);
-	    	 adjCountry.setArmiesOnCountry(selectedValue);
-	     }else {
-	    	 JOptionPane.showMessageDialog(view.getBoardFrame(), "Cannot move armies!");
-	     }
-	     view.getArmiesCountAvailableLabel().setText(String.valueOf(armies));
-	     updateAllCountriesData(view);
-	     
+	}
+
+	/**
+	 * isCountriesOwnedByPlayers method is used to check whether the two countries are owned by the same player or not.
+	 * @param country
+	 * @param adjacentCountry
+	 * @return
+	 */
+	private boolean isCountriesOwnedByPlayers(Country country, Country adjacentCountry) {
+		return country.getPlayerName().trim().equalsIgnoreCase(adjacentCountry.getPlayerName().trim());
 	}
 
 	/**
@@ -313,9 +320,9 @@ public class RiskBoardModel {
 			JOptionPane.showMessageDialog(view.getBoardFrame(), "Fortification phase begins!");
 			updateFortificationData(view);
 		}
-		
+
 	}
-	
+
 	/**
 	 * nextPlayerFortification method is used to trigger next player fortification turn.
 	 * @param view
@@ -325,11 +332,11 @@ public class RiskBoardModel {
 		if(currentPlayerIndex == playersData.size()) {
 			currentPlayerIndex = 0;
 			JOptionPane.showMessageDialog(view.getBoardFrame(), "Next Player Turn");
-	    	updateTheBoardScreenData(view);
+			updateTheBoardScreenData(view);
 		}else {
 			JOptionPane.showMessageDialog(view.getBoardFrame(), "Next Player Fortification Turn");
 			updateFortificationData(view);
 		}
-		
+
 	}
 }

@@ -27,9 +27,13 @@ public class Country {
 	}
 
 	public void setArmiesOnCountry(int armiesOnCountry) {
-		this.armiesOnCountry += armiesOnCountry;
+		this.armiesOnCountry = armiesOnCountry;
 	}
 
+	public void incrementArmiesOnCountry(int incrementArmies) {
+		this.armiesOnCountry += incrementArmies;
+	}
+	
 	public void decreaseArmiesOnCountry(int decreaseQuantity) {
 		this.armiesOnCountry -= decreaseQuantity;
 	}
