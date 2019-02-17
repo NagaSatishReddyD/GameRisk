@@ -10,6 +10,7 @@ public class RiskGameConstants {
 	public static final String SECTION_ONE = "[Map]";
 	public static final String SECTION_TWO = "[Continents]";
 	public static final String SECTION_THREE = "[Territories]";
-	public static final String MAP_IMAGE = "/resources/Map.jpg";
-	public static final String COUNTRIES_FILE = null;
+	public static final String ATTACK_PHASE = "Attack";
+	public static final String FORTIFICATION_PHASE = "fortification";
+	public static final String REINFORCEMENT_PHASE = "Inforcement";
 }

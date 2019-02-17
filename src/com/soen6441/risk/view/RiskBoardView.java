@@ -23,6 +23,7 @@ public class RiskBoardView extends JFrame {
 	private JButton endFortificationBtn;
 	private JPanel mapPanel;
 	private JLabel imageLabel;
+	private JButton endAttackButton;
 
 	/**
 	 * Create the frame.
@@ -33,7 +34,7 @@ public class RiskBoardView extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		Dimension dimention = Toolkit.getDefaultToolkit().getScreenSize();
 		boardFrame.setSize(dimention.width, dimention.height);
-		boardFrame.setLayout(null);
+		boardFrame.getContentPane().setLayout(null);
 
 		currentPlayerTurnLabel = new JLabel("Player 1 ");
 		currentPlayerTurnLabel.setBounds(23, 17, 110, 16);
@@ -57,7 +58,7 @@ public class RiskBoardView extends JFrame {
 		boardFrame.getContentPane().add(attackBtn);
 
 		moveArmiesBtn = new JButton("Move Armies");
-		moveArmiesBtn.setBounds(364, 146, 117, 29);
+		moveArmiesBtn.setBounds(364, 187, 117, 29);
 		moveArmiesBtn.setVisible(false);
 		boardFrame.getContentPane().add(moveArmiesBtn);
 
@@ -78,7 +79,7 @@ public class RiskBoardView extends JFrame {
 		boardFrame.getContentPane().add(ownCountriesLabel);
 		
 		endFortificationBtn = new JButton("End Fortification");
-		endFortificationBtn.setBounds(364, 215, 117, 29);
+		endFortificationBtn.setBounds(364, 247, 117, 29);
 		endFortificationBtn.setVisible(false);
 		boardFrame.getContentPane().add(endFortificationBtn);
 		
@@ -87,6 +88,10 @@ public class RiskBoardView extends JFrame {
 		imageLabel = new JLabel();
 		mapPanel.add(imageLabel);
 		boardFrame.getContentPane().add(mapPanel);
+		
+		endAttackButton = new JButton("Attack Finished");
+		endAttackButton.setBounds(364, 136, 117, 27);
+		boardFrame.getContentPane().add(endAttackButton);
 	}
 
 	public JLabel getImageLabel() {
@@ -186,6 +191,14 @@ public class RiskBoardView extends JFrame {
 
 	public void setMapPanel(JPanel mapPanel) {
 		this.mapPanel = mapPanel;
+	}
+
+	public JButton getEndAttackButton() {
+		return endAttackButton;
+	}
+
+	public void setEndAttackButton(JButton endAttackButton) {
+		this.endAttackButton = endAttackButton;
 	}
 	
 }

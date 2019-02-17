@@ -27,7 +27,9 @@ public class RiskBoardController {
 		this.view.getCountryComboBox().addActionListener(e -> this.model.getAdjacentCountriesForComboCountry(this.view));
 		this.view.getReinforceBtn().addActionListener(action -> this.model.updateArmiesInCountries(this.view));
 		this.view.getMoveArmiesBtn().addActionListener(m -> this.model.moveArmiesBetweenCountries(view));
-		this.view.getEndFortificationBtn().addActionListener(end -> this.model.nextPlayerFortification(view));
+		this.view.getEndFortificationBtn().addActionListener(end -> this.model.endFortificationPhase(view));
+		this.view.getAttackBtn().addActionListener(action -> this.model.attackBetweenCountries(view));
+		this.view.getEndAttackButton().addActionListener(action -> this.model.endAttackPhase(view));
 	}
 
 }

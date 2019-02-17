@@ -41,6 +41,7 @@ public class RiskBoardModel {
 	List<Country> countriesList;
 	private List<Player> playersData;
 	int currentPlayerIndex = 0;
+	boolean isInitialPhase = true;
 
 	public void loadRequiredData(RiskBoardView view) throws IOException {
 		File configFile = new File(System.getProperty("user.dir")+"/resources/config.map");
@@ -194,18 +195,12 @@ public class RiskBoardModel {
 	 * @param view
 	 */
 	public void updateTheBoardScreenData(RiskBoardView view) {
-		Player currentPlayer = playersData.get(currentPlayerIndex % playersData.size());
+		Player currentPlayer = playersData.get(currentPlayerIndex);
 		if(currentPlayer.getArmyCountAvailable() == 0) {
-			int reinforcement = (int) Math.floor(currentPlayer.getTerritoryOccupied().size() / (double)3);
-			if(reinforcement >= 3) {
-				currentPlayer.setArmyCountAvailable(reinforcement);
-			}else {
-				currentPlayer.setArmyCountAvailable(3);
-			}
+			setTheBonusArmiesToPlayer(currentPlayer);
+			isInitialPhase = false;
 		}
-		view.getReinforceBtn().setVisible(true);
-		view.getMoveArmiesBtn().setVisible(false);
-		view.getEndFortificationBtn().setVisible(false);
+		enableDisableButtons(RiskGameConstants.REINFORCEMENT_PHASE, view);
 		view.getCurrentPlayerTurnLabel().setText(currentPlayer.getPlayerName()+" Turn !!");
 		view.getArmiesCountAvailableLabel().setText(String.valueOf(currentPlayer.getArmyCountAvailable()));
 		updateCountriesComboBox(currentPlayer, view);
@@ -247,7 +242,7 @@ public class RiskBoardModel {
 	 */
 	public void updateArmiesInCountries(RiskBoardView view) {
 		Player currentPlayer = playersData.get(currentPlayerIndex);
-
+		
 		Object [] possibilities = new Object [currentPlayer.getArmyCountAvailable()];
 		for(int index = 0; index < currentPlayer.getArmyCountAvailable(); index++) {
 			possibilities[index] = index+1;
@@ -257,15 +252,58 @@ public class RiskBoardModel {
 
 		if(selectedValue != null) {
 			Country country = countriesMap.get(view.getCountryComboBox().getSelectedItem().toString());
-			country.setArmiesOnCountry(selectedValue);
+			country.incrementArmiesOnCountry(selectedValue);
 			currentPlayer.decrementArmy(selectedValue);
 			view.getArmiesCountAvailableLabel().setText(String.valueOf(currentPlayer.getArmyCountAvailable()));
 			createOrUpdateImage(view);
 			if(currentPlayer.getArmyCountAvailable() == 0) {
-				JOptionPane.showMessageDialog(view.getBoardFrame(), "Next Player Turn");
 				nextPlayer(view);
 			}
 		}
+	}
+
+	/**
+	 * setTheBonusArmiesToPlayer method for find the inital Armies setup for the player.
+	 * @param currentPlayer
+	 */
+	private void setTheBonusArmiesToPlayer(Player currentPlayer) {
+		currentPlayer.incrementArmy(countArmiesBasedOnTerritories(currentPlayer));
+	}
+
+	/**
+	 * countArmiesBasedOnTerritories method to calculate the armies count based on the player territories
+	 * @param currentPlayer
+	 * @return count
+	 */
+	private int countArmiesBasedOnTerritories(Player currentPlayer) {
+		return getBonusArmiesOnTerritories(currentPlayer)+ getBonusArmiesOnContinent(currentPlayer);
+	}
+
+	/**
+	 * getBonusArmiesOnContinent method is used to find the bonus armies based on the continent
+	 * @param currentPlayer
+	 * @return
+	 */
+	private int getBonusArmiesOnContinent(Player currentPlayer) {
+		int bonusArmies = 0;
+		for(String continentKey : continentsMap.keySet()) {
+			List<Country> contriesList = continentsMap.get(continentKey).getCountriesInContinent();
+			Map<String, List<Country>> playersCountryData = contriesList.stream().collect(Collectors.groupingBy(Country::getPlayerName));
+			if(playersCountryData.containsKey(currentPlayer.getPlayerName()) && playersCountryData.get(currentPlayer.getPlayerName()).size() == contriesList.size()) {
+				bonusArmies += continentsMap.get(continentKey).getArmiesGainedAfterConquer();
+			}
+		}
+		return bonusArmies;
+	}
+
+	/**
+	 * getBonusArmiesOnTerritories method is used to find the bonus armies based on the territories
+	 * @param currentPlayer
+	 * @return
+	 */
+	private int getBonusArmiesOnTerritories(Player currentPlayer) {
+		int bonusArmies = currentPlayer.getTerritoryOccupied().size() / 3;
+		return bonusArmies < 3 ? 3 : bonusArmies;
 	}
 
 	/**
@@ -328,31 +366,56 @@ public class RiskBoardModel {
 	 * @param view, boardview object to access board components
 	 */
 	private void nextPlayer(RiskBoardView view) {
-		currentPlayerIndex++;
-		if(currentPlayerIndex < playersData.size()) {
+		if(isInitialPhase) {
+			currentPlayerIndex++;
+			currentPlayerIndex = currentPlayerIndex%playersData.size();
+			JOptionPane.showMessageDialog(view.getBoardFrame(), "Next Player Turn");
 			updateTheBoardScreenData(view);
 		}else {
-			currentPlayerIndex = 0;
-			JOptionPane.showMessageDialog(view.getBoardFrame(), "Fortification phase begins!");
-			updateFortificationData(view);
+			enableDisableButtons(RiskGameConstants.ATTACK_PHASE, view);
 		}
+	}
 
+	/**
+	 * enableDisableButtons method is to enable the required buttons based on the phase
+	 * @param view 
+	 * @param string
+	 */
+	private void enableDisableButtons(String phase, RiskBoardView view) {
+		view.getReinforceBtn().setVisible(false);
+		view.getAttackBtn().setVisible(false);
+		view.getEndAttackButton().setVisible(false);
+		view.getMoveArmiesBtn().setVisible(false);
+		view.getEndFortificationBtn().setVisible(false);
+		switch (phase) {
+		case RiskGameConstants.REINFORCEMENT_PHASE:
+			view.getReinforceBtn().setVisible(true);
+			break;
+		case RiskGameConstants.ATTACK_PHASE:
+			view.getAttackBtn().setVisible(true);
+			view.getEndAttackButton().setVisible(true);
+			break;
+		case RiskGameConstants.FORTIFICATION_PHASE:
+			view.getMoveArmiesBtn().setVisible(true);
+			view.getEndFortificationBtn().setVisible(true);
+			break;
+		}
 	}
 
 	/**
 	 * nextPlayerFortification method is used to trigger next player fortification turn.
 	 * @param view
 	 */
-	public void nextPlayerFortification(RiskBoardView view) {
-		currentPlayerIndex++;
-		if(currentPlayerIndex == playersData.size()) {
-			currentPlayerIndex = 0;
-			JOptionPane.showMessageDialog(view.getBoardFrame(), "Next Player Turn");
-			updateTheBoardScreenData(view);
-		}else {
-			JOptionPane.showMessageDialog(view.getBoardFrame(), "Next Player Fortification Turn");
-			updateFortificationData(view);
-		}
+	public void endFortificationPhase(RiskBoardView view) {
+		isInitialPhase = true;
+		nextPlayer(view);
+	}
 
+	public void attackBetweenCountries(RiskBoardView view) {
+		System.out.println("Attack Phase under development");
+	}
+
+	public void endAttackPhase(RiskBoardView view) {
+		enableDisableButtons(RiskGameConstants.FORTIFICATION_PHASE, view);
 	}
 }
