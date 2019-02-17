@@ -1,10 +1,16 @@
 package com.soen6441.risk.model;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,7 +18,9 @@ import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 import com.soen6441.risk.Continent;
@@ -34,7 +42,7 @@ public class RiskBoardModel {
 	private List<Player> playersData;
 	int currentPlayerIndex = 0;
 
-	public void loadRequiredData() throws IOException {
+	public void loadRequiredData(RiskBoardView view) throws IOException {
 		File configFile = new File(System.getProperty("user.dir")+"/resources/config.map");
 		BufferedReader reader = null;
 		try {
@@ -49,10 +57,10 @@ public class RiskBoardModel {
 				}else if(line.trim().equals(RiskGameConstants.SECTION_THREE)){
 					section = 3;
 				}else {
-					findTheSectionToParseData(section, line);
+					findTheSectionToParseData(section, line, view);
 				}
 			}
-			//			countriesMap = countriesList.stream().collect(Collectors.toMap(Country::getCountryName, Function.identity()));
+			createOrUpdateImage(view);
 		} catch (FileNotFoundException e) {
 			System.out.println("Problem with the file. Couldn't read the file");
 		} catch (IOException e) {
@@ -63,26 +71,48 @@ public class RiskBoardModel {
 		}
 	}
 
+	private void createOrUpdateImage(RiskBoardView view) {
+		BufferedImage bufferedImage;
+		try {
+			bufferedImage = ImageIO.read(new File(System.getProperty("user.dir")+"/resources/"+imageName));
+			Graphics2D graphics = bufferedImage.createGraphics();
+			graphics.setColor(Color.BLACK);
+			for(Country country: countriesList) {
+				graphics.drawString(String.valueOf(country.getArmiesOnCountry()), country.getxCoordinate(), country.getyCoordinate());
+			}
+			Image scaledImage = bufferedImage.getScaledInstance(view.getMapPanel().getWidth(), view.getMapPanel().getHeight(), Image.SCALE_SMOOTH);
+			ImageIcon mapImageIcon = new ImageIcon(scaledImage);
+			view.getImageLabel().setIcon(mapImageIcon);
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(view.getBoardFrame(), "Image File Not Found...");
+		}
+	}
+
 	/**
 	 * findTheSectionToParseData gets the data from the config file and parses the data based on the section
 	 * @param section, section=1([MAPS]), section=2([CONTINENTS]), section=3([TERRITORIES])
 	 * @param line
+	 * @param view 
 	 */
-	private void findTheSectionToParseData(int section, String line) {
+	private void findTheSectionToParseData(int section, String line, RiskBoardView view) {
+		if(line.trim().equals("")) {
+			return;
+		}
 		if(section == 1) {
-			findImageName(line);
+			findImageName(line, view);
 		}else if(section == 2) {
 			createCountinents(line);
 		}else {
-			createContries(line);
+			createContries(line, view);
 		}
 	}
 
 	/**
 	 * createContries is used to create the territories and linked to the respective continents;
 	 * @param line
+	 * @param view 
 	 */
-	private void createContries(String line) {
+	private void createContries(String line, RiskBoardView view) {
 		if(countriesMap == null) {
 			countriesMap = new HashMap<>();
 			countriesList = new ArrayList<>();
@@ -91,6 +121,8 @@ public class RiskBoardModel {
 		String countryName = territoryDetails[0];
 		String continentName = territoryDetails[3];
 		Country country = new Country(countryName);
+		country.setxCoordinate(Integer.parseInt(territoryDetails[1]));
+		country.setyCoordinate(Integer.parseInt(territoryDetails[2]));
 		int index = 4;
 		while(index < territoryDetails.length) {
 			String countryNameAdjacent = territoryDetails[index];
@@ -124,15 +156,16 @@ public class RiskBoardModel {
 	/**
 	 * findImageName is used to find the image name need to be displayed on the screen
 	 * @param line
+	 * @param view 
 	 */
-	private void findImageName(String line) {
+	private void findImageName(String line, RiskBoardView view) {
 		if(line.contains("image")) {
-			imageName = line.substring(line.indexOf("=")+1);
+			imageName = line.substring(line.indexOf('=')+1);
 		}
 	}
 
-	public void assignCountriesToPlayers(int playersCount) {
-		Random random = new Random();
+	public void assignCountriesToPlayers(int playersCount) throws NoSuchAlgorithmException {
+		Random random = SecureRandom.getInstanceStrong();
 		int index = 0;
 		if(playersData == null)
 			playersData = new ArrayList<>();
@@ -145,7 +178,7 @@ public class RiskBoardModel {
 		for(int i = 0; i< countriesList.size();i++) {
 			assignedCountriesList.add(i);
 		}
-		for(index = 0; assignedCountriesList.size() != 0;index++) {
+		for(index = 0; !assignedCountriesList.isEmpty();index++) {
 			int countryIndex = random.nextInt(assignedCountriesList.size());
 			Player player = playersData.get(index % playersCount);
 			Country country = countriesList.get(assignedCountriesList.get(countryIndex));
@@ -163,9 +196,9 @@ public class RiskBoardModel {
 	public void updateTheBoardScreenData(RiskBoardView view) {
 		Player currentPlayer = playersData.get(currentPlayerIndex % playersData.size());
 		if(currentPlayer.getArmyCountAvailable() == 0) {
-			int Reinforcement = (int) Math.floor(currentPlayer.getTerritoryOccupied().size() / 3);
-			if(Reinforcement >= 3) {
-				currentPlayer.setArmyCountAvailable(Reinforcement);
+			int reinforcement = (int) Math.floor(currentPlayer.getTerritoryOccupied().size() / (double)3);
+			if(reinforcement >= 3) {
+				currentPlayer.setArmyCountAvailable(reinforcement);
 			}else {
 				currentPlayer.setArmyCountAvailable(3);
 			}
@@ -176,24 +209,7 @@ public class RiskBoardModel {
 		view.getCurrentPlayerTurnLabel().setText(currentPlayer.getPlayerName()+" Turn !!");
 		view.getArmiesCountAvailableLabel().setText(String.valueOf(currentPlayer.getArmyCountAvailable()));
 		updateCountriesComboBox(currentPlayer, view);
-		updateAllCountriesData(view);
-	}
-
-	/**
-	 * updateAllCountriesData updates the countries and continents details in the board view screen.
-	 * @param view 
-	 */
-	private void updateAllCountriesData(RiskBoardView view) {
-		StringBuilder continentsData = new StringBuilder();
-		continentsMap.keySet().forEach(continentKey -> {
-			continentsData.append("<h1>").append(continentKey).append("</h1>").append("<br/>");
-			List<Country> countriesAvailable = continentsMap.get(continentKey).getCountriesInContinent();
-			countriesAvailable.stream().forEach(country -> {
-				String data = country.getCountryName()+"\t"+country.getArmiesOnCountry()+"\t"+country.getPlayerName();
-				continentsData.append("<pre>").append(data).append("</pre>").append("<br/>");
-			});
-		});
-		view.getContinentTextArea().setText(continentsData.toString());
+		createOrUpdateImage(view);
 	}
 
 	/**
@@ -202,7 +218,7 @@ public class RiskBoardModel {
 	 * @param view
 	 */
 	private void updateCountriesComboBox(Player currentPlayer, RiskBoardView view) {
-		List<String> playerCountriesNames = currentPlayer.getTerritoryOccupied().stream().map(countey -> countey.getCountryName()).collect(Collectors.toList());
+		List<String> playerCountriesNames = currentPlayer.getTerritoryOccupied().stream().map(Country::getCountryName).collect(Collectors.toList());
 		DefaultComboBoxModel<String> comboBoxModel = (DefaultComboBoxModel<String>) view.getCountryComboBox().getModel();
 		comboBoxModel.removeAllElements();
 		playerCountriesNames.stream().forEach(comboBoxModel::addElement);
@@ -244,7 +260,7 @@ public class RiskBoardModel {
 			country.setArmiesOnCountry(selectedValue);
 			currentPlayer.decrementArmy(selectedValue);
 			view.getArmiesCountAvailableLabel().setText(String.valueOf(currentPlayer.getArmyCountAvailable()));
-			updateAllCountriesData(view);
+			createOrUpdateImage(view);
 			if(currentPlayer.getArmyCountAvailable() == 0) {
 				JOptionPane.showMessageDialog(view.getBoardFrame(), "Next Player Turn");
 				nextPlayer(view);
@@ -265,7 +281,7 @@ public class RiskBoardModel {
 		view.getCurrentPlayerTurnLabel().setText(currentPlayer.getPlayerName()+" Turn !!");
 		view.getArmiesCountAvailableLabel().setText(String.valueOf(currentPlayer.getArmyCountAvailable()));
 		updateCountriesComboBox(currentPlayer, view);
-		updateAllCountriesData(view);
+		createOrUpdateImage(view);
 	}
 
 	/**
@@ -292,7 +308,7 @@ public class RiskBoardModel {
 				country.decreaseArmiesOnCountry(selectedValue);
 				adjacentCountry.incrementArmiesOnCountry(selectedValue);
 				view.getArmiesCountAvailableLabel().setText(String.valueOf(currentPlayer.getArmyCountAvailable()));
-				updateAllCountriesData(view);
+				createOrUpdateImage(view);
 			}
 		}
 	}

@@ -1,9 +1,10 @@
 [Map]
+author=Sean O'Connor
 image=world.bmp
 wrap=yes
 scroll=horizontal
-author=Your name
 warn=yes
+
 [Continents]
 North America=5
 South America=2
@@ -11,46 +12,59 @@ Africa=3
 Europe=5
 Asia=7
 Australia=2
+
 [Territories]
-Alaska,0,0,North America,Northwest Territory,Alberta,Kamchatka
-Alberta,0,0,North America,Alaska,Northwest Territory,Ontario,Western United States
-Central America,0,0,North America,Western United States,Venezuela
-Eastern United States,0,0,North America,Western United States,Ontario,Quebec
-Greenland,0,0,North America,Northwest Territory,Ontario,Quebec,Iceland
-Northwest Territory,0,0,North America,Alaska,Greenland,Ontario,Alberta
-Ontario,0,0,North America,Northwest Territory,Greenland,Quebec,Eastern United States,Western United States,Alberta
-Quebec,0,0,North America,Ontario,Greenland,Eastern United States
-Western United States,0,0,North America,Alberta,Ontario,Eastern United States,Central America
-Argentina,0,0,South America,Venezuela,Brazil,Peru
-Brazil,0,0,South America,Venezuela,North Africa,Argentina,Peru
-Peru,0,0,South America,Argentina,Brazil,Venezuela
-Venezuela,0,0,South America,Central America,Brazil,Argentina,Peru
-Great Britain,0,0,Europe,Iceland,Scandinavia,Northern Europe,Western Europe
-Iceland,0,0,Europe,Greenland,Great Britain
-NorthenEurope,0,0,Europe,Great Britain,Ukraine,Southern Europe,Western Europe
-Scandinavia,0,0,Europe,Great Britain,Ukraine
-Southern Europe,0,0,Europe,Western Europe,Northern Europe,Ukraine,Egypt,North Africa
-Ukraine,0,0,Europe,Scandinavia,Ural,Afghanistan,Middle East,Southern Europe,Northern Europe
-Western Europe,0,0,Europe,Great Britain,Northern Europe,Southern Europe,North Africa
-Congo,0,0,Africa,North Africa,Egypt,East Africa,South Africa
-East Africa,0,0,Africa,Egypt,Madagascar,South Africa,Congo
-Egypt,0,0,Africa,Southern Europe,Middle East,East Africa,Congo,North Africa
-Madagascar,0,0,Africa,East Africa,South Africa
-North Africa,0,0,Africa,Western Europe,Southern Europe,Egypt,Congo,Brazil
-South Africa,0,0,Africa,Congo,East Africa,Madagascar
-Afganistan,0,0,Asia,Ukraine,Ural,Siberia,China,India,Middle East
-China,0,0,Asia,Afghanistan,Siberia,Mongolia,Siam,India
-India,0,0,Asia,Middle East,Afghanistan,China,Siam
-Irkutsk,0,0,Asia,Siberia,Yakutsk,Kamchatka,Mongolia
-Japan,0,0,Asia,Kamchatka,Mongolia
-Kamchatka,0,0,Asia,Yakutsk,Alaska,Japan,Mongolia,Irkutsk
-Middel East,0,0,Asia,Ukraine,Afghanistan,India,Egypt
-Mongolia,0,0,Asia,Siberia,Irkutsk,Kamchatka,Japan,China
-Siam,0,0,Asia,India,China,Indonesia
-Siberia,0,0,Asia,Ural,Yakutsk,Irkutsk,Mongolia,China,Afghanistan
-Ural,0,0,Asia,Ukraine,Siberia,Afghanistan
-Yakutsk,0,0,Asia,Siberia,Kamchatka,Irkutsk
-Eastern Australia,0,0,Australia,New Guinea,Western Australia
-Indonesia,0,0,Australia,Siam,New Guinea,Western Australia
-New Guinea,0,0,Australia,Indonesia,Eastern Australia,Western Australia
-Western Australia,0,0,Australia,Indonesia,New Guinea,Eastern Australia
+Alaska,70,126,North America,Northwest Territory,Alberta,Kamchatka
+Northwest Territory,148,127,North America,Alaska,Alberta,Ontario,Greenland
+Alberta,147,163,North America,Alaska,Northwest Territory,Ontario,Western United States
+Greenland,324,76,North America,Northwest Territory,Ontario,Quebec,Iceland
+Ontario,199,167,North America,Northwest Territory,Alberta,Greenland,Quebec,Western United States,Eastern United States
+Quebec,253,166,North America,Greenland,Ontario,Eastern United States
+Western United States,159,204,North America,Alberta,Ontario,Eastern United States,Central America
+Eastern United States,219,216,North America,Ontario,Quebec,Western United States,Central America
+Central America,183,262,North America,Western United States,Eastern United States,Venezuala
+
+Venezuala,259,303,South America,Central America,Peru,Brazil
+Peru,262,349,South America,Venezuala,Brazil,Argentina
+Argentina,263,407,South America,Peru,Brazil
+Brazil,308,337,South America,Venezuala,Peru,Argentina,North Africa
+
+North Africa,420,264,Africa,Brazil,Western Europe,Southern Europe,Egypt,East Africa,Congo
+Congo,475,318,Africa,North Africa,East Africa,South Africa
+South Africa,483,371,Africa,Congo,East Africa,Madagascar
+Madagascar,536,361,Africa,East Africa,South Africa
+East Africa,517,298,Africa,Egypt,Middle East,Congo,North Africa,South Africa,Madagascar
+Egypt,480,249,Africa,Southern Europe,North Africa,Middle East,East Africa
+
+Iceland,380,126,Europe,Greenland,Great Britain,Scandinavia
+Great Britain,419,169,Europe,Iceland,Scandinavia,Western Europe,Northern Europe
+Western Europe,423,202,Europe,Great Britain,Northern Europe,Southern Europe,North Africa
+Scandinavia,463,127,Europe,Iceland,Great Britain,Northern Europe,Ukraine
+Northern Europe,460,173,Europe,Great Britain,Scandinavia,Ukraine,Southern Europe,Western Europe
+Southern Europe,473,197,Europe,Northern Europe,Ukraine,Middle East,Egypt,North Africa,Western Europe
+Ukraine,524,157,Europe,Ural,Afghanistan,Middle East,Southern Europe,Northern Europe,Scandinavia
+
+Middle East,530,234,Asia,Ukraine,Afghanistan,India,Southern Europe,Egypt,East Africa
+Ural,613,136,Asia,Siberia,China,Afghanistan,Ukraine
+Afghanistan,585,192,Asia,Ural,China,India,Middle East,Ukraine
+India,612,249,Asia,China,Siam,Afghanistan,Middle East
+Siberia,666,110,Asia,Yatusk,Irkutsk,Mongolia,China,Ural
+China,662,217,Asia,Ural,Siberia,Mongolia,Siam,India,Afghanistan
+Siam,671,270,Asia,China,India,Indonesia
+Mongolia,707,188,Asia,Siberia,Irkutsk,Japan,China,Kamchatka
+Irkutsk,698,152,Asia,Siberia,Yatusk,Kamchatka,Mongolia
+Yatusk,738,118,Asia,Siberia,Irkutsk,Kamchatka
+Kamchatka,806,125,Asia,Yatusk,Irkutsk,Japan,Alaska,Mongolia
+Japan,759,220,Asia,Kamchatka,Mongolia
+
+Indonesia,698,314,Australia,Siam,New Guinea,Western Australia
+New Guinea,768,325,Australia,Indonesia,Western Australia,Eastern Australia
+Western Australia,729,373,Australia,Indonesia,New Guinea,Eastern Australia
+Eastern Australia,779,381,Australia,Western Australia,New Guinea
+
+
+
+
+
+
+

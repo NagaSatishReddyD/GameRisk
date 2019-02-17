@@ -14,6 +14,8 @@ public class Country {
 	String playerName;
 	int armiesOnCountry;
 	List<Country> adjacentCountries;
+	float xCoordinate;
+	float yCoordinate;
 	
 	public Country(String countryName) {
 		this.countryName = countryName;
@@ -66,4 +68,24 @@ public class Country {
 		this.countryName = countryName;
 	}
 
+
+	public float getxCoordinate() {
+		return xCoordinate;
+	}
+
+
+	public void setxCoordinate(float xCoordinate) {
+		this.xCoordinate = xCoordinate;
+	}
+
+
+	public float getyCoordinate() {
+		return yCoordinate;
+	}
+
+
+	public void setyCoordinate(float yCoordinate) {
+		this.yCoordinate = yCoordinate;
+	}
+	
 }

@@ -1,6 +1,7 @@
 package com.soen6441.risk.controller;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 
 import com.soen6441.risk.model.RiskBoardModel;
 import com.soen6441.risk.view.RiskBoardView;
@@ -14,8 +15,8 @@ public class RiskBoardController {
 		this.view = riskBoardView;
 	}
 
-	public void intializeBoardGame(int playerCount) throws IOException {
-		this.model.loadRequiredData();
+	public void intializeBoardGame(int playerCount) throws IOException, NoSuchAlgorithmException {
+		this.model.loadRequiredData(this.view);
 		this.model.assignCountriesToPlayers(playerCount);
 		addActionListenersToComponents();
 		//initial army set up phase
