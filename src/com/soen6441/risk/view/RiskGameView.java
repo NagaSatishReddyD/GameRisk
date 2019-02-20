@@ -13,7 +13,6 @@ import javax.swing.JPanel;
  */
 public class RiskGameView extends JFrame {
 
-	private JPanel contentPane;
 	private JFrame gameStartframe;
 	private JButton startGameButton;
 
@@ -26,20 +25,17 @@ public class RiskGameView extends JFrame {
 		gameStartframe.setVisible(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		gameStartframe.setSize(500, 200);
-		contentPane = new JPanel();
+		gameStartframe.getContentPane().setLayout(null);
 		
 		startGameButton = new JButton("Start Button");
-		contentPane.add(startGameButton, BorderLayout.CENTER);
+		startGameButton.setSize(97, 21);
+		startGameButton.setLocation(189, 27);
 		
-		gameStartframe.add(contentPane);
-	}
-
-	public JPanel getContentPane() {
-		return contentPane;
-	}
-
-	public void setContentPane(JPanel contentPane) {
-		this.contentPane = contentPane;
+		gameStartframe.getContentPane().add(startGameButton);
+		
+		JButton loadMapButton = new JButton("Add Map");
+		loadMapButton.setBounds(189, 58, 97, 21);
+		gameStartframe.getContentPane().add(loadMapButton);
 	}
 
 	public JFrame getGameStartframe() {
@@ -57,6 +53,4 @@ public class RiskGameView extends JFrame {
 	public void setStartGameButton(JButton startGameButton) {
 		this.startGameButton = startGameButton;
 	}
-
-	
 }

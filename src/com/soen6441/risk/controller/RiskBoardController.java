@@ -17,7 +17,7 @@ public class RiskBoardController {
 
 	public void intializeBoardGame(int playerCount) throws IOException, NoSuchAlgorithmException {
 		this.model.loadRequiredData(this.view);
-		this.model.assignCountriesToPlayers(playerCount);
+		this.model.assignCountriesToPlayers(playerCount, this.view);
 		addActionListenersToComponents();
 		//initial army set up phase
 		this.model.updateTheBoardScreenData(this.view);

@@ -61,7 +61,6 @@ public class RiskBoardModel {
 					findTheSectionToParseData(section, line, view);
 				}
 			}
-			createOrUpdateImage(view);
 		} catch (FileNotFoundException e) {
 			System.out.println("Problem with the file. Couldn't read the file");
 		} catch (IOException e) {
@@ -73,12 +72,13 @@ public class RiskBoardModel {
 	}
 
 	private void createOrUpdateImage(RiskBoardView view) {
+		Player currentPlayer = playersData.get(currentPlayerIndex);
 		BufferedImage bufferedImage;
 		try {
 			bufferedImage = ImageIO.read(new File(System.getProperty("user.dir")+"/resources/"+imageName));
 			Graphics2D graphics = bufferedImage.createGraphics();
-			graphics.setColor(Color.BLACK);
 			for(Country country: countriesList) {
+				graphics.setColor(currentPlayer.getPlayerName().equals(country.getPlayerName()) ? Color.RED: Color.BLACK);
 				graphics.drawString(String.valueOf(country.getArmiesOnCountry()), country.getxCoordinate(), country.getyCoordinate());
 			}
 			Image scaledImage = bufferedImage.getScaledInstance(view.getMapPanel().getWidth(), view.getMapPanel().getHeight(), Image.SCALE_SMOOTH);
@@ -165,7 +165,7 @@ public class RiskBoardModel {
 		}
 	}
 
-	public void assignCountriesToPlayers(int playersCount) throws NoSuchAlgorithmException {
+	public void assignCountriesToPlayers(int playersCount, RiskBoardView view) throws NoSuchAlgorithmException {
 		Random random = SecureRandom.getInstanceStrong();
 		int index = 0;
 		if(playersData == null)
@@ -187,6 +187,7 @@ public class RiskBoardModel {
 			player.addTerritory(player, country);
 			assignedCountriesList.remove(countryIndex);
 		}
+		createOrUpdateImage(view);
 	}
 
 	/**
@@ -304,22 +305,6 @@ public class RiskBoardModel {
 	private int getBonusArmiesOnTerritories(Player currentPlayer) {
 		int bonusArmies = currentPlayer.getTerritoryOccupied().size() / 3;
 		return bonusArmies < 3 ? 3 : bonusArmies;
-	}
-
-	/**
-	 * updateTheFortificationData method is used to handle the actions done before the each player's fortification
-	 * phase turn
-	 * @param view
-	 */
-	public void updateFortificationData(RiskBoardView view) {
-		Player currentPlayer = playersData.get(currentPlayerIndex % playersData.size());
-		view.getReinforceBtn().setVisible(false);
-		view.getMoveArmiesBtn().setVisible(true);
-		view.getEndFortificationBtn().setVisible(true);
-		view.getCurrentPlayerTurnLabel().setText(currentPlayer.getPlayerName()+" Turn !!");
-		view.getArmiesCountAvailableLabel().setText(String.valueOf(currentPlayer.getArmyCountAvailable()));
-		updateCountriesComboBox(currentPlayer, view);
-		createOrUpdateImage(view);
 	}
 
 	/**
