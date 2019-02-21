@@ -8,7 +8,6 @@ import javax.swing.JPanel;
 
 public class RiskPlayerView extends JFrame {
 
-	private JPanel contentPane;
 	private JFrame playerStartframe;
 	private JComboBox playerCountCombo;
 	private JButton loadGameButton;
@@ -22,33 +21,23 @@ public class RiskPlayerView extends JFrame {
 		playerStartframe.setVisible(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		playerStartframe.setSize(500, 200);
-		contentPane = new JPanel();
-		
-		
-		playerStartframe.getContentPane().add(contentPane);
+		playerStartframe.getContentPane().setLayout(null);
 		
 		JLabel playerCountLabel = new JLabel("Player Count");
+		playerCountLabel.setBounds(166, 21, 97, 21);
+		playerStartframe.getContentPane().add(playerCountLabel);
+		
 		String [] playersNumbers = {"2","3","4","5","6"};
 		playerCountCombo = new JComboBox(playersNumbers);
 		playerCountCombo.setSelectedIndex(0);
+		playerCountCombo.setBounds(286, 21, 97, 21);
+		playerStartframe.getContentPane().add(playerCountCombo);
+		
 		
 		loadGameButton = new JButton("Load Game");
-		
-		contentPane.add(playerCountLabel);
-		contentPane.add(playerCountCombo);
-		contentPane.add(loadGameButton);
+		loadGameButton.setBounds(170, 62, 213, 21);
+		playerStartframe.getContentPane().add(loadGameButton);
 	}
-
-
-	public JPanel getContentPane() {
-		return contentPane;
-	}
-
-
-	public void setContentPane(JPanel contentPane) {
-		this.contentPane = contentPane;
-	}
-
 
 	public JFrame getPlayerStartframe() {
 		return playerStartframe;
