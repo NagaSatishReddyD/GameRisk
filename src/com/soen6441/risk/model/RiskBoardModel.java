@@ -145,7 +145,7 @@ public class RiskBoardModel {
 	 * 
 	 * @param line
 	 */
-	private void createCountinents(String line) {
+	public void createCountinents(String line) {
 		if(continentsMap==null) {
 			continentsMap = new HashMap<>();
 		}
@@ -403,4 +403,34 @@ public class RiskBoardModel {
 	public void endAttackPhase(RiskBoardView view) {
 		enableDisableButtons(RiskGameConstants.FORTIFICATION_PHASE, view);
 	}
+
+	public String getImageName() {
+		return imageName;
+	}
+
+	public Map<String, Continent> getContinentsMap() {
+		return continentsMap;
+	}
+
+	public Map<String, Country> getCountriesMap() {
+		return countriesMap;
+	}
+
+	public List<Country> getCountriesList() {
+		return countriesList;
+	}
+
+	public List<Player> getPlayersData() {
+		return playersData;
+	}
+
+	public int getCurrentPlayerIndex() {
+		return currentPlayerIndex;
+	}
+
+	public boolean isInitialPhase() {
+		return isInitialPhase;
+	}
+	
+	
 }
