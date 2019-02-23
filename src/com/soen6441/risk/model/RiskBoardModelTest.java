@@ -1,11 +1,10 @@
 package com.soen6441.risk.model;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Ignore;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -34,10 +33,19 @@ class RiskBoardModelTest {
 			riskBoardModel.createCountinents(linesArray[i]);
 		}
 		assertEquals(continentsMap.size(), riskBoardModel.getContinentsMap().size());
-		
+		assertEquals(5, riskBoardModel.getContinentsMap().get("North America").getArmiesGainedAfterConquer());
+		assertEquals(3, riskBoardModel.getContinentsMap().get("Africa").getArmiesGainedAfterConquer());
 	}
 
+
+
 //	@Test
+//	void testcreateContries() {
+//		String [] linesArray = {"WesternAustralia,729,373,Australia,EasternAustralia,Indonesia,New Guinea", "EasternAustralia,779,381,Australia,Western Australia,New Guinea",
+//				"NewGuinea,768,325,Australia,Indonesia,Western Australia,Eastern Australia","Indonesia,698,314,Australia,Siam,New Guinea,Western Australia"};
+//		
+//		}
+//	}
 //	@Ignore
 //	void testLoadRequiredData() {
 //		fail("Not yet implemented");
