@@ -14,6 +14,7 @@ public class RiskGameController {
 
 	public void initializeController() {
 		this.view.getStartGameButton().addActionListener(e -> model.showPlayerDetailsMenu(this.view));
+		this.view.getLoadMapButton().addActionListener(e -> model.showAddMapFrame(this.view));
 	}
 
 }
