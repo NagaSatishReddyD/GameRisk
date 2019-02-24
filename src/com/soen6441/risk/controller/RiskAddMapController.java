@@ -29,6 +29,7 @@ public class RiskAddMapController {
 				chooser.setMultiSelectionEnabled(true);
 				FileNameExtensionFilter filter = new FileNameExtensionFilter("Map files", "map", "bmp");
 				chooser.setFileFilter(filter);
+				chooser.setAcceptAllFileFilterUsed(false);
 				chooser.showOpenDialog(null);
 				File[] files = chooser.getSelectedFiles();
 				model.mapValidation(view, files);
