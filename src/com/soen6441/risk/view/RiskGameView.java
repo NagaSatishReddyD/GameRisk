@@ -15,6 +15,7 @@ public class RiskGameView extends JFrame {
 
 	private JFrame gameStartframe;
 	private JButton startGameButton;
+	private JButton loadMapButton;
 
 	/**
 	 * Create the frame.
@@ -33,9 +34,13 @@ public class RiskGameView extends JFrame {
 		
 		gameStartframe.getContentPane().add(startGameButton);
 		
-		JButton loadMapButton = new JButton("Add Map");
+		loadMapButton = new JButton("Add Map");
 		loadMapButton.setBounds(189, 58, 97, 21);
 		gameStartframe.getContentPane().add(loadMapButton);
+	}
+
+	public JButton getLoadMapButton() {
+		return loadMapButton;
 	}
 
 	public JFrame getGameStartframe() {
@@ -53,4 +58,6 @@ public class RiskGameView extends JFrame {
 	public void setStartGameButton(JButton startGameButton) {
 		this.startGameButton = startGameButton;
 	}
+	
+	
 }
