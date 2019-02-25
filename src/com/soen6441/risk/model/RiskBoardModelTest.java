@@ -2,6 +2,7 @@ package com.soen6441.risk.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,15 +10,21 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import com.soen6441.risk.Continent;
+import com.soen6441.risk.Country;
+import com.soen6441.risk.view.RiskBoardView;
 
 class RiskBoardModelTest {
 
 	static RiskBoardModel riskBoardModel;
 	static Map<String, Continent> continentsMap;
+	private static HashMap<String, Country> countriesMap;
+	static RiskBoardView riskBoardView;
 	@BeforeAll
 	static void setUpBeforeClass() throws Exception {
 		riskBoardModel = new RiskBoardModel();
 		continentsMap = new HashMap<String, Continent>();
+		countriesMap = new HashMap<String, Country> ();
+		riskBoardView = new RiskBoardView();
 	}
 	
 	@Test
@@ -39,23 +46,24 @@ class RiskBoardModelTest {
 
 
 
-//	@Test
-//	void testcreateContries() {
-//		String [] linesArray = {"WesternAustralia,729,373,Australia,EasternAustralia,Indonesia,New Guinea", "EasternAustralia,779,381,Australia,Western Australia,New Guinea",
-//				"NewGuinea,768,325,Australia,Indonesia,Western Australia,Eastern Australia","Indonesia,698,314,Australia,Siam,New Guinea,Western Australia"};
-//		
-//		}
+	@Test
+	void testcreateContries() {
+		String [] linesArray = {"WesternAustralia,729,373,Australia,EasternAustralia,Indonesia,New Guinea", "EasternAustralia,779,381,Australia,Western Australia,New Guinea",
+			"NewGuinea,768,325,Australia,Indonesia,Western Australia,Eastern Australia","Indonesia,698,314,Australia,Siam,New Guinea,Western Australia"};
+	//	countriesMap.put("WesternAustralia", )
+	}
 //	}
 //	@Ignore
 //	void testLoadRequiredData() {
 //		fail("Not yet implemented");
 //	}
 //
-//	@Test
-//	@Ignore
-//	void testAssignCountriesToPlayers() {
-//		fail("Not yet implemented");
-//	}
+	@Test
+	void testAssignCountriesToPlayers() throws NoSuchAlgorithmException {
+		int playersCount = 2;
+		riskBoardModel.assignCountriesToPlayers(playersCount, riskBoardView);
+        assertEquals(riskBoardModel.getPlayersData().size(), playersCount);
+	}
 //
 //	@Test
 //	@Ignore
