@@ -32,7 +32,6 @@ import com.soen6441.risk.view.RiskBoardView;
 /**
  * RiskBoardModel is used to handle the actions in the board frame.
  * @author Naga Satish Reddy
- *
  */
 public class RiskBoardModel {
 	String imageName;
@@ -43,6 +42,11 @@ public class RiskBoardModel {
 	int currentPlayerIndex = 0;
 	boolean isInitialPhase = true;
 
+	/**
+	 * loadRequiredData method is used to inital load the riskBoardView screen data
+	 * @param view, RiskBoardView object used to update the components of the screen
+	 * @throws IOException, this exception comes while some problem occurs while reading the file
+	 */
 	public void loadRequiredData(RiskBoardView view) throws IOException {
 		File configFile = new File(System.getProperty("user.dir")+"/resources/config.map");
 		BufferedReader reader = null;
@@ -61,16 +65,28 @@ public class RiskBoardModel {
 					findTheSectionToParseData(section, line, view);
 				}
 			}
+			verifyTheCountriesConnections();
 		} catch (FileNotFoundException e) {
-			System.out.println("Problem with the file. Couldn't read the file");
+			showErrorMessage("Problem with the file. Couldn't read the file");
 		} catch (IOException e) {
-			System.out.println("Problem while reading the file data");
+			showErrorMessage("Problem while reading the file data");
 		}finally {
 			if(reader != null)
 				reader.close();
 		}
 	}
 
+	/**
+	 * verifyTheCountriesConnections method is used to check whether the countries or connected properly or not
+	 */
+	private void verifyTheCountriesConnections() {
+		
+	}
+
+	/**
+	 * createOrUpdateImage method is used to update the map data on the board
+	 * @param view, RiskBoardView object used to update the components of the screen
+	 */
 	private void createOrUpdateImage(RiskBoardView view) {
 		Player currentPlayer = playersData.get(currentPlayerIndex);
 		BufferedImage bufferedImage;
@@ -92,8 +108,8 @@ public class RiskBoardModel {
 	/**
 	 * findTheSectionToParseData gets the data from the config file and parses the data based on the section
 	 * @param section, section=1([MAPS]), section=2([CONTINENTS]), section=3([TERRITORIES])
-	 * @param line
-	 * @param view 
+	 * @param line, each line from the file
+	 * @param view, RiskBoardView object used to update the components of the screen 
 	 */
 	private void findTheSectionToParseData(int section, String line, RiskBoardView view) {
 		if(line.trim().equals("")) {
@@ -104,60 +120,81 @@ public class RiskBoardModel {
 		}else if(section == 2) {
 			createCountinents(line);
 		}else {
-			createContries(line, view);
+			createCountries(line, view);
 		}
 	}
 
 	/**
 	 * createContries is used to create the territories and linked to the respective continents;
-	 * @param line
-	 * @param view 
+	 * @param line, country data line from the file
+	 * @param view, RiskBoardView object used to update the components of the screen
 	 */
-	private void createContries(String line, RiskBoardView view) {
+	private void createCountries(String line, RiskBoardView view) {
 		if(countriesMap == null) {
 			countriesMap = new HashMap<>();
 			countriesList = new ArrayList<>();
 		}
-		String[] territoryDetails = line.split(",");
-		String countryName = territoryDetails[0];
-		String continentName = territoryDetails[3];
-		Country country = new Country(countryName);
-		country.setxCoordinate(Integer.parseInt(territoryDetails[1]));
-		country.setyCoordinate(Integer.parseInt(territoryDetails[2]));
-		int index = 4;
-		while(index < territoryDetails.length) {
-			String countryNameAdjacent = territoryDetails[index];
-			if(countriesMap.containsKey(countryNameAdjacent)) {
-				country.addAdjacentCountry(countriesMap.get(countryNameAdjacent));
-			}else {
-				Country adjacentCountry = new Country(countryNameAdjacent);
-				country.addAdjacentCountry(adjacentCountry);
-				countriesMap.put(countryNameAdjacent, adjacentCountry);
+		try {
+			String[] territoryDetails = line.split(",");
+			String countryName = territoryDetails[0];
+			String continentName = territoryDetails[3];
+			Country country = new Country(countryName);
+			country.setxCoordinate(Integer.parseInt(territoryDetails[1]));
+			country.setyCoordinate(Integer.parseInt(territoryDetails[2]));
+			int index = 4;
+			while(index < territoryDetails.length) {
+				String countryNameAdjacent = territoryDetails[index];
+				if(countriesMap.containsKey(countryNameAdjacent)) {
+					country.addAdjacentCountry(countriesMap.get(countryNameAdjacent));
+				}else {
+					Country adjacentCountry = new Country(countryNameAdjacent);
+					country.addAdjacentCountry(adjacentCountry);
+					countriesMap.put(countryNameAdjacent, adjacentCountry);
+				}
+				index++;
 			}
-			index++;
+			countriesMap.put(countryName, country);
+			countriesList.add(country);
+			continentsMap.get(continentName).addCountryInContinent(country);
+		}catch (Exception e) {
+			showErrorMessage("Problem while parsing the data");
 		}
-		countriesMap.put(countryName, country);
-		countriesList.add(country);
-		continentsMap.get(continentName).addCountryInContinent(country);
 	}
 
 	/**
-	 * 
-	 * @param line
+	 * createCountinents method is to create the countinents by reading the data from the file.
+	 * @param line, is the each continent information from the config file line by line
 	 */
 	public void createCountinents(String line) {
 		if(continentsMap==null) {
 			continentsMap = new HashMap<>();
 		}
 		String[] continentArmies = line.split("=");
-		Continent continent = new Continent(continentArmies[0], Integer.parseInt(continentArmies[1]));
-		continentsMap.put(continentArmies[0], continent);
+		try {
+			int value = Integer.parseInt(continentArmies[1]);
+			if(value > 0) {
+				Continent continent = new Continent(continentArmies[0], value);
+				continentsMap.put(continentArmies[0], continent);
+			}else {
+				showErrorMessage("Continents Reinforcement can't be negative or zero");
+			}
+		}catch (Exception e) {
+			showErrorMessage("Error while reading data");
+		}
+	}
+
+	/**
+	 * showErrorMessage method is to show the error dialog messages in the frame.
+	 * @param message, string value which need to be shown in the message box
+	 */
+	private void showErrorMessage(String message) {
+		JOptionPane.showMessageDialog(null, message);
 	}
 
 	/**
 	 * findImageName is used to find the image name need to be displayed on the screen
-	 * @param line
-	 * @param view 
+	 * @param line, country data line from the file
+	 * @param view, RiskBoardView object used to update the components of the screen 
 	 */
 	private void findImageName(String line, RiskBoardView view) {
 		if(line.contains("image")) {
@@ -165,6 +202,12 @@ public class RiskBoardModel {
 		}
 	}
 
+	/**
+	 * assignCountriesToPlayers method is used to assign the countries to the players randomly
+	 * @param playersCount, count of the players how many players are playing the game
+	 * @param view, RiskBoardView object used to update the components of the screen
+	 * @throws NoSuchAlgorithmException, when instance is not create about the random
+	 */
 	public void assignCountriesToPlayers(int playersCount, RiskBoardView view) throws NoSuchAlgorithmException {
 		Random random = SecureRandom.getInstanceStrong();
 		int index = 0;
@@ -192,8 +235,7 @@ public class RiskBoardModel {
 
 	/**
 	 * updateTheBoardScreenData method is used to handle the actions done before the each turn for the player
-	 * @param currentPlayerValue
-	 * @param view
+	 * @param view, RiskBoardView object used to update the components of the screen
 	 */
 	public void updateTheBoardScreenData(RiskBoardView view) {
 		Player currentPlayer = playersData.get(currentPlayerIndex);
@@ -210,8 +252,8 @@ public class RiskBoardModel {
 
 	/**
 	 * updateCountriesComboBox method is used to update the countries list based on the player turn
-	 * @param currentPlayer
-	 * @param view
+	 * @param currentPlayer, value of the currentplayer index
+	 * @param view, RiskBoardView object used to update the components of the screen
 	 */
 	private void updateCountriesComboBox(Player currentPlayer, RiskBoardView view) {
 		List<String> playerCountriesNames = currentPlayer.getTerritoryOccupied().stream().map(Country::getCountryName).collect(Collectors.toList());
@@ -223,7 +265,7 @@ public class RiskBoardModel {
 
 	/**
 	 * getAdjacentCountriesForComboCountry method is used to load the adjacent countries data in the board.
-	 * @param view
+	 * @param view, RiskBoardView object used to update the components of the screen
 	 */
 	public void getAdjacentCountriesForComboCountry(RiskBoardView view) {
 		if(view.getCountryComboBox().getSelectedItem() != null) {
@@ -238,12 +280,11 @@ public class RiskBoardModel {
 
 	/**
 	 * updateArmiesInCountries method is used to update the armies in the contries by using a dialog
-	 * @param view
-	 * @return
+	 * @param view, RiskBoardView object used to update the components of the screen
 	 */
 	public void updateArmiesInCountries(RiskBoardView view) {
 		Player currentPlayer = playersData.get(currentPlayerIndex);
-		
+
 		Object [] possibilities = new Object [currentPlayer.getArmyCountAvailable()];
 		for(int index = 0; index < currentPlayer.getArmyCountAvailable(); index++) {
 			possibilities[index] = index+1;
@@ -265,7 +306,7 @@ public class RiskBoardModel {
 
 	/**
 	 * setTheBonusArmiesToPlayer method for find the inital Armies setup for the player.
-	 * @param currentPlayer
+	 * @param currentPlayer, current player object
 	 */
 	private void setTheBonusArmiesToPlayer(Player currentPlayer) {
 		currentPlayer.incrementArmy(countArmiesBasedOnTerritories(currentPlayer));
@@ -273,8 +314,8 @@ public class RiskBoardModel {
 
 	/**
 	 * countArmiesBasedOnTerritories method to calculate the armies count based on the player territories
-	 * @param currentPlayer
-	 * @return count
+	 * @param currentPlayer, current player object
+	 * @return count, how many armies are given to players for each round
 	 */
 	private int countArmiesBasedOnTerritories(Player currentPlayer) {
 		return getBonusArmiesOnTerritories(currentPlayer)+ getBonusArmiesOnContinent(currentPlayer);
@@ -282,8 +323,8 @@ public class RiskBoardModel {
 
 	/**
 	 * getBonusArmiesOnContinent method is used to find the bonus armies based on the continent
-	 * @param currentPlayer
-	 * @return
+	 * @param currentPlayer, current player object who is playing
+	 * @return bonusArmies, armies if a player concurred entire continent
 	 */
 	private int getBonusArmiesOnContinent(Player currentPlayer) {
 		int bonusArmies = 0;
@@ -299,8 +340,8 @@ public class RiskBoardModel {
 
 	/**
 	 * getBonusArmiesOnTerritories method is used to find the bonus armies based on the territories
-	 * @param currentPlayer
-	 * @return
+	 * @param currentPlayer, current player object who is playing
+	 * @return bonusArmies, armies based on the territories conquered
 	 */
 	private int getBonusArmiesOnTerritories(Player currentPlayer) {
 		int bonusArmies = currentPlayer.getTerritoryOccupied().size() / 3;
@@ -309,7 +350,7 @@ public class RiskBoardModel {
 
 	/**
 	 * moveArmiesBetweenInCountries method is used to move armies between neighboring countries
-	 * @param view
+	 * @param view, RiskBoardView object used to update the components of the screen
 	 */
 	public void moveArmiesBetweenCountries(RiskBoardView view) {
 		Player currentPlayer = playersData.get(currentPlayerIndex);
@@ -348,7 +389,7 @@ public class RiskBoardModel {
 
 	/**
 	 * nextPlayer method is used to trigger next player chance.
-	 * @param view, boardview object to access board components
+	 * @param view, RiskBoardView object used to update the components of the screen
 	 */
 	private void nextPlayer(RiskBoardView view) {
 		if(isInitialPhase) {
@@ -363,7 +404,7 @@ public class RiskBoardModel {
 
 	/**
 	 * enableDisableButtons method is to enable the required buttons based on the phase
-	 * @param view 
+	 * @param view, RiskBoardView object used to update the components of the screen 
 	 * @param string
 	 */
 	private void enableDisableButtons(String phase, RiskBoardView view) {
@@ -389,7 +430,7 @@ public class RiskBoardModel {
 
 	/**
 	 * nextPlayerFortification method is used to trigger next player fortification turn.
-	 * @param view
+	 * @param view, RiskBoardView object used to update the components of the screen
 	 */
 	public void endFortificationPhase(RiskBoardView view) {
 		isInitialPhase = true;
@@ -397,7 +438,7 @@ public class RiskBoardModel {
 	}
 
 	public void attackBetweenCountries(RiskBoardView view) {
-		System.out.println("Attack Phase under development");
+		showErrorMessage("Attack Phase under development");
 	}
 
 	public void endAttackPhase(RiskBoardView view) {
@@ -431,6 +472,6 @@ public class RiskBoardModel {
 	public boolean isInitialPhase() {
 		return isInitialPhase;
 	}
-	
-	
+
+
 }
