@@ -92,10 +92,6 @@ public class RiskBoardView extends JFrame {
 		endAttackButton = new JButton("Attack Finished");
 		endAttackButton.setBounds(364, 136, 117, 27);
 		boardFrame.getContentPane().add(endAttackButton);
-		
-		JLabel lblMyCountries = new JLabel("My Countries");
-		lblMyCountries.setBounds(23, 364, 88, 27);
-		boardFrame.getContentPane().add(lblMyCountries);
 	}
 
 	public JLabel getImageLabel() {

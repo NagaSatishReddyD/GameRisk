@@ -110,12 +110,16 @@ public class RiskBoardModel {
 	private void createOrUpdateImage(RiskBoardView view) {
 		Player currentPlayer = playersData.get(currentPlayerIndex);
 		BufferedImage bufferedImage;
+		Country currentCountry = countriesMap.get(view.getCountryComboBox().getSelectedItem().toString());
 		try {
 			bufferedImage = ImageIO.read(new File(System.getProperty("user.dir")+"/resources/"+imageName));
 			Graphics2D graphics = bufferedImage.createGraphics();
 			for(Country country: countriesList) {
 				graphics.setColor(currentPlayer.getPlayerName().equals(country.getPlayerName()) ? Color.RED: Color.BLACK);
 				graphics.drawString(String.valueOf(country.getArmiesOnCountry()), country.getxCoordinate(), country.getyCoordinate());
+				if(currentCountry.getCountryName().equals(country.getCountryName())) {
+					graphics.fillOval((int)country.getxCoordinate(), (int)country.getyCoordinate(), 10, 10);
+				}
 			}
 			Image scaledImage = bufferedImage.getScaledInstance(view.getMapPanel().getWidth(), view.getMapPanel().getHeight(), Image.SCALE_SMOOTH);
 			ImageIcon mapImageIcon = new ImageIcon(scaledImage);
@@ -158,9 +162,15 @@ public class RiskBoardModel {
 			String[] territoryDetails = line.split(",");
 			String countryName = territoryDetails[0];
 			String continentName = territoryDetails[3];
-			Country country = new Country(countryName);
+			Country country;
+			if(countriesMap.containsKey(countryName)) {
+				country = countriesMap.get(countryName);
+			}else {
+				country = new Country(countryName);
+			}
 			country.setxCoordinate(Integer.parseInt(territoryDetails[1]));
 			country.setyCoordinate(Integer.parseInt(territoryDetails[2]));
+			country.setArmiesOnCountry(1);
 			int index = 4;
 			while(index < territoryDetails.length) {
 				String countryNameAdjacent = territoryDetails[index];
@@ -251,7 +261,9 @@ public class RiskBoardModel {
 			player.addTerritory(player, country);
 			assignedCountriesList.remove(countryIndex);
 		}
-		createOrUpdateImage(view);
+		for(int i = 0; i < playersData.size();i++) {
+			playersData.get(i).setArmyCountAvailable(playersData.get(i).getArmyCountAvailable() - playersData.get(i).getTerritoryOccupied().size());
+		}
 	}
 
 	/**
@@ -290,12 +302,18 @@ public class RiskBoardModel {
 	 */
 	public void getAdjacentCountriesForComboCountry(RiskBoardView view) {
 		if(view.getCountryComboBox().getSelectedItem() != null) {
+			Player currentPlayer = playersData.get(currentPlayerIndex);
 			Country selectedCountry = countriesMap.get(view.getCountryComboBox().getSelectedItem().toString());
 			List<Country> adjacentCountriesList = selectedCountry.getAdjacentCountries();
 			DefaultComboBoxModel<String> comboBoxModel = (DefaultComboBoxModel<String>) view.getAdjacentCountryComboBox().getModel();
 			comboBoxModel.removeAllElements();
-			adjacentCountriesList.stream().forEach(country -> comboBoxModel.addElement(country.getCountryName()));
+			if(view.getAttackBtn().isVisible()) {
+				adjacentCountriesList.stream().filter(country -> !country.getPlayerName().equals(currentPlayer.getPlayerName())).forEach(country -> comboBoxModel.addElement(country.getCountryName()));
+			}else {
+				adjacentCountriesList.stream().forEach(country -> comboBoxModel.addElement(country.getCountryName()));
+			}
 			view.getAdjacentCountryComboBox().setModel(comboBoxModel);
+			createOrUpdateImage(view);
 		}
 	}
 
@@ -459,7 +477,16 @@ public class RiskBoardModel {
 	}
 
 	public void attackBetweenCountries(RiskBoardView view) {
-		showErrorMessage("Attack Phase under development");
+		Player currentPlayer = playersData.get(currentPlayerIndex);
+
+		Object [] possibilities = {1,2,3};
+		
+		Integer selectedValue = (Integer)JOptionPane.showInputDialog(view.getBoardFrame(),"How many armies do you want to use to attack", "Armies To Attack",
+				JOptionPane.INFORMATION_MESSAGE, null,possibilities, possibilities[0]);
+
+		if(selectedValue != null) {
+			showErrorMessage("Attack Phase under development");
+		}
 	}
 
 	public void endAttackPhase(RiskBoardView view) {
