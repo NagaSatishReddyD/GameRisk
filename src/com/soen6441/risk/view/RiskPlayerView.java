@@ -8,6 +8,13 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import com.soen6441.risk.RiskGameConstants;
+
+/**
+ * RiskPlayerView class contains the components for players to select the player count and map to start the game
+ * @author Naga Satish Reddy
+ *
+ */
 public class RiskPlayerView extends JFrame {
 
 	private JFrame playerStartframe;
@@ -17,7 +24,7 @@ public class RiskPlayerView extends JFrame {
 
 
 	/**
-	 * Create the frame.
+	 * RiskPlayerView constructor creates the frame
 	 */
 	public RiskPlayerView() {
 		playerStartframe = new JFrame("Risk Game");
@@ -45,58 +52,53 @@ public class RiskPlayerView extends JFrame {
 		mapLabel.setBounds(166, 74, 78, 16);
 		playerStartframe.getContentPane().add(mapLabel);
 		
-		String[] filesName = null;
-		filesName = getAllMapFiles(filesName);
+		String[] filesName = getAllMapFiles();
 		mapComboBox = new JComboBox(filesName);
 		
 		mapComboBox.setBounds(286, 70, 121, 27);
 		playerStartframe.getContentPane().add(mapComboBox);
 	}
+	
+	/**
+	 * getAllMapFiles method is to get the all the map names from the resources folder
+	 * @return fileNames, the file names string array from the resources folder
+	 */
+	public String[] getAllMapFiles() {
+		File directory = new File(System.getProperty("user.dir")+"/resources/");
+		File[] files = directory.listFiles((dir,name) -> name.endsWith(RiskGameConstants.MAP_FILE_EXTENSION));
+		String[] filesName = new String[files.length];
+		for(int i = 0; i < files.length; i++) {
+			filesName[i] = files[i].getName().substring(0, files[i].getName().lastIndexOf('.'));
+		}
+		return filesName;
+	}
 
+	/**
+	 * getMapComboBox method is to get the MapComboBox component
+	 * @return JComboBox, MapComboBox instance
+	 */
 	public JComboBox getMapComboBox() {
 		return mapComboBox;
 	}
 
-	public void setMapComboBox(JComboBox mapComboBox) {
-		this.mapComboBox = mapComboBox;
-	}
-
+	/**
+	 * getPlayerStartframe method is to get the frame component
+	 * @return JFrame, player start frame instance
+	 */
 	public JFrame getPlayerStartframe() {
 		return playerStartframe;
 	}
 
-
-	public void setPlayerStartframe(JFrame playerStartframe) {
-		this.playerStartframe = playerStartframe;
-	}
-
-
+	/**
+	 * 
+	 * @return
+	 */
 	public JComboBox getPlayerCountCombo() {
 		return playerCountCombo;
 	}
-
-
-	public void setPlayerCountCombo(JComboBox playerCountCombo) {
-		this.playerCountCombo = playerCountCombo;
-	}
-
 
 	public JButton getLoadGameButton() {
 		return loadGameButton;
 	}
 
-
-	public void setLoadGameButton(JButton loadGameButton) {
-		this.loadGameButton = loadGameButton;
-	}
-	
-	public String[] getAllMapFiles(String[] filesName) {
-		File directory = new File(System.getProperty("user.dir")+"/resources/");
-		File[] files = directory.listFiles((dir,name) -> name.endsWith(".map"));
-		filesName = new String[files.length];
-		for(int i = 0; i < files.length; i++) {
-			filesName[i] = files[i].getName();
-		}
-		return filesName;
-	}
 }

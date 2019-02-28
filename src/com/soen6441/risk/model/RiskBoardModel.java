@@ -25,6 +25,7 @@ import javax.swing.JOptionPane;
 
 import com.soen6441.risk.Continent;
 import com.soen6441.risk.Country;
+import com.soen6441.risk.Dice;
 import com.soen6441.risk.Player;
 import com.soen6441.risk.RiskGameConstants;
 import com.soen6441.risk.view.RiskBoardView;
@@ -49,7 +50,7 @@ public class RiskBoardModel {
 	 * @throws IOException, this exception comes while some problem occurs while reading the file
 	 */
 	public void loadRequiredData(RiskBoardView view, String fileName) throws IOException {
-		File configFile = new File(System.getProperty("user.dir")+"/resources/"+fileName);
+		File configFile = new File(System.getProperty("user.dir")+"/resources/"+fileName+RiskGameConstants.MAP_FILE_EXTENSION);
 		BufferedReader reader = null;
 		try {
 			int section = 0;
@@ -476,6 +477,10 @@ public class RiskBoardModel {
 		nextPlayer(view);
 	}
 
+	/**
+	 * attackBetweenCountries method is to attack between to players territories which are adjacent
+	 * @param view, RiskBoardView object used to update the components of the screen
+	 */
 	public void attackBetweenCountries(RiskBoardView view) {
 		Player currentPlayer = playersData.get(currentPlayerIndex);
 
@@ -485,6 +490,11 @@ public class RiskBoardModel {
 				JOptionPane.INFORMATION_MESSAGE, null,possibilities, possibilities[0]);
 
 		if(selectedValue != null) {
+			try {
+				Integer[] currentPlayerDice = new Dice().diceRoll(selectedValue);
+			} catch (NoSuchAlgorithmException e) {
+				showErrorMessage("Problem while creating throwing dice");
+			}
 			showErrorMessage("Attack Phase under development");
 		}
 	}

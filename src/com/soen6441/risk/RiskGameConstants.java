@@ -13,4 +13,5 @@ public class RiskGameConstants {
 	public static final String ATTACK_PHASE = "Attack";
 	public static final String FORTIFICATION_PHASE = "fortification";
 	public static final String REINFORCEMENT_PHASE = "Inforcement";
+	public static final String MAP_FILE_EXTENSION = ".map";
 }
