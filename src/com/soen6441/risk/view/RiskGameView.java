@@ -1,15 +1,12 @@
 package com.soen6441.risk.view;
 
-import java.awt.BorderLayout;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 
 /**
- * RiskGameView is class contains the view of the frame of the initail game start
+ * RiskGameView is class contains the view of the frame of the initial game start
  * @author Naga Satish Reddy
- *
+ * @since 1.0
  */
 public class RiskGameView extends JFrame {
 
@@ -18,7 +15,7 @@ public class RiskGameView extends JFrame {
 	private JButton loadMapButton;
 
 	/**
-	 * Create the frame.
+	 * RiskGameView constructor creates the frame of the initial game start frame
 	 */
 	public RiskGameView() {
 		
@@ -39,25 +36,27 @@ public class RiskGameView extends JFrame {
 		gameStartframe.getContentPane().add(loadMapButton);
 	}
 
+	/**
+	 * getLoadMapButton method is used to get the instance of the loadMapButton.
+	 * @return loadMapButton instance
+	 */
 	public JButton getLoadMapButton() {
 		return loadMapButton;
 	}
 
+	/**
+	 * getGameStartframe method is used to get the instance of the starting game frame
+	 * @return JFrame instance
+	 */
 	public JFrame getGameStartframe() {
 		return gameStartframe;
 	}
 
-	public void setGameStartframe(JFrame gameStartframe) {
-		this.gameStartframe = gameStartframe;
-	}
-
+	/**
+	 * getStartGameButton method is used to get the instance of the start game button.
+	 * @return startGameButton instance
+	 */
 	public JButton getStartGameButton() {
 		return startGameButton;
 	}
-
-	public void setStartGameButton(JButton startGameButton) {
-		this.startGameButton = startGameButton;
-	}
-	
-	
 }

@@ -1,17 +1,22 @@
 package com.soen6441.risk.model;
 
-import java.awt.*;
-
-import javax.swing.*;
-
 import com.soen6441.risk.controller.RiskAddMapController;
 import com.soen6441.risk.controller.RiskPlayerController;
 import com.soen6441.risk.view.RiskAddMapView;
 import com.soen6441.risk.view.RiskGameView;
 import com.soen6441.risk.view.RiskPlayerView;
 
+/**
+ * RiskGameModel class contains the logics of the RiskGameView events
+ * @author Naga Satish Reddy
+ *
+ */
 public class RiskGameModel {
 
+	/**
+	 * showPlayerDetailsMenu methods creates the RiskPlayerModel objects and move to the RiskPlayerView frame
+	 * @param view, RiskBoardView object used to update the components of the this screen.
+	 */
 	public void showPlayerDetailsMenu(RiskGameView view) {
 		view.getGameStartframe().setVisible(false);
 		RiskPlayerModel riskPlayerModel = new RiskPlayerModel();

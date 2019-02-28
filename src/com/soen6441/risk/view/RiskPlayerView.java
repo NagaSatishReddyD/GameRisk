@@ -24,7 +24,7 @@ public class RiskPlayerView extends JFrame {
 
 
 	/**
-	 * RiskPlayerView constructor creates the frame
+	 * RiskPlayerView constructor creates the frame for the player frame
 	 */
 	public RiskPlayerView() {
 		playerStartframe = new JFrame("Risk Game");

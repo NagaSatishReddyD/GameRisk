@@ -45,8 +45,8 @@ public class RiskBoardModel {
 
 	/**
 	 * loadRequiredData method is used to inital load the riskBoardView screen data
-	 * @param fileName 
-	 * @param view, RiskBoardView object used to update the components of the screen
+	 * @param fileName, name of the file to be loaded to frame
+	 * @param view, RiskBoardView object used to update the components of the this screen
 	 * @throws IOException, this exception comes while some problem occurs while reading the file
 	 */
 	public void loadRequiredData(RiskBoardView view, String fileName) throws IOException {
