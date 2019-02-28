@@ -62,7 +62,7 @@ public class RiskBoardModel {
 				}else if(line.trim().equals(RiskGameConstants.SECTION_THREE)){
 					section = 3;
 				}else {
-					findTheSectionToParseData(section, line, view);
+					findTheSectionToParseData(section, line.trim(), view);
 				}
 			}
 			verifyTheCountriesConnections();
@@ -80,7 +80,26 @@ public class RiskBoardModel {
 	 * verifyTheCountriesConnections method is used to check whether the countries or connected properly or not
 	 */
 	private void verifyTheCountriesConnections() {
-		
+		if(countriesList.size() > 1) {
+			List<String> countriesNamesList = countriesList.stream().map(country -> country.getCountryName()).collect(Collectors.toList());
+			int [][] countriesConnectedArray = new int[countriesNamesList.size()][countriesNamesList.size()];
+			for(String countryName: countriesNamesList) {
+				int rowIndex = countriesNamesList.indexOf(countryName);
+				List<String> adjacentCountriesList = countriesMap.get(countryName).getAdjacentCountries().stream().map(country -> country.getCountryName()).collect(Collectors.toList());
+				for(String adjacentCountryName : adjacentCountriesList) {
+					int columnIndex = countriesNamesList.indexOf(adjacentCountryName);
+					countriesConnectedArray[rowIndex][columnIndex] = 1;
+				}
+			}
+			for(int row = 0; row <= countriesNamesList.size()/2; row++)
+				for(int column = 0; column < countriesNamesList.size();column++) {
+					if(countriesConnectedArray[row][column] != countriesConnectedArray[column][row]) {
+						showErrorMessage("Some countries are not connected. Please check the config file");
+					}
+				}
+		}else {
+			showErrorMessage("Only one country exist. Please check the selected map file");
+		}
 	}
 
 	/**
@@ -189,6 +208,7 @@ public class RiskBoardModel {
 	 */
 	private void showErrorMessage(String message) {
 		JOptionPane.showMessageDialog(null, message);
+		System.exit(0);
 	}
 
 	/**
