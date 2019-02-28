@@ -15,8 +15,8 @@ public class RiskBoardController {
 		this.view = riskBoardView;
 	}
 
-	public void intializeBoardGame(int playerCount) throws IOException, NoSuchAlgorithmException {
-		this.model.loadRequiredData(this.view);
+	public void intializeBoardGame(int playerCount, String fileName) throws IOException, NoSuchAlgorithmException {
+		this.model.loadRequiredData(this.view, fileName);
 		this.model.assignCountriesToPlayers(playerCount, this.view);
 		addActionListenersToComponents();
 		//initial army set up phase

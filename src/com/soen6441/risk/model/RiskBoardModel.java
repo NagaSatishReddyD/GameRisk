@@ -44,11 +44,12 @@ public class RiskBoardModel {
 
 	/**
 	 * loadRequiredData method is used to inital load the riskBoardView screen data
+	 * @param fileName 
 	 * @param view, RiskBoardView object used to update the components of the screen
 	 * @throws IOException, this exception comes while some problem occurs while reading the file
 	 */
-	public void loadRequiredData(RiskBoardView view) throws IOException {
-		File configFile = new File(System.getProperty("user.dir")+"/resources/config.map");
+	public void loadRequiredData(RiskBoardView view, String fileName) throws IOException {
+		File configFile = new File(System.getProperty("user.dir")+"/resources/"+fileName);
 		BufferedReader reader = null;
 		try {
 			int section = 0;

@@ -14,7 +14,7 @@ public class RiskPlayerModel {
 		RiskBoardModel riskBoardModel = new RiskBoardModel();
 		RiskBoardView riskBoardView = new RiskBoardView();
 		RiskBoardController  riskBoardController = new RiskBoardController(riskBoardModel, riskBoardView);
-		riskBoardController.intializeBoardGame(Integer.parseInt(view.getPlayerCountCombo().getSelectedItem().toString()));
+		riskBoardController.intializeBoardGame(Integer.parseInt(view.getPlayerCountCombo().getSelectedItem().toString()), view.getMapComboBox().getSelectedItem().toString());
 	}
 
 }
