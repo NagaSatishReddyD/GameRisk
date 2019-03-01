@@ -8,7 +8,7 @@ import com.soen6441.risk.view.RiskPlayerView;
 
 /**
  * RiskGameModel class contains the logics of the RiskGameView events
- * @author Naga Satish Reddy
+ * @author Naga Satish Reddy, An Nguyen
  *
  */
 public class RiskGameModel {
@@ -25,6 +25,10 @@ public class RiskGameModel {
 		riskPlayerController.initalizeGame();
 	}
 
+	/**
+	 * showAddMapFrame method creates the RiskAddMapModel objects and move to the RiskAddMapView frame
+	 * @param view
+	 */
 	public void showAddMapFrame(RiskGameView view) {
 		view.getGameStartframe().setVisible(false);
 		RiskAddMapModel riskAddMapModel = new RiskAddMapModel();

@@ -8,6 +8,12 @@ import java.io.IOException;
 
 import com.soen6441.risk.view.RiskAddMapView;
 
+
+/**
+ * RiskAddMapModel class handles the method for validating the uploaded map files
+ * @author An Nguyen
+ *
+ */
 public class RiskAddMapModel {
 	
 	/**
