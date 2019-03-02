@@ -3,6 +3,7 @@ package com.soen6441.risk.controller;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
+import com.soen6441.risk.RiskGameConstants;
 import com.soen6441.risk.model.RiskBoardModel;
 import com.soen6441.risk.view.RiskBoardView;
 
@@ -16,7 +17,7 @@ public class RiskBoardController {
 	}
 
 	public void intializeBoardGame(int playerCount, String fileName) throws IOException, NoSuchAlgorithmException {
-		this.model.loadRequiredData(this.view, fileName);
+		this.model.loadRequiredData(System.getProperty("user.dir")+"/resources/"+fileName+RiskGameConstants.MAP_FILE_EXTENSION);
 		this.model.assignCountriesToPlayers(playerCount, this.view);
 		addActionListenersToComponents();
 		//initial army set up phase
@@ -25,6 +26,7 @@ public class RiskBoardController {
 
 	private void addActionListenersToComponents() {
 		this.view.getCountryComboBox().addActionListener(e -> this.model.getAdjacentCountriesForComboCountry(this.view));
+		this.view.getAdjacentCountryComboBox().addActionListener(e -> this.model.createOrUpdateImage(view));
 		this.view.getReinforceBtn().addActionListener(action -> this.model.updateArmiesInCountries(this.view));
 		this.view.getMoveArmiesBtn().addActionListener(m -> this.model.moveArmiesBetweenCountries(view));
 		this.view.getEndFortificationBtn().addActionListener(end -> this.model.endFortificationPhase(view));

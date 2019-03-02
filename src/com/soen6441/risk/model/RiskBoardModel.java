@@ -46,11 +46,10 @@ public class RiskBoardModel {
 	/**
 	 * loadRequiredData method is used to inital load the riskBoardView screen data
 	 * @param fileName, name of the file to be loaded to frame
-	 * @param view, RiskBoardView object used to update the components of the this screen
 	 * @throws IOException, this exception comes while some problem occurs while reading the file
 	 */
-	public void loadRequiredData(RiskBoardView view, String fileName) throws IOException {
-		File configFile = new File(System.getProperty("user.dir")+"/resources/"+fileName+RiskGameConstants.MAP_FILE_EXTENSION);
+	public void loadRequiredData(String fileName) throws IOException {
+		File configFile = new File(fileName);
 		BufferedReader reader = null;
 		try {
 			int section = 0;
@@ -64,7 +63,7 @@ public class RiskBoardModel {
 				}else if(line.trim().equals(RiskGameConstants.SECTION_THREE)){
 					section = 3;
 				}else {
-					findTheSectionToParseData(section, line.trim(), view);
+					findTheSectionToParseData(section, line.trim());
 				}
 			}
 			verifyTheCountriesConnections();
@@ -108,16 +107,18 @@ public class RiskBoardModel {
 	 * createOrUpdateImage method is used to update the map data on the board
 	 * @param view, RiskBoardView object used to update the components of the screen
 	 */
-	private void createOrUpdateImage(RiskBoardView view) {
+	public void createOrUpdateImage(RiskBoardView view) {
 		Player currentPlayer = playersData.get(currentPlayerIndex);
 		BufferedImage bufferedImage;
 		Country currentCountry = countriesMap.get(view.getCountryComboBox().getSelectedItem().toString());
+		Country adjacentCountry = countriesMap.get(view.getAdjacentCountryComboBox().getSelectedItem().toString());
 		try {
 			bufferedImage = ImageIO.read(new File(System.getProperty("user.dir")+"/resources/"+imageName));
 			Graphics2D graphics = bufferedImage.createGraphics();
 			for(Country country: countriesList) {
 				graphics.setColor(currentPlayer.getPlayerName().equals(country.getPlayerName()) ? Color.RED: Color.BLACK);
 				graphics.drawString(String.valueOf(country.getArmiesOnCountry()), country.getxCoordinate(), country.getyCoordinate());
+				graphics.fillOval((int)adjacentCountry.getxCoordinate(), (int)adjacentCountry.getyCoordinate(), 10, 10);
 				if(currentCountry.getCountryName().equals(country.getCountryName())) {
 					graphics.fillOval((int)country.getxCoordinate(), (int)country.getyCoordinate(), 10, 10);
 				}
@@ -134,27 +135,25 @@ public class RiskBoardModel {
 	 * findTheSectionToParseData gets the data from the config file and parses the data based on the section
 	 * @param section, section=1([MAPS]), section=2([CONTINENTS]), section=3([TERRITORIES])
 	 * @param line, each line from the file
-	 * @param view, RiskBoardView object used to update the components of the screen 
 	 */
-	private void findTheSectionToParseData(int section, String line, RiskBoardView view) {
+	private void findTheSectionToParseData(int section, String line) {
 		if(line.trim().equals("")) {
 			return;
 		}
 		if(section == 1) {
-			findImageName(line, view);
+			findImageName(line);
 		}else if(section == 2) {
 			createCountinents(line);
 		}else {
-			createCountries(line, view);
+			createCountries(line);
 		}
 	}
 
 	/**
 	 * createContries is used to create the territories and linked to the respective continents;
 	 * @param line, country data line from the file
-	 * @param view, RiskBoardView object used to update the components of the screen
 	 */
-	private void createCountries(String line, RiskBoardView view) {
+	private void createCountries(String line) {
 		if(countriesMap == null) {
 			countriesMap = new HashMap<>();
 			countriesList = new ArrayList<>();
@@ -226,9 +225,8 @@ public class RiskBoardModel {
 	/**
 	 * findImageName is used to find the image name need to be displayed on the screen
 	 * @param line, country data line from the file
-	 * @param view, RiskBoardView object used to update the components of the screen 
 	 */
-	private void findImageName(String line, RiskBoardView view) {
+	private void findImageName(String line) {
 		if(line.contains("image")) {
 			imageName = line.substring(line.indexOf('=')+1);
 		}
