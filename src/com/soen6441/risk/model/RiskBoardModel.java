@@ -215,7 +215,7 @@ public class RiskBoardModel {
 
 	/**
 	 * showErrorMessage method is to show the error dialog messages in the frame.
-	 * @param message, string value which need to be shown in the message box
+	 * @param message, string value which need to be shown in the message box and stops the game
 	 */
 	private void showErrorMessage(String message) {
 		JOptionPane.showMessageDialog(null, message);
