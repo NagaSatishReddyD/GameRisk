@@ -32,7 +32,7 @@ import com.soen6441.risk.view.RiskBoardView;
 
 /**
  * RiskBoardModel is used to handle the actions in the board frame.
- * @author Naga Satish Reddy
+ * @author Naga Satish Reddy, An Nguyen
  */
 public class RiskBoardModel {
 	String imageName;

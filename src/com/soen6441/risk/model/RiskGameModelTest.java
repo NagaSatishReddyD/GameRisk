@@ -1,14 +1,27 @@
 package com.soen6441.risk.model;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-class RiskGameModelTest {
+import com.soen6441.risk.view.RiskGameView;
+import com.soen6441.risk.view.RiskPlayerView;
 
-	@Test
-	void test() {
-		fail("Not yet implemented");
+class RiskGameModelTest {
+	static RiskGameModel riskGameModel; 
+	static RiskGameView riskGameView; 
+	
+	@BeforeAll
+	static void setUpBeforeClass() throws Exception {
+		riskGameModel = new RiskGameModel(); 
+		riskGameView = new RiskGameView(); 
 	}
 
+	@Test
+	void testShowPlayerDetailsMenu() {
+		riskGameModel.showPlayerDetailsMenu(riskGameView);
+		assertEquals(riskGameView.getGameStartframe().isVisible(), false);
+	}
 }

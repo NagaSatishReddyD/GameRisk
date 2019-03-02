@@ -12,7 +12,7 @@ import com.soen6441.risk.RiskGameConstants;
 
 /**
  * RiskPlayerView class contains the components for players to select the player count and map to start the game
- * @author Naga Satish Reddy
+ * @author Naga Satish Reddy, An Nguyen
  *
  */
 public class RiskPlayerView extends JFrame {

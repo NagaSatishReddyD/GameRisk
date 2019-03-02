@@ -3,6 +3,7 @@ package com.soen6441.risk.model;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,6 +26,10 @@ class RiskBoardModelTest {
 		continentsMap = new HashMap<String, Continent>();
 		countriesMap = new HashMap<String, Country> ();
 		riskBoardView = new RiskBoardView();
+		/*
+		 * playersData = new ArrayList<>(); playersData.add(new Player("Test 1", 2));
+		 * playersData.add(new Player("Test 2", 2));
+		 */
 	}
 	
 	@Test
@@ -109,8 +114,13 @@ class RiskBoardModelTest {
 //
 //	@Test
 //	@Ignore
-//	void testEndAttackPhase() {
-//		fail("Not yet implemented");
-//	}
+	void testEndAttackPhase() {
+		riskBoardModel.endAttackPhase(riskBoardView);
+		assertEquals(riskBoardView.getReinforceBtn().isVisible(), false);
+		assertEquals(riskBoardView.getAttackBtn().isVisible(), false);
+		assertEquals(riskBoardView.getEndAttackButton().isVisible(), false);
+		assertEquals(riskBoardView.getMoveArmiesBtn().isVisible(), true);
+		assertEquals(riskBoardView.getEndFortificationBtn().isVisible(), true);
+}
 
 }

@@ -11,6 +11,11 @@ import com.soen6441.risk.model.RiskAddMapModel;
 import com.soen6441.risk.view.RiskAddMapView;
 import com.soen6441.risk.view.RiskGameView;
 
+/**
+ * RiskAddMapController class handles the event buttons of RiskAddMapView
+ * @author An Nguyen
+ *
+ */
 public class RiskAddMapController {
 
 	RiskAddMapModel model;
@@ -21,6 +26,10 @@ public class RiskAddMapController {
 		this.view = riskAddMapView;
 	}
 	
+	/**
+	 * addMap method is used to get the action event of map add and back button
+	 * @param gameView
+	 */
 	public void addMap(RiskGameView gameView) {
 		view.getFrame().setVisible(true);
 		this.view.getMapUploadBtn().addActionListener(e -> {
@@ -37,6 +46,7 @@ public class RiskAddMapController {
 				System.out.println(exception.getMessage());
 			}
 		});
+		
 		
 		this.view.getBackBtn().addActionListener(e -> {
 			view.getFrame().setVisible(false);

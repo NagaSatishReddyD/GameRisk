@@ -2,6 +2,11 @@ package com.soen6441.risk.view;
 
 import javax.swing.*;
 
+/**
+ * RiskAddMapView contains the frame for users to upload the map files
+ * @author An Nguyen
+ *
+ */
 public class RiskAddMapView extends JFrame {
 	
 	private JFrame frame;
