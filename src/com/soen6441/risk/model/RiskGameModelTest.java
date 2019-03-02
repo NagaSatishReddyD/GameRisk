@@ -10,6 +10,7 @@ import com.soen6441.risk.view.RiskGameView;
 import com.soen6441.risk.view.RiskPlayerView;
 
 class RiskGameModelTest {
+
 	static RiskGameModel riskGameModel; 
 	static RiskGameView riskGameView; 
 	
@@ -24,4 +25,11 @@ class RiskGameModelTest {
 		riskGameModel.showPlayerDetailsMenu(riskGameView);
 		assertEquals(riskGameView.getGameStartframe().isVisible(), false);
 	}
+	
+	@Test
+	void testShowAddMapFrame() {
+		riskGameModel.showPlayerDetailsMenu(riskGameView);
+		assertEquals(riskGameView.getGameStartframe().isVisible(), false);
+	}
+
 }
