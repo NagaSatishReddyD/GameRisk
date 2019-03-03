@@ -1,6 +1,8 @@
 package com.soen6441.risk.view;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 
 /**
  * RiskAddMapView contains the frame for users to upload the map files

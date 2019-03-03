@@ -1,13 +1,11 @@
 package com.soen6441.risk.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import com.soen6441.risk.view.RiskGameView;
-import com.soen6441.risk.view.RiskPlayerView;
 
 class RiskGameModelTest {
 

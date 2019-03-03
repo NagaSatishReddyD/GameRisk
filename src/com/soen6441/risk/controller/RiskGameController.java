@@ -4,26 +4,33 @@ import com.soen6441.risk.model.RiskGameModel;
 import com.soen6441.risk.view.RiskGameView;
 
 /**
- * RiskGameController class contains the event handlers of the RiskGameView components and 
- * triggers the respective methods in the RiskGameModel.
+ * <b>RiskGameController</b>
+ * RiskGameController class is the controller between the {@link RiskGameView} and {@link RiskGameModel}.
+ * It triggers respective methods in the {@link RiskGameModel} when an event happened for the {@link RiskGameView} components
+ * 
  * @author Naga Satish Reddy
- * @since 1.0
+ *
  */
 public class RiskGameController {
 	RiskGameModel model;
 	RiskGameView view;
 
+	/**
+	 * Gets the instances of the {@link RiskGameModel} and {@link RiskGameView} classes
+	 * @param riskPlayerModel, instance of the {@link RiskGameModel} object
+	 * @param riskGameView, instance of the {@link RiskGameView} objects
+	 */
 	public RiskGameController(RiskGameModel riskModel, RiskGameView riskGameView) {
 		this.model = riskModel;
 		this.view = riskGameView;
 	}
 
 	/**
-	 * initializeController method handles the event handlers of the RiskGameView components.
+	 * InitializeGame method contains the event handlers for the components in the {@link RiskGameView} frame.
+	 * It triggers the respective methods in the {@link RiskGameModel} class
 	 */
 	public void initializeController() {
 		this.view.getStartGameButton().addActionListener(e -> model.showPlayerDetailsMenu(this.view));
 		this.view.getLoadMapButton().addActionListener(e -> model.showAddMapFrame(this.view));
 	}
-
 }
