@@ -108,26 +108,28 @@ public class RiskBoardModel {
 	 * @param view, RiskBoardView object used to update the components of the screen
 	 */
 	public void createOrUpdateImage(RiskBoardView view) {
-		Player currentPlayer = playersData.get(currentPlayerIndex);
-		BufferedImage bufferedImage;
-		Country currentCountry = countriesMap.get(view.getCountryComboBox().getSelectedItem().toString());
-		Country adjacentCountry = countriesMap.get(view.getAdjacentCountryComboBox().getSelectedItem().toString());
-		try {
-			bufferedImage = ImageIO.read(new File(System.getProperty("user.dir")+"/resources/"+imageName));
-			Graphics2D graphics = bufferedImage.createGraphics();
-			for(Country country: countriesList) {
-				graphics.setColor(currentPlayer.getPlayerName().equals(country.getPlayerName()) ? Color.RED: Color.BLACK);
-				graphics.drawString(String.valueOf(country.getArmiesOnCountry()), country.getxCoordinate(), country.getyCoordinate());
-				graphics.fillOval((int)adjacentCountry.getxCoordinate(), (int)adjacentCountry.getyCoordinate(), 10, 10);
-				if(currentCountry.getCountryName().equals(country.getCountryName())) {
-					graphics.fillOval((int)country.getxCoordinate(), (int)country.getyCoordinate(), 10, 10);
+		if(view.getAdjacentCountryComboBox().getSelectedItem() != null) {
+			Player currentPlayer = playersData.get(currentPlayerIndex);
+			BufferedImage bufferedImage;
+			Country currentCountry = countriesMap.get(view.getCountryComboBox().getSelectedItem().toString());
+			Country adjacentCountry = countriesMap.get(view.getAdjacentCountryComboBox().getSelectedItem().toString());
+			try {
+				bufferedImage = ImageIO.read(new File(System.getProperty("user.dir")+"/resources/"+imageName));
+				Graphics2D graphics = bufferedImage.createGraphics();
+				for(Country country: countriesList) {
+					graphics.setColor(currentPlayer.getPlayerName().equals(country.getPlayerName()) ? Color.RED: Color.BLACK);
+					graphics.drawString(String.valueOf(country.getArmiesOnCountry()), country.getxCoordinate(), country.getyCoordinate());
+					graphics.fillOval((int)adjacentCountry.getxCoordinate(), (int)adjacentCountry.getyCoordinate(), 10, 10);
+					if(currentCountry.getCountryName().equals(country.getCountryName())) {
+						graphics.fillOval((int)country.getxCoordinate(), (int)country.getyCoordinate(), 10, 10);
+					}
 				}
+				Image scaledImage = bufferedImage.getScaledInstance(view.getMapPanel().getWidth(), view.getMapPanel().getHeight(), Image.SCALE_SMOOTH);
+				ImageIcon mapImageIcon = new ImageIcon(scaledImage);
+				view.getImageLabel().setIcon(mapImageIcon);
+			} catch (IOException e) {
+				JOptionPane.showMessageDialog(view.getBoardFrame(), "Image File Not Found...");
 			}
-			Image scaledImage = bufferedImage.getScaledInstance(view.getMapPanel().getWidth(), view.getMapPanel().getHeight(), Image.SCALE_SMOOTH);
-			ImageIcon mapImageIcon = new ImageIcon(scaledImage);
-			view.getImageLabel().setIcon(mapImageIcon);
-		} catch (IOException e) {
-			JOptionPane.showMessageDialog(view.getBoardFrame(), "Image File Not Found...");
 		}
 	}
 
@@ -483,7 +485,7 @@ public class RiskBoardModel {
 		Player currentPlayer = playersData.get(currentPlayerIndex);
 
 		Object [] possibilities = {1,2,3};
-		
+
 		Integer selectedValue = (Integer)JOptionPane.showInputDialog(view.getBoardFrame(),"How many armies do you want to use to attack", "Armies To Attack",
 				JOptionPane.INFORMATION_MESSAGE, null,possibilities, possibilities[0]);
 

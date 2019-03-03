@@ -10,12 +10,32 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+/**
+ * <b>RiskBoardView</b>
+ * RiskBoardView class contains the main board of the game which contains the
+ * map and the buttons to play the game.
+ * <p>
+ * <b>Buttons</b>
+ * <b>Reinforcement:</b> To place armies in their respective countries which is available in @see {@link RiskBoardView#getCountryComboBox()}
+ * <b>Attack:</b> To attack between the countries which is in @see {@link RiskBoardView#getCountryComboBox()} and @see {@link RiskBoardView#getAdjacentCountryComboBox()}
+ * <b>End Attack:</b> To finish the attack phase @see {@link RiskBoardView#getEndAttackButton()}
+ * <b>Fortification:</b> To move armies between the countries among between the countries in 
+ * between the countries in the combo boxes between @see {@link RiskBoardView#getCountryComboBox()} and @see {@link RiskBoardView#getAdjacentCountryComboBox()}
+ * <b>End Fortification:</b> To end the fortification pahse and next player turn starts @see {@link RiskBoardView#getEndFortificationBtn()}
+ * <p>
+ * <b>Map</b>
+ * Shows the image of the map and the armies on to view on the map based on the player actions.
+ * </p>  
+ * </p>
+ * @author Naga Satish Reddy
+ *
+ */
 public class RiskBoardView extends JFrame {
 
 	private JFrame boardFrame;
-	private JComboBox countryComboBox;
+	private JComboBox<String> countryComboBox;
 	private JLabel currentPlayerTurnLabel;
-	private JComboBox adjacentCountryComboBox;
+	private JComboBox<String> adjacentCountryComboBox;
 	private Label armiesCountAvailableLabel;
 	private JButton reinforceBtn;
 	private JButton attackBtn;
@@ -26,7 +46,21 @@ public class RiskBoardView extends JFrame {
 	private JButton endAttackButton;
 
 	/**
-	 * Create the frame.
+	 * This constructor create the new frame which contains the components which is used to play the game
+	 * like mapview and buttons to play the game
+	 * <p>
+	 * <b>Buttons</b>
+	 * <b>Reinforcement:</b> To place armies in their respective countries which is available in @see {@link RiskBoardView#getCountryComboBox()}
+	 * <b>Attack:</b> To attack between the countries which is in @see {@link RiskBoardView#getCountryComboBox()} and @see {@link RiskBoardView#getAdjacentCountryComboBox()}
+	 * <b>End Attack:</b> To finish the attack phase @see {@link RiskBoardView#getEndAttackButton()}
+	 * <b>Fortification:</b> To move armies between the countries among between the countries in 
+	 * between the countries in the combo boxes between @see {@link RiskBoardView#getCountryComboBox()} and @see {@link RiskBoardView#getAdjacentCountryComboBox()}
+	 * <b>End Fortification:</b> To end the fortification pahse and next player turn starts @see {@link RiskBoardView#getEndFortificationBtn()}
+	 * <p>
+	 * <b>Map</b>
+	 * Shows the image of the map and the armies on to view on the map based on the player actions.
+	 * </p>  
+	 * </p>
 	 */
 	public RiskBoardView() {
 		boardFrame = new JFrame("Risk Game");
@@ -40,11 +74,11 @@ public class RiskBoardView extends JFrame {
 		currentPlayerTurnLabel.setBounds(23, 17, 110, 16);
 		boardFrame.getContentPane().add(currentPlayerTurnLabel);
 
-		countryComboBox = new JComboBox();
+		countryComboBox = new JComboBox<>();
 		countryComboBox.setBounds(183, 75, 129, 27);
 		boardFrame.getContentPane().add(countryComboBox);
 
-		adjacentCountryComboBox = new JComboBox();
+		adjacentCountryComboBox = new JComboBox<>();
 		adjacentCountryComboBox.setBounds(183, 172, 129, 27);
 		boardFrame.getContentPane().add(adjacentCountryComboBox);
 
@@ -94,110 +128,99 @@ public class RiskBoardView extends JFrame {
 		boardFrame.getContentPane().add(endAttackButton);
 	}
 
+	/**
+	 * Returns the imageLabel object set on this frame, labelImage contains the bufferedImage data.
+	 * @return the loadMapButton object of this frame
+	 */
 	public JLabel getImageLabel() {
 		return imageLabel;
 	}
 
-	public void setImageLabel(JLabel imageLabel) {
-		this.imageLabel = imageLabel;
-	}
-
+	/**
+	 * Returns the currentPlayerTurn object set on this frame, it shows the current player turn
+	 * @return the currentPlayerTurn object of this frame
+	 */
 	public JLabel getCurrentPlayerTurnLabel() {
 		return currentPlayerTurnLabel;
 	}
 
-
-	public void setCurrentPlayerTurnLabel(JLabel currentPlayerTurnLabel) {
-		this.currentPlayerTurnLabel = currentPlayerTurnLabel;
-	}
-
+	/**
+	 * Returns the frame object set on this frame.
+	 * @return the frame object of this frame
+	 */
 	public JFrame getBoardFrame() {
 		return boardFrame;
 	}
 
-	public void setBoardFrame(JFrame boardFrame) {
-		this.boardFrame = boardFrame;
-	}
-
-	public JComboBox getCountryComboBox() {
+	/**
+	 * Returns the countryComboBox object set on this frame.
+	 * @return the countryComboBox object of this frame
+	 */
+	public JComboBox<String> getCountryComboBox() {
 		return countryComboBox;
 	}
 
-	public void setCountryComboBox(JComboBox countryComboBox) {
-		this.countryComboBox = countryComboBox;
-	}
-
-
-	public JComboBox getAdjacentCountryComboBox() {
+	/**
+	 * Returns the adjacentCountryComboBox object set on this frame.
+	 * @return the adjacentCountryComboBox object of this frame
+	 */
+	public JComboBox<String> getAdjacentCountryComboBox() {
 		return adjacentCountryComboBox;
 	}
 
-
-	public void setAdjacentCountryComboBox(JComboBox adjacentCountryComboBox) {
-		this.adjacentCountryComboBox = adjacentCountryComboBox;
-	}
-
-
+	/**
+	 * Returns the armiesCountrAvailable object set on this frame.
+	 * @return the armiesCountrAvailable object of this frame
+	 */
 	public Label getArmiesCountAvailableLabel() {
 		return armiesCountAvailableLabel;
 	}
 
-
-	public void setArmiesCountAvailableLabel(Label armiesCountAvailableLabel) {
-		this.armiesCountAvailableLabel = armiesCountAvailableLabel;
-	}
-
-
+	/**
+	 * Returns the reinforceButton object set on this frame.
+	 * @return the reinforceButton object of this frame
+	 */
 	public JButton getReinforceBtn() {
 		return reinforceBtn;
 	}
 
-
-	public void setReinforceBtn(JButton reinforceBtn) {
-		this.reinforceBtn = reinforceBtn;
-	}
-
-
+	/**
+	 * Returns the attackButton object set on this frame.
+	 * @return the attackButton object of this frame
+	 */
 	public JButton getAttackBtn() {
 		return attackBtn;
 	}
 
-
-	public void setAttackBtn(JButton attackBtn) {
-		this.attackBtn = attackBtn;
-	}
-
-
+	/**
+	 * Returns the moveArmiesButton object set on this frame.
+	 * @return the moveArmiesButton object of this frame
+	 */
 	public JButton getMoveArmiesBtn() {
 		return moveArmiesBtn;
 	}
 
-
-	public void setMoveArmiesBtn(JButton moveArmiesBtn) {
-		this.moveArmiesBtn = moveArmiesBtn;
-	}
-	
+	/**
+	 * Returns the endFortificationButton object set on this frame.
+	 * @return the endFortificationButton object of this frame
+	 */
 	public JButton getEndFortificationBtn() {
 		return endFortificationBtn;
 	}
 
-	public void setEndFortificationBtn(JButton endFortificationBtn) {
-		this.endFortificationBtn = endFortificationBtn;
-	}
-
+	/**
+	 * Returns the mapPanel object set on this frame, this panel contains the map image
+	 * @return the mapPanel object of this frame
+	 */
 	public JPanel getMapPanel() {
 		return mapPanel;
 	}
 
-	public void setMapPanel(JPanel mapPanel) {
-		this.mapPanel = mapPanel;
-	}
-
+	/**
+	 * Returns the endAttackButton object set on this frame.
+	 * @return the endAttackButton object of this frame
+	 */
 	public JButton getEndAttackButton() {
 		return endAttackButton;
-	}
-
-	public void setEndAttackButton(JButton endAttackButton) {
-		this.endAttackButton = endAttackButton;
 	}
 }

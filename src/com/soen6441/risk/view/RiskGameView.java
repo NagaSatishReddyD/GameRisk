@@ -4,9 +4,15 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 
 /**
- * RiskGameView is class contains the view of the frame of the initial game start
+ * <b> RiskGameView</b>
+ * RiskGameView class cotains the components of the for players to start the game or add a new map options.
+ * <p>
+ * <b>Start Game</b>
+ * Start Game boots the {@link RiskPlayerView} frame
+ * <b>Add Map</b>
+ * Add Map boots the {@link RiskAddMapView} frame
+ * </p>
  * @author Naga Satish Reddy
- * @since 1.0
  */
 public class RiskGameView extends JFrame {
 
@@ -15,7 +21,14 @@ public class RiskGameView extends JFrame {
 	private JButton loadMapButton;
 
 	/**
-	 * RiskGameView constructor creates the frame of the initial game start frame
+	 * This constructor creates a new frame which contains the components of two buttons
+	 * to start the game and to add a new map to the game.
+	 * <p>
+	 * <b>Start Game</b>
+	 * Start Game boots the {@link RiskPlayerView} frame
+	 * <b>Add Map</b>
+	 * Add Map boots the {@link RiskAddMapView} frame
+	 * </p>
 	 */
 	public RiskGameView() {
 		
@@ -37,24 +50,24 @@ public class RiskGameView extends JFrame {
 	}
 
 	/**
-	 * getLoadMapButton method is used to get the instance of the loadMapButton.
-	 * @return loadMapButton instance
+	 * Returns the loadMapButton object set on this frame.
+	 * @return the loadMapButton object of this frame
 	 */
 	public JButton getLoadMapButton() {
 		return loadMapButton;
 	}
 
 	/**
-	 * getGameStartframe method is used to get the instance of the starting game frame
-	 * @return JFrame instance
+	 * Returns the frame object set on this frame.
+	 * @return the frame object of this frame
 	 */
 	public JFrame getGameStartframe() {
 		return gameStartframe;
 	}
 
 	/**
-	 * getStartGameButton method is used to get the instance of the start game button.
-	 * @return startGameButton instance
+	 * Returns the startGameButton object set on this frame.
+	 * @return the startGameButton object of this frame
 	 */
 	public JButton getStartGameButton() {
 		return startGameButton;
