@@ -31,8 +31,10 @@ import com.soen6441.risk.RiskGameConstants;
 import com.soen6441.risk.view.RiskBoardView;
 
 /**
- * RiskBoardModel is used to handle the actions in the board frame.
- * @author Naga Satish Reddy, An Nguyen
+ * <b>RiskBoardModel</b>
+ * RiskBoardModel class contains the logics for the events done on the {@link RiskBoardModel} by the player
+ * @author Naga Satish Reddy
+ * @author An Nguyen
  */
 public class RiskBoardModel {
 	String imageName;
@@ -46,9 +48,8 @@ public class RiskBoardModel {
 	/**
 	 * loadRequiredData method is used to inital load the riskBoardView screen data
 	 * @param fileName, name of the file to be loaded to frame
-	 * @throws IOException, this exception comes while some problem occurs while reading the file
 	 */
-	public void loadRequiredData(String fileName) throws IOException {
+	public void loadRequiredData(String fileName){
 		File configFile = new File(fileName);
 		BufferedReader reader = null;
 		try {
@@ -73,20 +74,25 @@ public class RiskBoardModel {
 			showErrorMessage("Problem while reading the file data");
 		}finally {
 			if(reader != null)
-				reader.close();
+				try {
+					reader.close();
+				} catch (IOException e) {
+					showErrorMessage("Problem while clsoing the file \n"+fileName);
+				}
 		}
 	}
 
 	/**
-	 * verifyTheCountriesConnections method is used to check whether the countries or connected properly or not
+	 * verifyTheCountriesConnections method checks whether the territories are joined to the respective adjacent territories or not.
+	 * if not connected it throws the error.
 	 */
 	private void verifyTheCountriesConnections() {
 		if(countriesList.size() > 1) {
-			List<String> countriesNamesList = countriesList.stream().map(country -> country.getCountryName()).collect(Collectors.toList());
+			List<String> countriesNamesList = countriesList.stream().map(Country::getCountryName).collect(Collectors.toList());
 			int [][] countriesConnectedArray = new int[countriesNamesList.size()][countriesNamesList.size()];
 			for(String countryName: countriesNamesList) {
 				int rowIndex = countriesNamesList.indexOf(countryName);
-				List<String> adjacentCountriesList = countriesMap.get(countryName).getAdjacentCountries().stream().map(country -> country.getCountryName()).collect(Collectors.toList());
+				List<String> adjacentCountriesList = countriesMap.get(countryName).getAdjacentCountries().stream().map(Country::getCountryName).collect(Collectors.toList());
 				for(String adjacentCountryName : adjacentCountriesList) {
 					int columnIndex = countriesNamesList.indexOf(adjacentCountryName);
 					countriesConnectedArray[rowIndex][columnIndex] = 1;
@@ -104,7 +110,8 @@ public class RiskBoardModel {
 	}
 
 	/**
-	 * createOrUpdateImage method is used to update the map data on the board
+	 * createOrUpdateImage method is used to update the map data on the board. It shows the armies available on the each country
+	 * and the currentPlayer territories data will be shown in red color
 	 * @param view, RiskBoardView object used to update the components of the screen
 	 */
 	public void createOrUpdateImage(RiskBoardView view) {
@@ -117,9 +124,10 @@ public class RiskBoardModel {
 				bufferedImage = ImageIO.read(new File(System.getProperty("user.dir")+"/resources/"+imageName));
 				Graphics2D graphics = bufferedImage.createGraphics();
 				for(Country country: countriesList) {
+					graphics.setColor(Color.BLACK);
+					graphics.fillOval((int)adjacentCountry.getxCoordinate(), (int)adjacentCountry.getyCoordinate(), 10, 10);
 					graphics.setColor(currentPlayer.getPlayerName().equals(country.getPlayerName()) ? Color.RED: Color.BLACK);
 					graphics.drawString(String.valueOf(country.getArmiesOnCountry()), country.getxCoordinate(), country.getyCoordinate());
-					graphics.fillOval((int)adjacentCountry.getxCoordinate(), (int)adjacentCountry.getyCoordinate(), 10, 10);
 					if(currentCountry.getCountryName().equals(country.getCountryName())) {
 						graphics.fillOval((int)country.getxCoordinate(), (int)country.getyCoordinate(), 10, 10);
 					}
@@ -152,7 +160,7 @@ public class RiskBoardModel {
 	}
 
 	/**
-	 * createContries is used to create the territories and linked to the respective continents;
+	 * createContries is used to create the territories and linked to the adjacent territories
 	 * @param line, country data line from the file
 	 */
 	private void createCountries(String line) {
@@ -194,8 +202,8 @@ public class RiskBoardModel {
 	}
 
 	/**
-	 * createCountinents method is to create the countinents by reading the data from the file.
-	 * @param line, is the each continent information from the config file line by line
+	 * createCountinents method is to create the continents by reading the data from the file.
+	 * @param line, is the each continent information from the map file line by line
 	 */
 	public void createCountinents(String line) {
 		if(continentsMap==null) {
@@ -240,30 +248,35 @@ public class RiskBoardModel {
 	 * @param view, RiskBoardView object used to update the components of the screen
 	 * @throws NoSuchAlgorithmException, when instance is not create about the random
 	 */
-	public void assignCountriesToPlayers(int playersCount, RiskBoardView view) throws NoSuchAlgorithmException {
-		Random random = SecureRandom.getInstanceStrong();
-		int index = 0;
-		if(playersData == null)
-			playersData = new ArrayList<>();
-		while(index<playersCount) {
-			String playerName = "Player "+ ++index;
-			int initalArmiesAssigned = 5 * (10 - playersCount);
-			playersData.add(new Player(playerName, initalArmiesAssigned));
-		}
-		List<Integer> assignedCountriesList= new ArrayList<>();
-		for(int i = 0; i< countriesList.size();i++) {
-			assignedCountriesList.add(i);
-		}
-		for(index = 0; !assignedCountriesList.isEmpty();index++) {
-			int countryIndex = random.nextInt(assignedCountriesList.size());
-			Player player = playersData.get(index % playersCount);
-			Country country = countriesList.get(assignedCountriesList.get(countryIndex));
-			country.setPlayerName(player.getPlayerName());
-			player.addTerritory(player, country);
-			assignedCountriesList.remove(countryIndex);
-		}
-		for(int i = 0; i < playersData.size();i++) {
-			playersData.get(i).setArmyCountAvailable(playersData.get(i).getArmyCountAvailable() - playersData.get(i).getTerritoryOccupied().size());
+	public void assignCountriesToPlayers(int playersCount) {
+		Random random;
+		try {
+			random = SecureRandom.getInstanceStrong();
+			int index = 0;
+			if(playersData == null)
+				playersData = new ArrayList<>();
+			while(index<playersCount) {
+				String playerName = "Player "+ ++index;
+				int initalArmiesAssigned = 5 * (10 - playersCount);
+				playersData.add(new Player(playerName, initalArmiesAssigned));
+			}
+			List<Integer> assignedCountriesList= new ArrayList<>();
+			for(int i = 0; i< countriesList.size();i++) {
+				assignedCountriesList.add(i);
+			}
+			for(index = 0; !assignedCountriesList.isEmpty();index++) {
+				int countryIndex = random.nextInt(assignedCountriesList.size());
+				Player player = playersData.get(index % playersCount);
+				Country country = countriesList.get(assignedCountriesList.get(countryIndex));
+				country.setPlayerName(player.getPlayerName());
+				player.addTerritory(player, country);
+				assignedCountriesList.remove(countryIndex);
+			}
+			for(int i = 0; i < playersData.size();i++) {
+				playersData.get(i).setArmyCountAvailable(playersData.get(i).getArmyCountAvailable() - playersData.get(i).getTerritoryOccupied().size());
+			}
+		} catch (NoSuchAlgorithmException e) {
+			showErrorMessage("Problem while assigning players. Please restart the game\n"+e.getMessage());
 		}
 	}
 
@@ -363,7 +376,7 @@ public class RiskBoardModel {
 
 	/**
 	 * getBonusArmiesOnContinent method is used to find the bonus armies based on the continent
-	 * @param currentPlayer, current player object who is playing
+	 * @param currentPlayer, current player object who is playing @see {@link Player}
 	 * @return bonusArmies, armies if a player concurred entire continent
 	 */
 	private int getBonusArmiesOnContinent(Player currentPlayer) {
@@ -380,7 +393,7 @@ public class RiskBoardModel {
 
 	/**
 	 * getBonusArmiesOnTerritories method is used to find the bonus armies based on the territories
-	 * @param currentPlayer, current player object who is playing
+	 * @param currentPlayer, current player object who is playing @see {@link Player}
 	 * @return bonusArmies, armies based on the territories conquered
 	 */
 	private int getBonusArmiesOnTerritories(Player currentPlayer) {
@@ -419,9 +432,10 @@ public class RiskBoardModel {
 
 	/**
 	 * isCountriesOwnedByPlayers method is used to check whether the two countries are owned by the same player or not.
-	 * @param country
-	 * @param adjacentCountry
-	 * @return
+	 * @param country, one of the country from the {@link RiskBoardView#getCountryComboBox()}
+	 * @param adjacentCountry, one of the country from the {@link RiskBoardView#getAdjacentCountryComboBox()}
+	 * @return true, if the both country and adjacent countries belong to current player
+	 * 		   false, if the both country and adjacent countries doesn't belong to current player  
 	 */
 	private boolean isCountriesOwnedByPlayers(Country country, Country adjacentCountry) {
 		return country.getPlayerName().trim().equalsIgnoreCase(adjacentCountry.getPlayerName().trim());
@@ -429,6 +443,8 @@ public class RiskBoardModel {
 
 	/**
 	 * nextPlayer method is used to trigger next player chance.
+	 * if isInitialPhase is true it just allows the player to Reinforce their armies,
+	 * if isInitalPhase is false then each player can move to the Attack Phase.
 	 * @param view, RiskBoardView object used to update the components of the screen
 	 */
 	private void nextPlayer(RiskBoardView view) {
@@ -444,8 +460,14 @@ public class RiskBoardModel {
 
 	/**
 	 * enableDisableButtons method is to enable the required buttons based on the phase
+	 * In <b>Reinforcement phase</b> only {@link RiskBoardView#getReinforceBtn()}button will be enabled
+	 * In <b>Attack Phase</b>  {@link RiskBoardView#getAttackBtn()} and {@link RiskBoardView#getEndAttackButton()} will be enabled
+	 * In <b>Fortification Phase</b> {@link RiskBoardView#getEndFortificationBtn()} and {@link RiskBoardView#getMoveArmiesBtn()} will be enabled
 	 * @param view, RiskBoardView object used to update the components of the screen 
-	 * @param string
+	 * @param phase, currentPhase in which the player has to play.
+	 * if the player has to play reinforcement phase then phase value will be {@link RiskGameConstants#REINFORCEMENT_PHASE}
+	 * if the player has to play attack phase then phase value will be {@link RiskGameConstants#ATTACK_PHASE}
+	 * if the player has to play fortification phase then value will be {@link RiskGameConstants#FORTIFICATION_PHASE}
 	 */
 	private void enableDisableButtons(String phase, RiskBoardView view) {
 		view.getReinforceBtn().setVisible(false);
@@ -469,8 +491,8 @@ public class RiskBoardModel {
 	}
 
 	/**
-	 * nextPlayerFortification method is used to trigger next player fortification turn.
-	 * @param view, RiskBoardView object used to update the components of the screen
+	 * endFortificationPhase method is used to trigger next player fortification turn.
+	 * @param view, instance of {@link RiskBoardView} object
 	 */
 	public void endFortificationPhase(RiskBoardView view) {
 		isInitialPhase = true;
@@ -499,34 +521,44 @@ public class RiskBoardModel {
 		}
 	}
 
+	/**
+	 * Enables the buttons required for the fortification phase and all the other buttons will be hidden
+	 * {@link RiskBoardView#getEndFortificationBtn()} and {@link RiskBoardView#getMoveArmiesBtn()} will be enabled
+	 * @param view, instance of {@link RiskBoardView} object
+	 */
 	public void endAttackPhase(RiskBoardView view) {
 		enableDisableButtons(RiskGameConstants.FORTIFICATION_PHASE, view);
 	}
 
-	public String getImageName() {
-		return imageName;
-	}
-
+	/**
+	 * Return the CountriesMap which contains {@link Country#getCountryName()} as key and respective {@link Country} object as value
+	 * @return {@link RiskBoardModel#getContinentsMap()}
+	 */
 	public Map<String, Continent> getContinentsMap() {
 		return continentsMap;
 	}
 
-	public Map<String, Country> getCountriesMap() {
-		return countriesMap;
-	}
-
+	/**
+	 * Return the CountriesList which contains list of {@link Country} objects read from the map file while loading the board
+	 * @return {@link RiskBoardModel#getCountriesList()}
+	 */
 	public List<Country> getCountriesList() {
 		return countriesList;
 	}
 
+	/**
+	 * Return the playersData which contains list of {@link Player} datas
+	 * @return {@link RiskBoardModel#getPlayersData()}
+	 */
 	public List<Player> getPlayersData() {
 		return playersData;
 	}
 
-	public int getCurrentPlayerIndex() {
-		return currentPlayerIndex;
-	}
-
+	/**
+	 * Returns the whether it is inital phase or not
+	 * true, if this is the first round for the player.
+	 * false, if the player turn is second or more.
+	 */
 	public boolean isInitialPhase() {
 		return isInitialPhase;
 	}

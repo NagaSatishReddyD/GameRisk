@@ -1,8 +1,5 @@
 package com.soen6441.risk.controller;
 
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-
 import com.soen6441.risk.model.RiskPlayerModel;
 import com.soen6441.risk.view.RiskPlayerView;
 
@@ -16,13 +13,7 @@ public class RiskPlayerController {
 	}
 
 	public void initalizeGame() {
-		this.view.getLoadGameButton().addActionListener(e -> {
-			try {
-				model.startBoardFrame(this.view);
-			} catch (IOException | NumberFormatException | NoSuchAlgorithmException exception) {
-				System.out.println(exception.getMessage());
-			}
-		});
+		this.view.getLoadGameButton().addActionListener(e -> model.startBoardFrame(this.view));
 	}
 
 }

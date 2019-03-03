@@ -7,15 +7,17 @@ import com.soen6441.risk.view.RiskGameView;
 import com.soen6441.risk.view.RiskPlayerView;
 
 /**
- * RiskGameModel class contains the logics of the RiskGameView events
- * @author Naga Satish Reddy, An Nguyen
+ * <b>RiskGameModel</b>
+ * RiskGameModel class contains the logics of the {@link RiskGameView} actions performed by the player
+ * @author Naga Satish Reddy
+ * @author An Nguyen
  *
  */
 public class RiskGameModel {
 
 	/**
 	 * showPlayerDetailsMenu methods creates the RiskPlayerModel objects and move to the RiskPlayerView frame
-	 * @param view, RiskBoardView object used to update the components of the this screen.
+	 * @param view, instance of the RiskGameView
 	 */
 	public void showPlayerDetailsMenu(RiskGameView view) {
 		view.getGameStartframe().setVisible(false);
@@ -27,7 +29,7 @@ public class RiskGameModel {
 
 	/**
 	 * showAddMapFrame method creates the RiskAddMapModel objects and move to the RiskAddMapView frame
-	 * @param view
+	 * @param view, instance of the RiskGameView
 	 */
 	public void showAddMapFrame(RiskGameView view) {
 		view.getGameStartframe().setVisible(false);

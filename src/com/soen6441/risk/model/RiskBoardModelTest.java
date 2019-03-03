@@ -58,7 +58,7 @@ class RiskBoardModelTest {
 	void testUpdateTheBoardScreenData() throws IOException, NoSuchAlgorithmException {
 		int playersCount = 2;
 		riskBoardModel.loadRequiredData("/GameRisk/resources/World.map");
-		riskBoardModel.assignCountriesToPlayers(playersCount, riskBoardView);
+		riskBoardModel.assignCountriesToPlayers(playersCount);
 		riskBoardModel.updateTheBoardScreenData(riskBoardView);
 		assertEquals(riskBoardView.getAttackBtn().isVisible(), false);
 		assertEquals(riskBoardView.getEndAttackButton().isVisible(), false);
@@ -72,7 +72,7 @@ class RiskBoardModelTest {
 
 	@Test
 	void testEndFortificationPhase() throws NoSuchAlgorithmException {
-		riskBoardModel.assignCountriesToPlayers(2, riskBoardView);
+		riskBoardModel.assignCountriesToPlayers(2);
 		riskBoardModel.endFortificationPhase(riskBoardView);
 		assertEquals(riskBoardModel.isInitialPhase(), true);
 	}
@@ -85,7 +85,7 @@ class RiskBoardModelTest {
 	@Test
 	void testAssignCountriesToPlayers() throws NoSuchAlgorithmException {
 		int playersCount = 2;
-		riskBoardModel.assignCountriesToPlayers(playersCount, riskBoardView);
+		riskBoardModel.assignCountriesToPlayers(playersCount);
         assertEquals(riskBoardModel.getPlayersData().size(), playersCount);
 	}
 //
