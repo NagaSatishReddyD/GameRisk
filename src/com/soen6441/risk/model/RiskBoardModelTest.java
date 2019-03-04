@@ -68,6 +68,9 @@ class RiskBoardModelTest {
 	}
 	
 	@Test
+	/**
+	 * This test case is used to test the calculation of reinforce armies at the beginning of the player's turn
+	 */
 	public void testCalculateReinforcement() {
 		Country country1 = new Country("Indonesia");
 		country1.setPlayerName("Test 1");
@@ -92,6 +95,10 @@ class RiskBoardModelTest {
 	}
 	
 	@Ignore
+	/**
+	 * This test case is used to test when reading an invalid map file
+	 * @throws IOException
+	 */
 	public void testReadInvalidMap() throws IOException {
 		riskBoardModel.loadRequiredData(System.getProperty("user.dir")+"/resources/001_I72_GhTroc 720.map");
 	}
