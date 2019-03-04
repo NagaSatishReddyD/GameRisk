@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import com.soen6441.risk.Continent;
 import com.soen6441.risk.Country;
 import com.soen6441.risk.Player;
+import com.soen6441.risk.RiskGameConstants;
 import com.soen6441.risk.view.RiskBoardView;
 
 class RiskBoardModelTest {
@@ -59,7 +60,7 @@ class RiskBoardModelTest {
 		int playersCount = 2;
 		riskBoardModel.loadRequiredData("/GameRisk/resources/World.map");
 		riskBoardModel.assignCountriesToPlayers(playersCount);
-		riskBoardModel.updateTheBoardScreenData(riskBoardView);
+		riskBoardModel.updateTheBoardScreenData(riskBoardView, RiskGameConstants.REINFORCEMENT_PHASE);
 		assertEquals(riskBoardView.getAttackBtn().isVisible(), false);
 		assertEquals(riskBoardView.getEndAttackButton().isVisible(), false);
 		assertEquals(riskBoardView.getReinforceBtn().isVisible(), true);

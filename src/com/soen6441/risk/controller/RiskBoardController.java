@@ -35,7 +35,7 @@ public class RiskBoardController {
 		this.model.loadRequiredData(System.getProperty("user.dir")+"/resources/"+fileName+RiskGameConstants.MAP_FILE_EXTENSION);
 		this.model.assignCountriesToPlayers(playerCount);
 		addActionListenersToComponents();
-		this.model.updateTheBoardScreenData(this.view);
+		this.model.updateTheBoardScreenData(this.view, RiskGameConstants.REINFORCEMENT_PHASE);
 	}
 
 	/**

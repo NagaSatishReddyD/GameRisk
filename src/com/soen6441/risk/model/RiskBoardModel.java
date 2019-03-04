@@ -37,13 +37,14 @@ import com.soen6441.risk.view.RiskBoardView;
  * @author An Nguyen
  */
 public class RiskBoardModel {
-	String imageName;
-	Map<String, Continent> continentsMap;
-	Map<String, Country> countriesMap;
-	List<Country> countriesList;
+	private String imageName;
+	private Map<String, Continent> continentsMap;
+	private Map<String, Country> countriesMap;
+	private List<Country> countriesList;
 	private List<Player> playersData;
-	int currentPlayerIndex = 0;
-	boolean isInitialPhase = true;
+	private Map<String, Player> playersMap;
+	private int currentPlayerIndex = 0;
+	private boolean isInitialPhase = true;
 
 	/**
 	 * loadRequiredData method is used to inital load the riskBoardView screen data
@@ -206,7 +207,7 @@ public class RiskBoardModel {
 	 * @param line, is the each continent information from the map file line by line
 	 */
 	public void createCountinents(String line) {
-		if(continentsMap==null) {
+		if(continentsMap == null) {
 			continentsMap = new HashMap<>();
 		}
 		String[] continentArmies = line.split("=");
@@ -253,12 +254,16 @@ public class RiskBoardModel {
 		try {
 			random = SecureRandom.getInstanceStrong();
 			int index = 0;
-			if(playersData == null)
+			if(playersData == null) {
 				playersData = new ArrayList<>();
+				playersMap = new HashMap<>();
+			}
 			while(index<playersCount) {
 				String playerName = "Player "+ ++index;
 				int initalArmiesAssigned = 5 * (10 - playersCount);
-				playersData.add(new Player(playerName, initalArmiesAssigned));
+				Player player =  new Player(playerName, initalArmiesAssigned);
+				playersData.add(player);
+				playersMap.put(playerName, player);
 			}
 			List<Integer> assignedCountriesList= new ArrayList<>();
 			for(int i = 0; i< countriesList.size();i++) {
@@ -282,15 +287,16 @@ public class RiskBoardModel {
 
 	/**
 	 * updateTheBoardScreenData method is used to handle the actions done before the each turn for the player
+	 * @param phase, current phase of the player it can be {@link RiskGameConstants#REINFORCEMENT_PHASE}, {@link RiskGameConstants#ATTACK_PHASE}
 	 * @param view, RiskBoardView object used to update the components of the screen
 	 */
-	public void updateTheBoardScreenData(RiskBoardView view) {
+	public void updateTheBoardScreenData(RiskBoardView view, String phase) {
 		Player currentPlayer = playersData.get(currentPlayerIndex);
-		if(currentPlayer.getArmyCountAvailable() == 0) {
+		if(currentPlayer.getArmyCountAvailable() == 0 && phase.equals(RiskGameConstants.REINFORCEMENT_PHASE)) {
 			setTheBonusArmiesToPlayer(currentPlayer);
 			isInitialPhase = false;
 		}
-		enableDisableButtons(RiskGameConstants.REINFORCEMENT_PHASE, view);
+		enableDisableButtons(phase, view);
 		view.getCurrentPlayerTurnLabel().setText(currentPlayer.getPlayerName()+" Turn !!");
 		view.getArmiesCountAvailableLabel().setText(String.valueOf(currentPlayer.getArmyCountAvailable()));
 		updateCountriesComboBox(currentPlayer, view);
@@ -452,7 +458,7 @@ public class RiskBoardModel {
 			currentPlayerIndex++;
 			currentPlayerIndex = currentPlayerIndex%playersData.size();
 			JOptionPane.showMessageDialog(view.getBoardFrame(), "Next Player Turn");
-			updateTheBoardScreenData(view);
+			updateTheBoardScreenData(view, RiskGameConstants.REINFORCEMENT_PHASE);
 		}else {
 			enableDisableButtons(RiskGameConstants.ATTACK_PHASE, view);
 		}
@@ -506,18 +512,52 @@ public class RiskBoardModel {
 	public void attackBetweenCountries(RiskBoardView view) {
 		Player currentPlayer = playersData.get(currentPlayerIndex);
 
-		Object [] possibilities = {1,2,3};
+		Country currentPlayerCountry = countriesMap.get(view.getCountryComboBox().getSelectedItem().toString());
+		Country opponentPlayerCountry = countriesMap.get(view.getAdjacentCountryComboBox().getSelectedItem().toString());
+		Object [] possibilities = new Object [currentPlayerCountry.getArmiesOnCountry() - 1];
+		for(int index = 0; index < currentPlayerCountry.getArmiesOnCountry() - 1; index++) {
+			possibilities[index] = index+1;
+		}
+		if(possibilities.length > 1) {
+			Integer currentPlayerAttackingArmies = (Integer)JOptionPane.showInputDialog(view.getBoardFrame(),"How many armies do you want to use to attack", "Armies To Attack",
+					JOptionPane.INFORMATION_MESSAGE, null,possibilities, possibilities[0]);
 
-		Integer selectedValue = (Integer)JOptionPane.showInputDialog(view.getBoardFrame(),"How many armies do you want to use to attack", "Armies To Attack",
-				JOptionPane.INFORMATION_MESSAGE, null,possibilities, possibilities[0]);
-
-		if(selectedValue != null) {
-			try {
-				Integer[] currentPlayerDice = new Dice().diceRoll(selectedValue);
-			} catch (NoSuchAlgorithmException e) {
-				showErrorMessage("Problem while creating throwing dice");
+			if(currentPlayerAttackingArmies != null) {
+				try {
+					currentPlayerCountry.decreaseArmiesOnCountry(currentPlayerAttackingArmies);
+					int opponentDefendingArmies = opponentPlayerCountry.getArmiesOnCountry();
+					opponentPlayerCountry.setArmiesOnCountry(0);
+					while(currentPlayerAttackingArmies != 0 && opponentDefendingArmies != 0) {
+						Integer[] currentPlayerDice = new Dice().diceRoll(currentPlayerAttackingArmies >= 3 ? 3 : currentPlayerAttackingArmies);
+						Integer[] opponentPlayerDice = new Dice().diceRoll(opponentDefendingArmies >= 2 ? 2: opponentDefendingArmies);
+						if(currentPlayerDice[0] > opponentPlayerDice[0])
+							opponentDefendingArmies--;
+						else
+							currentPlayerAttackingArmies--;
+						if(opponentPlayerDice.length > 1 && currentPlayerDice.length > 1) {
+							if(currentPlayerDice[1] > opponentPlayerDice[1])
+								opponentDefendingArmies--;
+							else
+								currentPlayerAttackingArmies--;
+						}
+					}
+					if(currentPlayerAttackingArmies > 0) {
+						playersMap.get(opponentPlayerCountry.getPlayerName()).getTerritoryOccupied().remove(opponentPlayerCountry);
+						currentPlayer.getTerritoryOccupied().add(opponentPlayerCountry);
+						opponentPlayerCountry.setPlayerName(currentPlayer.getPlayerName());
+						opponentPlayerCountry.setArmiesOnCountry(currentPlayerAttackingArmies);
+						JOptionPane.showMessageDialog(view.getBoardFrame(), currentPlayer.getPlayerName()+" WON ");
+					}else {
+						opponentPlayerCountry.setArmiesOnCountry(opponentDefendingArmies);
+						JOptionPane.showMessageDialog(view.getBoardFrame(), opponentPlayerCountry.getPlayerName()+" WON ");
+					}
+					updateTheBoardScreenData(view, RiskGameConstants.ATTACK_PHASE);
+				} catch (NoSuchAlgorithmException e) {
+					showErrorMessage("Problem while creating throwing dice");
+				}
 			}
-			showErrorMessage("Attack Phase under development");
+		}else {
+			JOptionPane.showMessageDialog(view.getBoardFrame(), "Cannot attack as you have only one army on country");
 		}
 	}
 
