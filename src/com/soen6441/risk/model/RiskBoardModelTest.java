@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Ignore;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -38,7 +39,7 @@ class RiskBoardModelTest {
 	}
 	
 	@Test
-	void testCreateCountinents() {
+	public void testCreateCountinents() {
 		String [] linesArray = {"North America=5","South America=2","Africa=3","Europe=5","Asia=7","Australia=2"};
 		continentsMap.put("North America", new Continent("North America", 5));
 		continentsMap.put("South America", new Continent("South America", 2));
@@ -56,35 +57,59 @@ class RiskBoardModelTest {
 	}
 	
 	@Test
-	void testUpdateTheBoardScreenData() throws IOException, NoSuchAlgorithmException {
+	public void testUpdateTheBoardScreenData() throws IOException, NoSuchAlgorithmException {
 		int playersCount = 2;
-		riskBoardModel.loadRequiredData("/GameRisk/resources/World.map");
+		riskBoardModel.loadRequiredData(System.getProperty("user.dir")+"/resources/World.map");
 		riskBoardModel.assignCountriesToPlayers(playersCount);
 		riskBoardModel.updateTheBoardScreenData(riskBoardView, RiskGameConstants.REINFORCEMENT_PHASE);
 		assertEquals(riskBoardView.getAttackBtn().isVisible(), false);
 		assertEquals(riskBoardView.getEndAttackButton().isVisible(), false);
 		assertEquals(riskBoardView.getReinforceBtn().isVisible(), true);
 	}
-
+	
 	@Test
-	void testMoveArmiesBetweenCountries() {
-		riskBoardModel.moveArmiesBetweenCountries(riskBoardView);
+	public void testCalculateReinforcement() {
+		Country country1 = new Country("Indonesia");
+		country1.setPlayerName("Test 1");
+		Country country2 = new Country("Guinea");
+		country2.setPlayerName("Test 1");
+		Country country3 = new Country("Western Australia");
+		country3.setPlayerName("Test 1");
+		Country country4 = new Country("Eastern Australia");
+		country4.setPlayerName("Test 1");
+		playersData.get(0).addTerritory(playersData.get(0), country1);
+		playersData.get(0).addTerritory(playersData.get(0), country2);
+		playersData.get(0).addTerritory(playersData.get(0), country3);
+		playersData.get(0).addTerritory(playersData.get(0), country4);
+		riskBoardModel.getContinentsMap().put("Australia", new Continent("Australia", 2));
+		riskBoardModel.getContinentsMap().get("Australia").addCountryInContinent(country1);
+		riskBoardModel.getContinentsMap().get("Australia").addCountryInContinent(country2);
+		riskBoardModel.getContinentsMap().get("Australia").addCountryInContinent(country3);
+		riskBoardModel.getContinentsMap().get("Australia").addCountryInContinent(country4);
+		int result = riskBoardModel.countArmiesBasedOnTerritories(playersData.get(0));
+		assertEquals(5, result);
+		
+	}
+	
+	@Ignore
+	public void testReadInvalidMap() throws IOException {
+		riskBoardModel.loadRequiredData(System.getProperty("user.dir")+"/resources/001_I72_GhTroc 720.map");
 	}
 
 	@Test
-	void testEndFortificationPhase() throws NoSuchAlgorithmException {
+	public void testEndFortificationPhase() throws NoSuchAlgorithmException {
 		riskBoardModel.assignCountriesToPlayers(2);
 		riskBoardModel.endFortificationPhase(riskBoardView);
 		assertEquals(riskBoardModel.isInitialPhase(), true);
 	}
 
 	@Test
-	void testLoadRequiredData() throws IOException {
-		riskBoardModel.loadRequiredData("/GameRisk/resources/World.map");
+	public void testLoadRequiredData() throws IOException {
+		riskBoardModel.loadRequiredData(System.getProperty("user.dir")+"/resources/World.map");
 	}
 	
 	@Test
-	void testAssignCountriesToPlayers() throws NoSuchAlgorithmException {
+	public void testAssignCountriesToPlayers() throws NoSuchAlgorithmException {
 		int playersCount = 2;
 		riskBoardModel.assignCountriesToPlayers(playersCount);
         assertEquals(riskBoardModel.getPlayersData().size(), playersCount);
