@@ -376,7 +376,7 @@ public class RiskBoardModel {
 	 * @param currentPlayer, current player object
 	 * @return count, how many armies are given to players for each round
 	 */
-	private int countArmiesBasedOnTerritories(Player currentPlayer) {
+	public int countArmiesBasedOnTerritories(Player currentPlayer) {
 		return getBonusArmiesOnTerritories(currentPlayer)+ getBonusArmiesOnContinent(currentPlayer);
 	}
 
