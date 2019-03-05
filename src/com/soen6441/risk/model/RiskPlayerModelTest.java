@@ -22,6 +22,7 @@ class RiskPlayerModelTest {
 	}
 
 	@Test
+	
 	void testStartBoard() throws NumberFormatException, NoSuchAlgorithmException, IOException {
 		riskPlayerModel.startBoardFrame(riskPlayerView);
 	}

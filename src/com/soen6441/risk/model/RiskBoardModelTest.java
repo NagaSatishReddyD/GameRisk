@@ -39,6 +39,10 @@ class RiskBoardModelTest {
 	}
 	
 	@Test
+	/*
+	 * test to check the CreateCountinents method works as expected, a sample Array
+	 * of continent list created and compared with output from the object
+	 */
 	public void testCreateCountinents() {
 		String [] linesArray = {"North America=5","South America=2","Africa=3","Europe=5","Asia=7","Australia=2"};
 		continentsMap.put("North America", new Continent("North America", 5));
@@ -57,6 +61,11 @@ class RiskBoardModelTest {
 	}
 	
 	@Test
+	/*
+	 * test to check theUpdateTheBoardScreenData method works as expected, a sample for 2 players was initialized
+	 * and tested
+	 * @throws IOException NoSuchAlgorithmException
+	 */
 	public void testUpdateTheBoardScreenData() throws IOException, NoSuchAlgorithmException {
 		int playersCount = 2;
 		riskBoardModel.loadRequiredData(System.getProperty("user.dir")+"/resources/World.map");
@@ -106,6 +115,11 @@ class RiskBoardModelTest {
 	}
 
 	@Test
+	/**
+	 * This test case is used to test the EndFortification Phase
+	 * @throws NoSuchAlgorithmException
+	 */
+	
 	public void testEndFortificationPhase() throws NoSuchAlgorithmException {
 		riskBoardModel.assignCountriesToPlayers(2);
 		riskBoardModel.endFortificationPhase(riskBoardView);
@@ -113,61 +127,27 @@ class RiskBoardModelTest {
 	}
 
 	@Test
+	/**
+	 * This test case is used to test the object loads the world map correctly
+	  */
 	public void testLoadRequiredData() throws IOException {
 		riskBoardModel.loadRequiredData(System.getProperty("user.dir")+"/resources/World.map");
 	}
 	
 	@Test
+	/**
+	 * This test case is used to test the EndFortification Phase
+	 * @throws NoSuchAlgorithmException
+	 */
 	public void testAssignCountriesToPlayers() throws NoSuchAlgorithmException {
 		int playersCount = 2;
 		riskBoardModel.assignCountriesToPlayers(playersCount);
         assertEquals(riskBoardModel.getPlayersData().size(), playersCount);
 	}
-//
-//	@Test
-//	@Ignore
-//	void testUpdateTheBoardScreenData() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	@Ignore
-//	void testGetAdjacentCountriesForComboCountry() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	@Ignore
-//	void testUpdateArmiesInCountries() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	@Ignore
-//	void testUpdateFortificationData() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	@Ignore
-//	void testMoveArmiesBetweenCountries() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	@Ignore
-//	void testEndFortificationPhase() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	@Ignore
-//	void testAttackBetweenCountries() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	@Ignore
+
+	/**
+	 * This test case is used to test the EndAttackPhase method
+	 */
 	void testEndAttackPhase() {
 		riskBoardModel.endAttackPhase(riskBoardView);
 		assertEquals(riskBoardView.getReinforceBtn().isVisible(), false);
