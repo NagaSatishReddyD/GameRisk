@@ -139,12 +139,11 @@ class RiskBoardModelTest {
 	 * This test case is used to test the EndFortification Phase
 	 * @throws NoSuchAlgorithmException
 	 */
-	public void testAssignCountriesToPlayers() throws NoSuchAlgorithmException {
-		int playersCount = 2;
-		riskBoardModel.assignCountriesToPlayers(playersCount);
-        assertEquals(riskBoardModel.getPlayersData().size(), playersCount);
-	}
-
+	/*
+	 * public void testAssignCountriesToPlayers() throws NoSuchAlgorithmException {
+	 * int playersCount = 2; riskBoardModel.assignCountriesToPlayers(playersCount);
+	 * assertEquals(riskBoardModel.getPlayersData().size(), playersCount); }
+	 */
 	/**
 	 * This test case is used to test the EndAttackPhase method
 	 */
