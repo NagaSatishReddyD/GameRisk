@@ -7,6 +7,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.soen6441.risk.model.RiskAddMapModel;
 import com.soen6441.risk.view.RiskAddMapView;
+import com.soen6441.risk.view.RiskBoardView;
 import com.soen6441.risk.view.RiskGameView;
 
 /**
@@ -26,7 +27,7 @@ public class RiskAddMapController {
 	
 	/**
 	 * addMap method is used to get the action event of map add and back button
-	 * @param gameView
+	 * @param gameView, instance of the {@link RiskGameView} objects
 	 */
 	public void addMap(RiskGameView gameView) {
 		view.getFrame().setVisible(true);
