@@ -20,8 +20,8 @@ public class RiskAddMapModel {
 	
 	/**
 	 * This method is used to validate the correctness of the uploaded map.
-	 * @param view
-	 * @param files
+	 * @param view, the frame that allows users to upload the map files of the game
+	 * @param files, this contains the files that the user uploaded
 	 */
 	public void mapValidation(RiskAddMapView view, File[] files) {
 		//in progress
