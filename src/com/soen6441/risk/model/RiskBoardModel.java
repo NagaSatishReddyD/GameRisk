@@ -246,8 +246,6 @@ public class RiskBoardModel {
 	/**
 	 * assignCountriesToPlayers method is used to assign the countries to the players randomly
 	 * @param playersCount, count of the players how many players are playing the game
-	 * @param view, RiskBoardView object used to update the components of the screen
-	 * @throws NoSuchAlgorithmException, when instance is not create about the random
 	 */
 	public void assignCountriesToPlayers(int playersCount) {
 		Random random;
@@ -598,6 +596,8 @@ public class RiskBoardModel {
 	 * Returns the whether it is inital phase or not
 	 * true, if this is the first round for the player.
 	 * false, if the player turn is second or more.
+	 * @return true, if it initial phase.
+	 *        false, if it not initial phase
 	 */
 	public boolean isInitialPhase() {
 		return isInitialPhase;

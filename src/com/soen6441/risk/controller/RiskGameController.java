@@ -17,7 +17,7 @@ public class RiskGameController {
 
 	/**
 	 * Gets the instances of the {@link RiskGameModel} and {@link RiskGameView} classes
-	 * @param riskPlayerModel, instance of the {@link RiskGameModel} object
+	 * @param riskModel, instance of the {@link RiskGameModel} object
 	 * @param riskGameView, instance of the {@link RiskGameView} objects
 	 */
 	public RiskGameController(RiskGameModel riskModel, RiskGameView riskGameView) {

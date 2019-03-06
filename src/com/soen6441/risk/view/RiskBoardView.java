@@ -26,7 +26,6 @@ import javax.swing.JPanel;
  * <b>Map</b>
  * Shows the image of the map and the armies on to view on the map based on the player actions.
  * </p>  
- * </p>
  * @author Naga Satish Reddy
  *
  */
@@ -59,7 +58,6 @@ public class RiskBoardView extends JFrame {
 	 * <p>
 	 * <b>Map</b>
 	 * Shows the image of the map and the armies on to view on the map based on the player actions.
-	 * </p>  
 	 * </p>
 	 */
 	public RiskBoardView() {

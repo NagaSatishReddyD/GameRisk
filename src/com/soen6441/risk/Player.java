@@ -54,8 +54,8 @@ public class Player {
 	
 	/**
 	 * addTerritory adds the country to the player which no other player had yet
-	 * @param player
-	 * @param string
+	 * @param player, player object {@link Player}
+	 * @param country, country occupied by player {@link Country}
 	 */
 	public void addTerritory(Player player, Country country) {
 		player.getTerritoryOccupied().add(country);

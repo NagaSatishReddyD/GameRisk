@@ -30,6 +30,8 @@ public class RiskBoardController {
 	 * InitializeGame method calls the methods needed initially to beloaded to start the game and
 	 * Initialize the event handlers for the {@link RiskBoardView} components
 	 * It triggers the respective methods in the {@link RiskBoardModel} class
+	 * @param playerCount, count of players playing the game
+	 * @param fileName, file from the countries data need to be loaded
 	 */
 	public void intializeBoardGame(int playerCount, String fileName) {
 		this.model.loadRequiredData(System.getProperty("user.dir")+"/resources/"+fileName+RiskGameConstants.MAP_FILE_EXTENSION);
