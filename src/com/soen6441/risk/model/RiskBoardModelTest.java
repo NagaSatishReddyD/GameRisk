@@ -18,7 +18,10 @@ import com.soen6441.risk.Country;
 import com.soen6441.risk.Player;
 import com.soen6441.risk.RiskGameConstants;
 import com.soen6441.risk.view.RiskBoardView;
-
+/**
+ * static variables for the test are defined here
+ * 
+ */
 class RiskBoardModelTest {
 
 	static RiskBoardModel riskBoardModel;
@@ -28,6 +31,11 @@ class RiskBoardModelTest {
 	static List<Player> playersData;
 	
 	@BeforeAll
+	
+	/**
+	 * ALL variables instantiated for the tests are defined here
+	 * 
+	 */
 	static void setUpBeforeClass() throws Exception {
 		riskBoardModel = new RiskBoardModel();
 		continentsMap = new HashMap<String, Continent>();
@@ -38,11 +46,12 @@ class RiskBoardModelTest {
 		playersData.add(new Player("Test 2", 2));
 	}
 	
-	@Test
+	
 	/**
 	 * test to check the CreateCountinents method works as expected, a sample Array
 	 * of continent list created and compared with output from the object
 	 */
+	@Test
 	public void testCreateCountinents() {
 		String [] linesArray = {"North America=5","South America=2","Africa=3","Europe=5","Asia=7","Australia=2"};
 		continentsMap.put("North America", new Continent("North America", 5));
@@ -60,12 +69,13 @@ class RiskBoardModelTest {
 	
 	}
 	
-	@Test
+	
 	/**
 	 * test to check theUpdateTheBoardScreenData method works as expected, a sample for 2 players was initialized
 	 * and tested
 	 * @throws IOException NoSuchAlgorithmException
 	 */
+	@Test
 	public void testUpdateTheBoardScreenData() throws IOException, NoSuchAlgorithmException {
 		int playersCount = 2;
 		riskBoardModel.loadRequiredData(System.getProperty("user.dir")+"/resources/World.map");
@@ -76,11 +86,12 @@ class RiskBoardModelTest {
 		assertEquals(riskBoardView.getReinforceBtn().isVisible(), true);
 	}
 	
-	@Test
+	
 	/**
 	 * This test case is used to test the calculation of reinforce armies at the beginning of the player's turn
 	 * Expected result to be success for this test case
 	 */
+	@Test
 	public void testCalculateReinforcement() {
 		Country country1 = new Country("Indonesia");
 		country1.setPlayerName("Test 1");
@@ -104,39 +115,41 @@ class RiskBoardModelTest {
 		
 	}
 	
-	@Ignore
+	
 	/**
 	 * This test case is used to test when reading an invalid map file
 	 * Expected to be failed when loading the map
 	 * @throws IOException
 	 */
+	@Ignore
 	public void testReadInvalidMap() throws IOException {
 		riskBoardModel.loadRequiredData(System.getProperty("user.dir")+"/resources/001_I72_GhTroc 720.map");
 	}
 
-	@Test
+	
 	/**
 	 * This test case is used to test the EndFortification Phase
 	 * @throws NoSuchAlgorithmException
 	 */
-	
+	@Test
 	public void testEndFortificationPhase() throws NoSuchAlgorithmException {
 		riskBoardModel.assignCountriesToPlayers(2);
 		riskBoardModel.endFortificationPhase(riskBoardView);
 		assertEquals(riskBoardModel.isInitialPhase(), true);
 	}
 
-	@Test
+	
 	/**
 	 * This test case is used to test the object loads the world map correctly
 	  */
+	@Test
 	public void testLoadRequiredData() throws IOException {
 		riskBoardModel.loadRequiredData(System.getProperty("user.dir")+"/resources/World.map");
 	}
 	/**
 	 * This test case is used to test the End Attack phase correctly
 	  */
-	
+	@Test
 	void testEndAttackPhase() {
 		riskBoardModel.endAttackPhase(riskBoardView);
 		assertEquals(riskBoardView.getReinforceBtn().isVisible(), false);
