@@ -19,7 +19,9 @@ import com.soen6441.risk.Player;
 import com.soen6441.risk.RiskGameConstants;
 import com.soen6441.risk.view.RiskBoardView;
 /**
- * static variables for the test are defined here
+ * RiskBoardModelTest class contains unit test cases to check the functionalities for in the RiskBoardModel file
+ * @author Tosin 
+ * @author Yinka
  * 
  */
 class RiskBoardModelTest {
@@ -33,7 +35,7 @@ class RiskBoardModelTest {
 	@BeforeAll
 	
 	/**
-	 * ALL variables instantiated for the tests are defined here
+	 * test for setUpBefore: ALL variables instantiated for the tests are defined here
 	 * 
 	 */
 	static void setUpBeforeClass() throws Exception {
@@ -48,7 +50,7 @@ class RiskBoardModelTest {
 	
 	
 	/**
-	 * test to check the CreateCountinents method works as expected, a sample Array
+	 * testCreateCountinents to check the CreateCountinents method works as expected, a sample Array
 	 * of continent list created and compared with output from the object
 	 */
 	@Test
@@ -71,7 +73,7 @@ class RiskBoardModelTest {
 	
 	
 	/**
-	 * test to check theUpdateTheBoardScreenData method works as expected, a sample for 2 players was initialized
+	 * testUpdateTheBoardScreenData to check theUpdateTheBoardScreenData method works as expected, a sample for 2 players was initialized
 	 * and tested
 	 * @throws IOException NoSuchAlgorithmException
 	 */
@@ -88,7 +90,7 @@ class RiskBoardModelTest {
 	
 	
 	/**
-	 * This test case is used to test the calculation of reinforce armies at the beginning of the player's turn
+	 * TestCalculateReinforcement is used to test the calculation of reinforce armies at the beginning of the player's turn
 	 * Expected result to be success for this test case
 	 */
 	@Test
@@ -117,7 +119,7 @@ class RiskBoardModelTest {
 	
 	
 	/**
-	 * This test case is used to test when reading an invalid map file
+	 * testReadInvalidMap is used to test when reading an invalid map file
 	 * Expected to be failed when loading the map
 	 * @throws IOException
 	 */
@@ -147,7 +149,7 @@ class RiskBoardModelTest {
 		riskBoardModel.loadRequiredData(System.getProperty("user.dir")+"/resources/World.map");
 	}
 	/**
-	 * This test case is used to test the End Attack phase correctly
+	 * testEndAttackPhase is used to test the End Attack phase correctly
 	  */
 	@Test
 	void testEndAttackPhase() {
