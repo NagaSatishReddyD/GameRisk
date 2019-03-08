@@ -18,12 +18,19 @@ class RiskGameModelTest {
 		riskGameView = new RiskGameView(); 
 	}
 
+	/**
+	 * This test case is used to test and show the details of each player menu 
+	 * Expected result to be success for this test case
+	 */
 	@Test
 	void testShowPlayerDetailsMenu() {
 		riskGameModel.showPlayerDetailsMenu(riskGameView);
 		assertEquals(riskGameView.getGameStartframe().isVisible(), false);
 	}
 	
+	/**
+	 * This test case is used to test and show the adding of map frame
+	 */
 	@Test
 	void testShowAddMapFrame() {
 		riskGameModel.showPlayerDetailsMenu(riskGameView);
