@@ -7,6 +7,11 @@ import org.junit.jupiter.api.Test;
 
 import com.soen6441.risk.view.RiskGameView;
 
+/**
+ * RiskGameModelTest class contains unit test cases to check the functionalities for in the RiskGameModel file
+ * @author Tosin 
+ * @author Yinka
+ */
 class RiskGameModelTest {
 
 	static RiskGameModel riskGameModel; 
