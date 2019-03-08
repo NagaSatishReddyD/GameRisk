@@ -20,6 +20,11 @@ class RiskPlayerModelTest {
 		riskPlayerView = new RiskPlayerView(); 
 		riskPlayerModel = new RiskPlayerModel();
 	}
+	
+	/**
+	 * This test case is used to test the  start board frame
+	 * @throws NumberFormatException NoSuchAlgorithmException
+	 */
 
 	@Test
 	
