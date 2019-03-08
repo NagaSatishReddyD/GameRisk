@@ -39,7 +39,7 @@ class RiskBoardModelTest {
 	}
 	
 	@Test
-	/*
+	/**
 	 * test to check the CreateCountinents method works as expected, a sample Array
 	 * of continent list created and compared with output from the object
 	 */
@@ -61,7 +61,7 @@ class RiskBoardModelTest {
 	}
 	
 	@Test
-	/*
+	/**
 	 * test to check theUpdateTheBoardScreenData method works as expected, a sample for 2 players was initialized
 	 * and tested
 	 * @throws IOException NoSuchAlgorithmException
@@ -139,7 +139,7 @@ class RiskBoardModelTest {
 	 * This test case is used to test the EndFortification Phase
 	 * @throws NoSuchAlgorithmException
 	 */
-	/*
+	/**
 	 * public void testAssignCountriesToPlayers() throws NoSuchAlgorithmException {
 	 * int playersCount = 2; riskBoardModel.assignCountriesToPlayers(playersCount);
 	 * assertEquals(riskBoardModel.getPlayersData().size(), playersCount); }
