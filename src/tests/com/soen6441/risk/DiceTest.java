@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.soen6441.risk;
+package tests.com.soen6441.risk;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -9,6 +9,8 @@ import java.security.NoSuchAlgorithmException;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import com.soen6441.risk.Dice;
 
 /**
  * DiceTest class is to test the order of dice rolled by player in attack phase

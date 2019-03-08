@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.soen6441.risk.controller;
+package tests.com.soen6441.risk.controller;
 
 import static org.junit.jupiter.api.Assertions.fail;
 

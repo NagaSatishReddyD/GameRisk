@@ -7,7 +7,6 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.soen6441.risk.model.RiskAddMapModel;
 import com.soen6441.risk.view.RiskAddMapView;
-import com.soen6441.risk.view.RiskBoardView;
 import com.soen6441.risk.view.RiskGameView;
 
 /**

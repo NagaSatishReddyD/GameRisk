@@ -1,4 +1,4 @@
-package com.soen6441.risk.model;
+package tests.com.soen6441.risk.model;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -6,6 +6,8 @@ import java.security.NoSuchAlgorithmException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import com.soen6441.risk.model.RiskBoardModel;
+import com.soen6441.risk.model.RiskPlayerModel;
 import com.soen6441.risk.view.RiskPlayerView;
 
 /**

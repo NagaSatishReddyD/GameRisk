@@ -1,4 +1,4 @@
-package com.soen6441.risk.model;
+package tests.com.soen6441.risk.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -17,6 +17,7 @@ import com.soen6441.risk.Continent;
 import com.soen6441.risk.Country;
 import com.soen6441.risk.Player;
 import com.soen6441.risk.RiskGameConstants;
+import com.soen6441.risk.model.RiskBoardModel;
 import com.soen6441.risk.view.RiskBoardView;
 /**
  * RiskBoardModelTest class contains unit test cases to check the functionalities for in the RiskBoardModel file
