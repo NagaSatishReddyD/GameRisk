@@ -133,7 +133,9 @@ class RiskBoardModelTest {
 	public void testLoadRequiredData() throws IOException {
 		riskBoardModel.loadRequiredData(System.getProperty("user.dir")+"/resources/World.map");
 	}
-	
+	/**
+	 * This test case is used to test the End Attack phase correctly
+	  */
 	
 	void testEndAttackPhase() {
 		riskBoardModel.endAttackPhase(riskBoardView);
