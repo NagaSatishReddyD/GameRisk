@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Observable;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -36,7 +37,7 @@ import com.soen6441.risk.view.RiskBoardView;
  * @author Naga Satish Reddy
  * @author An Nguyen
  */
-public class RiskBoardModel {
+public class RiskBoardModel extends Observable{
 	private String imageName;
 	private Map<String, Continent> continentsMap;
 	private Map<String, Country> countriesMap;
@@ -45,6 +46,7 @@ public class RiskBoardModel {
 	private Map<String, Player> playersMap;
 	private int currentPlayerIndex = 0;
 	private boolean isInitialPhase = true;
+	private ImageIcon mapImageIcon;
 
 	/**
 	 * loadRequiredData method is used to inital load the riskBoardView screen data
@@ -70,15 +72,15 @@ public class RiskBoardModel {
 			}
 			verifyTheCountriesConnections();
 		} catch (FileNotFoundException e) {
-			showErrorMessage("Problem with the file. Couldn't read the file");
+			showErrorMessage("Problem with the file. Couldn't read the file", true);
 		} catch (IOException e) {
-			showErrorMessage("Problem while reading the file data");
+			showErrorMessage("Problem while reading the file data", true);
 		}finally {
 			if(reader != null)
 				try {
 					reader.close();
 				} catch (IOException e) {
-					showErrorMessage("Problem while clsoing the file \n"+fileName);
+					showErrorMessage("Problem while clsoing the file \n"+fileName, true);
 				}
 		}
 	}
@@ -102,11 +104,11 @@ public class RiskBoardModel {
 			for(int row = 0; row <= countriesNamesList.size()/2; row++)
 				for(int column = 0; column < countriesNamesList.size();column++) {
 					if(countriesConnectedArray[row][column] != countriesConnectedArray[column][row]) {
-						showErrorMessage("Some countries are not connected. Please check the config file");
+						showErrorMessage("Some countries are not connected. Please check the config file", true);
 					}
 				}
 		}else {
-			showErrorMessage("Only one country exist. Please check the selected map file");
+			showErrorMessage("Only one country exist. Please check the selected map file", true);
 		}
 	}
 
@@ -134,8 +136,9 @@ public class RiskBoardModel {
 					}
 				}
 				Image scaledImage = bufferedImage.getScaledInstance(view.getMapPanel().getWidth(), view.getMapPanel().getHeight(), Image.SCALE_SMOOTH);
-				ImageIcon mapImageIcon = new ImageIcon(scaledImage);
-				view.getImageLabel().setIcon(mapImageIcon);
+				mapImageIcon = new ImageIcon(scaledImage);
+				setChanged();
+				notifyObservers(this);
 			} catch (IOException e) {
 				JOptionPane.showMessageDialog(view.getBoardFrame(), "Image File Not Found...");
 			}
@@ -198,7 +201,7 @@ public class RiskBoardModel {
 			countriesList.add(country);
 			continentsMap.get(continentName).addCountryInContinent(country);
 		}catch (Exception e) {
-			showErrorMessage("Problem while parsing the data");
+			showErrorMessage("Problem while parsing the data",true);
 		}
 	}
 
@@ -217,20 +220,22 @@ public class RiskBoardModel {
 				Continent continent = new Continent(continentArmies[0], value);
 				continentsMap.put(continentArmies[0], continent);
 			}else {
-				showErrorMessage("Continents Reinforcement can't be negative or zero");
+				showErrorMessage("Continents Reinforcement can't be negative or zero", true);
 			}
 		}catch (Exception e) {
-			showErrorMessage("Error while reading data");
+			showErrorMessage("Error while reading data", true);
 		}
 	}
 
 	/**
 	 * showErrorMessage method is to show the error dialog messages in the frame.
+	 * @param isGameToBeStopped, is used to check whether the game to be stopped or not.
 	 * @param message, string value which need to be shown in the message box and stops the game
 	 */
-	private void showErrorMessage(String message) {
+	private void showErrorMessage(String message, boolean isGameToBeStopped) {
 		JOptionPane.showMessageDialog(null, message);
-		System.exit(0);
+		if(isGameToBeStopped)
+			System.exit(0);
 	}
 
 	/**
@@ -279,7 +284,7 @@ public class RiskBoardModel {
 				playersData.get(i).setArmyCountAvailable(playersData.get(i).getArmyCountAvailable() - playersData.get(i).getTerritoryOccupied().size());
 			}
 		} catch (NoSuchAlgorithmException e) {
-			showErrorMessage("Problem while assigning players. Please restart the game\n"+e.getMessage());
+			showErrorMessage("Problem while assigning players. Please restart the game\n"+e.getMessage(), true);
 		}
 	}
 
@@ -300,7 +305,7 @@ public class RiskBoardModel {
 		updateCountriesComboBox(currentPlayer, view);
 		createOrUpdateImage(view);
 	}
-
+ 
 	/**
 	 * updateCountriesComboBox method is used to update the countries list based on the player turn
 	 * @param currentPlayer, value of the currentplayer index
@@ -512,32 +517,29 @@ public class RiskBoardModel {
 
 		Country currentPlayerCountry = countriesMap.get(view.getCountryComboBox().getSelectedItem().toString());
 		Country opponentPlayerCountry = countriesMap.get(view.getAdjacentCountryComboBox().getSelectedItem().toString());
-		Object [] possibilities = new Object [currentPlayerCountry.getArmiesOnCountry() - 1];
-		for(int index = 0; index < currentPlayerCountry.getArmiesOnCountry() - 1; index++) {
-			possibilities[index] = index+1;
-		}
-		if(possibilities.length > 1) {
-			Integer currentPlayerAttackingArmies = (Integer)JOptionPane.showInputDialog(view.getBoardFrame(),"How many armies do you want to use to attack", "Armies To Attack",
-					JOptionPane.INFORMATION_MESSAGE, null,possibilities, possibilities[0]);
-
-			if(currentPlayerAttackingArmies != null) {
+		
+		int currentPlayerDicesToRoll = getNumberOfDicesPlayerWantsToThrow(currentPlayerCountry.getArmiesOnCountry() - 1, view);
+		int opponentPlayerDicesToRoll = getNumberOfDicesPlayerWantsToThrow(opponentPlayerCountry.getArmiesOnCountry(), view);
+		
+		if(currentPlayerDicesToRoll != 0 && opponentPlayerDicesToRoll != 0) {
+			int currentPlayerAttackingArmies = currentPlayerDicesToRoll;
+			currentPlayerCountry.decreaseArmiesOnCountry(currentPlayerAttackingArmies);
+			int opponentDefendingArmies = opponentPlayerDicesToRoll;
+			opponentPlayerCountry.decreaseArmiesOnCountry(opponentDefendingArmies);
+			while(currentPlayerAttackingArmies != 0 && opponentDefendingArmies != 0) {
+				Integer[] currentPlayerDice;
 				try {
-					currentPlayerCountry.decreaseArmiesOnCountry(currentPlayerAttackingArmies);
-					int opponentDefendingArmies = opponentPlayerCountry.getArmiesOnCountry();
-					opponentPlayerCountry.setArmiesOnCountry(0);
-					while(currentPlayerAttackingArmies != 0 && opponentDefendingArmies != 0) {
-						Integer[] currentPlayerDice = new Dice().diceRoll(currentPlayerAttackingArmies >= 3 ? 3 : currentPlayerAttackingArmies);
-						Integer[] opponentPlayerDice = new Dice().diceRoll(opponentDefendingArmies >= 2 ? 2: opponentDefendingArmies);
-						if(currentPlayerDice[0] > opponentPlayerDice[0])
+					currentPlayerDice = new Dice().diceRoll(currentPlayerDicesToRoll);
+					Integer[] opponentPlayerDice = new Dice().diceRoll(opponentPlayerDicesToRoll);
+					if(currentPlayerDice[0] > opponentPlayerDice[0])
+						opponentDefendingArmies--;
+					else
+						currentPlayerAttackingArmies--;
+					if(opponentPlayerDice.length > 1 && currentPlayerDice.length > 1) {
+						if(currentPlayerDice[1] > opponentPlayerDice[1])
 							opponentDefendingArmies--;
 						else
 							currentPlayerAttackingArmies--;
-						if(opponentPlayerDice.length > 1 && currentPlayerDice.length > 1) {
-							if(currentPlayerDice[1] > opponentPlayerDice[1])
-								opponentDefendingArmies--;
-							else
-								currentPlayerAttackingArmies--;
-						}
 					}
 					if(currentPlayerAttackingArmies > 0) {
 						playersMap.get(opponentPlayerCountry.getPlayerName()).getTerritoryOccupied().remove(opponentPlayerCountry);
@@ -551,12 +553,32 @@ public class RiskBoardModel {
 					}
 					updateTheBoardScreenData(view, RiskGameConstants.ATTACK_PHASE);
 				} catch (NoSuchAlgorithmException e) {
-					showErrorMessage("Problem while creating throwing dice");
+					showErrorMessage("Problem while throwing dices", false);
 				}
 			}
+			
 		}else {
-			JOptionPane.showMessageDialog(view.getBoardFrame(), "Cannot attack as you have only one army on country");
+			showErrorMessage("Dices should be selected to attack", false);
 		}
+	}
+
+	/**
+	 * getNumberOfDicesPlayerWantsToThrow method is used to get the number of armies an player wants to use in the attack phase
+	 * @param riskBoardView,instance of {@link RiskBoardView} object
+	 * @param playerAttackingArmies, number armies available to attack or defend on the country.
+	 * @return numberOfDices, number of dices to be used to throw.
+	 */
+	private int getNumberOfDicesPlayerWantsToThrow(Integer playerAttackingArmies, RiskBoardView riskBoardView) {
+		Object [] possibilities = new Object [playerAttackingArmies > 3 ? 3: playerAttackingArmies];
+		for(int index = 1; index <= possibilities.length; index++) {
+			possibilities[index] = index;
+		}
+		Integer dicesToThrow = 0;
+		if(possibilities.length > 1) {
+			dicesToThrow = (Integer)JOptionPane.showInputDialog(riskBoardView.getBoardFrame(),"How many dices you want to thow", "Dices To Throw",
+					JOptionPane.INFORMATION_MESSAGE, null,possibilities, possibilities[0]);
+		}
+		return dicesToThrow != null ? dicesToThrow : 0;
 	}
 
 	/**
@@ -603,5 +625,7 @@ public class RiskBoardModel {
 		return isInitialPhase;
 	}
 
-
+	public ImageIcon getMapImageIcon() {
+		return mapImageIcon;
+	}
 }

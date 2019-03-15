@@ -3,12 +3,17 @@ package com.soen6441.risk.view;
 import java.awt.Dimension;
 import java.awt.Label;
 import java.awt.Toolkit;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+
+import com.soen6441.risk.model.RiskBoardModel;
 
 /**
  * <b>RiskBoardView</b>
@@ -29,7 +34,7 @@ import javax.swing.JPanel;
  * @author Naga Satish Reddy
  *
  */
-public class RiskBoardView extends JFrame {
+public class RiskBoardView extends JFrame implements Observer{
 
 	private JFrame boardFrame;
 	private JComboBox<String> countryComboBox;
@@ -220,5 +225,16 @@ public class RiskBoardView extends JFrame {
 	 */
 	public JButton getEndAttackButton() {
 		return endAttackButton;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
+	 */
+	@Override
+	public void update(Observable observable, Object object) {
+		if(observable instanceof RiskBoardModel) {
+			RiskBoardModel model = (RiskBoardModel) observable;
+			this.getImageLabel().setIcon(model.getMapImageIcon());
+		}
 	}
 }
