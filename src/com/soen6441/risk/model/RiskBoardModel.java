@@ -541,13 +541,13 @@ public class RiskBoardModel extends Observable{
 						else
 							currentPlayerAttackingArmies--;
 					}
-					if(currentPlayerAttackingArmies > 0) {
+					if(currentPlayerAttackingArmies > 0 && opponentPlayerCountry.getArmiesOnCountry() == 0) {
 						playersMap.get(opponentPlayerCountry.getPlayerName()).getTerritoryOccupied().remove(opponentPlayerCountry);
 						currentPlayer.getTerritoryOccupied().add(opponentPlayerCountry);
 						opponentPlayerCountry.setPlayerName(currentPlayer.getPlayerName());
 						opponentPlayerCountry.setArmiesOnCountry(currentPlayerAttackingArmies);
 						JOptionPane.showMessageDialog(view.getBoardFrame(), currentPlayer.getPlayerName()+" WON ");
-					}else {
+					}else if(currentPlayerAttackingArmies == 0 && opponentPlayerCountry.getArmiesOnCountry() > 0){
 						opponentPlayerCountry.setArmiesOnCountry(opponentDefendingArmies);
 						JOptionPane.showMessageDialog(view.getBoardFrame(), opponentPlayerCountry.getPlayerName()+" WON ");
 					}
@@ -556,7 +556,10 @@ public class RiskBoardModel extends Observable{
 					showErrorMessage("Problem while throwing dices", false);
 				}
 			}
-			
+			if(currentPlayer.getTerritoryOccupied().size() == countriesList.size()) {
+				JOptionPane.showMessageDialog(view.getBoardFrame(), currentPlayer.getPlayerName()+" WON THE GAME");
+				System.exit(0);
+			}
 		}else {
 			showErrorMessage("Dices should be selected to attack", false);
 		}
@@ -570,8 +573,8 @@ public class RiskBoardModel extends Observable{
 	 */
 	private int getNumberOfDicesPlayerWantsToThrow(Integer playerAttackingArmies, RiskBoardView riskBoardView) {
 		Object [] possibilities = new Object [playerAttackingArmies > 3 ? 3: playerAttackingArmies];
-		for(int index = 1; index <= possibilities.length; index++) {
-			possibilities[index] = index;
+		for(int index = 0; index < possibilities.length; index++) {
+			possibilities[index] = index+1;
 		}
 		Integer dicesToThrow = 0;
 		if(possibilities.length > 1) {
