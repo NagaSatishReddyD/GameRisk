@@ -535,7 +535,7 @@ public class RiskBoardModel{
 		Integer currentPlayerAttackingArmies = 0;
 		int currentPlayerDicesToRoll = 0;
 		int opponentPlayerDicesToRoll = 0;
-		if(possibilities.length > 1) {
+		if(possibilities.length >= 1) {
 			currentPlayerAttackingArmies = (Integer)JOptionPane.showInputDialog(riskBoardView.getBoardFrame(),"How many armies to be used to attack", "Armies To Attack",
 					JOptionPane.INFORMATION_MESSAGE, null,possibilities, possibilities[0]);
 		}
@@ -616,7 +616,7 @@ public class RiskBoardModel{
 			for(int index = 0; index < possibilities.length; index++) {
 				possibilities[index] = index+1;
 			}
-			if(possibilities.length > 1) {
+			if(possibilities.length >= 1) {
 				dicesToThrow = (Integer)JOptionPane.showInputDialog(riskBoardView.getBoardFrame(),"How many dices you want to thow by "+ (isAttacker ? "Attacker":"Defender"),
 						"Dices To Throw",JOptionPane.INFORMATION_MESSAGE, null,possibilities, possibilities[0]);
 			}
