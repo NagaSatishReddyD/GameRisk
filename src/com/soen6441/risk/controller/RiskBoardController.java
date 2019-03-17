@@ -12,7 +12,7 @@ import com.soen6441.risk.view.RiskBoardView;
  * @author Naga Satish Reddy
  *
  */
-public class RiskBoardController extends Object{
+public class RiskBoardController{
 	RiskBoardModel model;
 	RiskBoardView view;
 
@@ -24,7 +24,6 @@ public class RiskBoardController extends Object{
 	public RiskBoardController(RiskBoardModel riskBoardModel, RiskBoardView riskBoardView) {
 		this.model = riskBoardModel;
 		this.view = riskBoardView;
-		riskBoardModel.addObserver(riskBoardView);
 	}
 
 	/**
