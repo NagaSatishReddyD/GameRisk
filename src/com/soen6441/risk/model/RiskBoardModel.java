@@ -11,9 +11,11 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -296,6 +298,15 @@ public class RiskBoardModel{
 			setTheBonusArmiesToPlayer(currentPlayer);
 			isInitialPhase = false;
 		}
+		updatePlayersInfo(playersData, view);
+		if(phase.equals(RiskGameConstants.REINFORCEMENT_PHASE)) {
+			view.getPhaseInfo().setText(RiskGameConstants.REINFORCEMENT_PHASE_INFO);
+		}else if(phase.equals(RiskGameConstants.ATTACK_PHASE)) {
+			view.getPhaseInfo().setText(RiskGameConstants.ATTACK_PHASE_INFO);
+		}else if(phase.equals(RiskGameConstants.FORTIFICATION_PHASE)) {
+			view.getPhaseInfo().setText(RiskGameConstants.FORTIFICATION_PHASE_INFO);
+		}
+		view.getCurrentPhase().setText(phase + " phase");
 		enableDisableButtons(phase, view);
 		view.getCurrentPlayerTurnLabel().setText(currentPlayer.getPlayerName()+" Turn !!");
 		view.getArmiesCountAvailableLabel().setText(String.valueOf(currentPlayer.getArmyCountAvailable()));
@@ -461,6 +472,7 @@ public class RiskBoardModel{
 			updateTheBoardScreenData(view, RiskGameConstants.REINFORCEMENT_PHASE);
 		}else {
 			enableDisableButtons(RiskGameConstants.ATTACK_PHASE, view);
+			updateTheBoardScreenData(view, RiskGameConstants.ATTACK_PHASE);
 		}
 	}
 
@@ -613,6 +625,146 @@ public class RiskBoardModel{
 		}
 		return dicesToThrow != null ? dicesToThrow : 0;
 	}
+	
+	/**
+	 * updatePlayersInfo method is used to update the information about percentage of map controlled, continents controlled and total armies controlled by all player
+	 * @param players, list of all the players in the game
+	 * @param view, instance of {@link RiskBoardView} object
+	 */
+	private void updatePlayersInfo(List<Player> players, RiskBoardView view) {
+		for(int i = 0; i < players.size(); i++) {
+			updatePlayerInfo(players.get(i), i, view);
+		}
+	}
+	
+	/**
+	 * updatePlayerInfo method is used to update the information of one player
+	 * @param player, player that has information to be updated
+	 * @param index, player's index
+	 * @param view, instance of {@link RiskBoardView} object
+	 */
+	private void updatePlayerInfo(Player player, int index, RiskBoardView view) {
+		double percent;
+		String listOfContinent;
+		int totalArmies;
+		NumberFormat format = NumberFormat.getPercentInstance(Locale.US);
+		switch(index) {
+			case 0:
+				view.getPlayer1Label().setText(player.getPlayerName());
+				percent = (double) player.getTerritoryOccupied().size()/countriesList.size();
+				view.getPlayer1MapPercentage().setText(format.format(percent));
+				listOfContinent = getOwnedContinent(player).trim();
+				if(listOfContinent.equals("")) {
+					view.getPlayer1ContinentControl().setText("No continent owned");
+				}else {
+					view.getPlayer1ContinentControl().setText(listOfContinent);
+				}
+				totalArmies = getTotalArmies(player);
+				view.getPlayer1TotalArmies().setText(Integer.toString(totalArmies));
+				break;
+			
+			case 1:
+				view.getPlayer2Label().setText(player.getPlayerName());
+				percent = (double)player.getTerritoryOccupied().size()/countriesList.size();
+				view.getPlayer2MapPercentage().setText(format.format(percent));
+				listOfContinent = getOwnedContinent(player).trim();
+				if(listOfContinent.equals("")) {
+					view.getPlayer2ContinentControl().setText("No continent owned");
+				}else {
+					view.getPlayer2ContinentControl().setText(listOfContinent);
+				}
+				totalArmies = getTotalArmies(player);
+				view.getPlayer2TotalArmies().setText(Integer.toString(totalArmies));
+				break;	
+				
+			case 2:
+				view.getPlayer3Label().setText(player.getPlayerName());
+				percent =(double) player.getTerritoryOccupied().size()/countriesList.size();
+				view.getPlayer3MapPercentage().setText(format.format(percent));
+				listOfContinent = getOwnedContinent(player).trim();
+				if(listOfContinent.equals("")) {
+					view.getPlayer3ContinentControl().setText("No continent owned");
+				}else {
+					view.getPlayer3ContinentControl().setText(listOfContinent);
+				}
+				totalArmies = getTotalArmies(player);
+				view.getPlayer3TotalArmies().setText(Integer.toString(totalArmies));
+				break;	
+				
+			case 3:
+				view.getPlayer4Label().setText(player.getPlayerName());
+				percent = (double)player.getTerritoryOccupied().size()/countriesList.size();
+				view.getPlayer4MapPercentage().setText(format.format(percent));
+				listOfContinent = getOwnedContinent(player).trim();
+				if(listOfContinent.equals("")) {
+					view.getPlayer4ContinentControl().setText("No continent owned");
+				}else {
+					view.getPlayer4ContinentControl().setText(listOfContinent);
+				}
+				totalArmies = getTotalArmies(player);
+				view.getPlayer4TotalArmies().setText(Integer.toString(totalArmies));
+				break;	
+				
+			case 4:
+				view.getPlayer5Label().setText(player.getPlayerName());
+				percent = (double)player.getTerritoryOccupied().size()/countriesList.size();
+				view.getPlayer5MapPercentage().setText(format.format(percent));
+				listOfContinent = getOwnedContinent(player).trim();
+				if(listOfContinent.equals("")) {
+					view.getPlayer5ContinentControl().setText("No continent owned");
+				}else {
+					view.getPlayer5ContinentControl().setText(listOfContinent);
+				}
+				totalArmies = getTotalArmies(player);
+				view.getPlayer5TotalArmies().setText(Integer.toString(totalArmies));
+				break;	
+				
+			case 5:
+				view.getPlayer6Label().setText(player.getPlayerName());
+				percent = (double)player.getTerritoryOccupied().size()/countriesList.size();
+				view.getPlayer6MapPercentage().setText(format.format(percent));
+				listOfContinent = getOwnedContinent(player).trim();
+				if(listOfContinent.equals("")) {
+					view.getPlayer6ContinentControl().setText("No continent owned");
+				}else {
+					view.getPlayer6ContinentControl().setText(listOfContinent);
+				}
+				totalArmies = getTotalArmies(player);
+				view.getPlayer6TotalArmies().setText(Integer.toString(totalArmies));
+				break;	
+			
+		}
+	}
+	
+	/**
+	 * getOwnedContinent method is used to get the continents owned a player
+	 * @param player, player that needs to get the information
+	 * @return ownedContinent, the continents owned by a specific player
+	 */
+	private String getOwnedContinent(Player player) {
+		String ownedContinent = "";
+		for(String continentKey : continentsMap.keySet()) {
+			List<Country> contriesList = continentsMap.get(continentKey).getCountriesInContinent();
+			Map<String, List<Country>> playersCountryData = contriesList.stream().collect(Collectors.groupingBy(Country::getPlayerName));
+			if(playersCountryData.containsKey(player.getPlayerName()) && playersCountryData.get(player.getPlayerName()).size() == contriesList.size()) {
+				ownedContinent += continentKey+" ";
+			}
+		}
+		return ownedContinent;
+	}
+
+	/**
+	 * getTotalArmies method is used to get the total armies owned by a specific player
+	 * @param player, player that needs to get the information
+	 * @return result, the total armies owned by a specific player
+	 */
+	private int getTotalArmies(Player player) {
+		int result = 0;
+		for(int i = 0; i < player.getTerritoryOccupied().size(); i++) {
+			result += player.getTerritoryOccupied().get(i).getArmiesOnCountry();
+		}
+		return result;
+	}
 
 	/**
 	 * Enables the buttons required for the fortification phase and all the other buttons will be hidden
@@ -621,6 +773,7 @@ public class RiskBoardModel{
 	 */
 	public void endAttackPhase(RiskBoardView view) {
 		enableDisableButtons(RiskGameConstants.FORTIFICATION_PHASE, view);
+		updateTheBoardScreenData(view, RiskGameConstants.FORTIFICATION_PHASE);
 	}
 
 	/**

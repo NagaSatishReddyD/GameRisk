@@ -11,7 +11,10 @@ public class RiskGameConstants {
 	public static final String SECTION_TWO = "[Continents]";
 	public static final String SECTION_THREE = "[Territories]";
 	public static final String ATTACK_PHASE = "Attack";
-	public static final String FORTIFICATION_PHASE = "fortification";
-	public static final String REINFORCEMENT_PHASE = "Inforcement";
+	public static final String FORTIFICATION_PHASE = "Fortification";
+	public static final String REINFORCEMENT_PHASE = "Reinforcement";
 	public static final String MAP_FILE_EXTENSION = ".map";
+	public static final String REINFORCEMENT_PHASE_INFO = "Current player can place their reinforcement armies on their countries";
+	public static final String ATTACK_PHASE_INFO = "Current player can attack other player's country in this phase";
+	public static final String FORTIFICATION_PHASE_INFO = "Current player can move their armies between their own countries";
 }
