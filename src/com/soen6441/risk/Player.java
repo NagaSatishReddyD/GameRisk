@@ -13,11 +13,13 @@ public class Player {
 	String playerName;
 	List<Country> territoryOccupied;
 	int armyCountAvailable;
+	List<Card> playerCards;
 
 	public Player(String playerName, int initalArmiesAssigned) {
 		this.playerName = playerName;
 		this.armyCountAvailable = initalArmiesAssigned;
 		this.territoryOccupied = new ArrayList<>();
+		playerCards = new ArrayList<>();
 	}
 	
 	public void incrementArmy(int number) {
