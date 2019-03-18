@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
@@ -25,6 +26,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
+import com.soen6441.risk.Card;
 import com.soen6441.risk.Continent;
 import com.soen6441.risk.Country;
 import com.soen6441.risk.Dice;
@@ -47,18 +49,17 @@ public class RiskBoardModel{
 	private Map<String, Player> playersMap;
 	private int currentPlayerIndex = 0;
 	private boolean isInitialPhase = true;
+	private List<Card> cardsList;
+	private boolean isOcuppiedTerritory = false;
 
 	/**
 	 * loadRequiredData method is used to inital load the riskBoardView screen data
 	 * @param fileName, name of the file to be loaded to frame
 	 */
 	public void loadRequiredData(String fileName){
-		File configFile = new File(fileName);
-		BufferedReader reader = null;
-		try {
+		try(BufferedReader reader = new BufferedReader(new FileReader(new File(fileName)))) {
 			int section = 0;
 			String line;
-			reader = new BufferedReader(new FileReader(configFile));
 			while((line = reader.readLine()) != null) {
 				if(line.trim().equals(RiskGameConstants.SECTION_ONE)) {
 					section = 1;
@@ -71,18 +72,25 @@ public class RiskBoardModel{
 				}
 			}
 			verifyTheCountriesConnections();
+			createCardsData();
 		} catch (FileNotFoundException e) {
 			showErrorMessage("Problem with the file. Couldn't read the file", true);
 		} catch (IOException e) {
 			showErrorMessage("Problem while reading the file data", true);
-		}finally {
-			if(reader != null)
-				try {
-					reader.close();
-				} catch (IOException e) {
-					showErrorMessage("Problem while clsoing the file \n"+fileName, true);
-				}
 		}
+	}
+
+	/**
+	 * createCardsData creates the cards structure used to play the game
+	 */
+	private void createCardsData() {
+		String [] armiesTypes = {"Infantry","Cavalry","Artillery"};
+		AtomicInteger counter = new AtomicInteger(0);
+		cardsList = new ArrayList<>();
+		countriesList.stream().forEach(country -> {
+			cardsList.add(new Card(country.getCountryName(), armiesTypes[counter.get()% armiesTypes.length]));
+			counter.addAndGet(1);
+		});
 	}
 
 	/**
@@ -567,24 +575,61 @@ public class RiskBoardModel{
 								currentPlayerAttackingArmies--;
 						}
 					} catch (NoSuchAlgorithmException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						System.out.println(e.getMessage());
 					}
 				} while (currentPlayerAttackingArmies != 0 && opponentDefendingArmies != 0);
 				if(currentPlayerAttackingArmies > 0) {
+					String opponentPlayerName = opponentPlayerCountry.getPlayerName();
 					playersMap.get(opponentPlayerCountry.getPlayerName()).getTerritoryOccupied().remove(opponentPlayerCountry);
 					currentPlayer.getTerritoryOccupied().add(opponentPlayerCountry);
 					opponentPlayerCountry.setPlayerName(currentPlayer.getPlayerName());
 					opponentPlayerCountry.setArmiesOnCountry(currentPlayerAttackingArmies);
+					isOcuppiedTerritory = true;
 					JOptionPane.showMessageDialog(riskBoardView.getBoardFrame(), currentPlayer.getPlayerName()+" WON ");
+					getCard(opponentPlayerName, riskBoardView);
 				}else if(currentPlayerAttackingArmies == 0 ){
 					opponentPlayerCountry.setArmiesOnCountry(opponentDefendingArmies);
 					JOptionPane.showMessageDialog(riskBoardView.getBoardFrame(), opponentPlayerCountry.getPlayerName()+" WON ");
 				}
 				updateTheBoardScreenData(riskBoardView, RiskGameConstants.ATTACK_PHASE);
+				isPlayerWonTheGame();
 			}
 		}else {
 			showErrorMessage("Please select armies to attack", false);
+		}
+	}
+
+	/**
+	 * getCard method checks whether the attacker player gets the cards if so it allows the player to get a card,
+	 * if the attacker removed all the opponent player from the game he gets all his cards.
+	 * @param riskBoardView,instance of {@link RiskBoardView} object
+	 * @param opponentPlayerName, name of the defender player.
+	 */
+	private void getCard(String opponentPlayerName, RiskBoardView riskBoardView) {
+		if(isOcuppiedTerritory) {
+			int selectedCardNumber = -1;
+			do {
+				Object [] possibilities = new Object [cardsList.size()];
+				for(int index = 0; index < possibilities.length; index++) {
+					possibilities[index] = index+1;
+				}
+				if(possibilities.length > 1) {
+					selectedCardNumber = (Integer)JOptionPane.showInputDialog(riskBoardView.getBoardFrame(),"You have won the a card. Please take your card",
+							"Cards Selection",JOptionPane.INFORMATION_MESSAGE, null,possibilities, possibilities[0]);
+				}
+			}while(selectedCardNumber == 0);
+			isOcuppiedTerritory = false;
+		}
+	}
+
+	/**
+	 * isPlayerWonTheGame method checks whether the player won the game or not.
+	 * if player own the game it announces and stop the game
+	 */
+	private void isPlayerWonTheGame() {
+		Player currentPlayer = playersData.get(currentPlayerIndex);
+		if(currentPlayer.getTerritoryOccupied().size() == countriesList.size()) {
+			showErrorMessage(currentPlayer.getPlayerName()+" WON THE GAME", true);
 		}
 	}
 
@@ -627,7 +672,8 @@ public class RiskBoardModel{
 	}
 	
 	/**
-	 * updatePlayersInfo method is used to update the information about percentage of map controlled, continents controlled and total armies controlled by all player
+	 * updatePlayersInfo method is used to update the information about percentage of map controlled, 
+	 * continents controlled and total armies controlled by all player
 	 * @param players, list of all the players in the game
 	 * @param view, instance of {@link RiskBoardView} object
 	 */
