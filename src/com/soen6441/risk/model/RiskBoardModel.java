@@ -249,7 +249,7 @@ public class RiskBoardModel{
 	 * findImageName is used to find the image name need to be displayed on the screen
 	 * @param line, country data line from the file
 	 */
-	private void findImageName(String line) {
+	public void findImageName(String line) {
 		if(line.contains("image")) {
 			imageName = line.substring(line.indexOf('=')+1);
 		}
@@ -663,7 +663,7 @@ public class RiskBoardModel{
 	 * @param playerArmies, number armies available to attack or defend on the country.
 	 * @return numberOfDices, number of dices to be used to throw.
 	 */
-	private int getNumberOfDicesPlayerWantsToThrow(Integer playerArmies, RiskBoardView riskBoardView, int currentPlayerDicesToRoll, boolean isAttacker) {
+	public int getNumberOfDicesPlayerWantsToThrow(Integer playerArmies, RiskBoardView riskBoardView, int currentPlayerDicesToRoll, boolean isAttacker) {
 		Integer dicesToThrow = 0;
 		int maxDicesToThrow = isAttacker ? 3:2;
 		if(currentPlayerDicesToRoll == -1) {
@@ -797,7 +797,7 @@ public class RiskBoardModel{
 	 * @param player, player that needs to get the information
 	 * @return ownedContinent, the continents owned by a specific player
 	 */
-	private String getOwnedContinent(Player player) {
+	public String getOwnedContinent(Player player) {
 		String ownedContinent = "";
 		for(String continentKey : continentsMap.keySet()) {
 			List<Country> contriesList = continentsMap.get(continentKey).getCountriesInContinent();
@@ -814,7 +814,7 @@ public class RiskBoardModel{
 	 * @param player, player that needs to get the information
 	 * @return result, the total armies owned by a specific player
 	 */
-	private int getTotalArmies(Player player) {
+	public int getTotalArmies(Player player) {
 		int result = 0;
 		for(int i = 0; i < player.getTerritoryOccupied().size(); i++) {
 			result += player.getTerritoryOccupied().get(i).getArmiesOnCountry();
@@ -865,5 +865,13 @@ public class RiskBoardModel{
 	 */
 	public boolean isInitialPhase() {
 		return isInitialPhase;
+	}
+	
+	/**
+	 * Returns the name of the image file
+	 * @return imageName, the name of the image file
+	 */
+	public String getImageName() {
+		return imageName;
 	}
 }

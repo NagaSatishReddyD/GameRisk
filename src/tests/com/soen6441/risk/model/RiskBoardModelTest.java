@@ -1,5 +1,6 @@
 package tests.com.soen6441.risk.model;
 
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
@@ -154,6 +155,9 @@ class RiskBoardModelTest {
 	  */
 	@Test
 	void testEndAttackPhase() {
+		int playersCount = 2;
+		riskBoardModel.loadRequiredData(System.getProperty("user.dir")+"/resources/World.map");
+		riskBoardModel.assignCountriesToPlayers(playersCount);
 		riskBoardModel.endAttackPhase(riskBoardView);
 		assertEquals(riskBoardView.getReinforceBtn().isVisible(), false);
 		assertEquals(riskBoardView.getAttackBtn().isVisible(), false);
@@ -162,4 +166,80 @@ class RiskBoardModelTest {
 		assertEquals(riskBoardView.getEndFortificationBtn().isVisible(), true);
 }
 
+	/**
+	 * testGetTotalArmies is used to test the getTotalArmies method to calculate
+	 * the total armies owned by a player
+	 */
+	@Test
+	void testGetTotalArmies() {
+		Country country1 = new Country("Indonesia");
+		country1.setPlayerName("Test 1");
+		country1.setArmiesOnCountry(3);
+		Country country2 = new Country("Guinea");
+		country2.setPlayerName("Test 1");
+		country2.setArmiesOnCountry(5);
+		Country country3 = new Country("Western Australia");
+		country3.setPlayerName("Test 1");
+		country3.setArmiesOnCountry(10);
+		Country country4 = new Country("Eastern Australia");
+		country4.setPlayerName("Test 1");
+		country4.setArmiesOnCountry(15);
+		playersData.get(0).addTerritory(playersData.get(0), country1);
+		playersData.get(0).addTerritory(playersData.get(0), country2);
+		playersData.get(0).addTerritory(playersData.get(0), country3);
+		playersData.get(0).addTerritory(playersData.get(0), country4);
+		int armies = riskBoardModel.getTotalArmies(playersData.get(0));
+		assertEquals(33, armies);
+	}
+	
+	/**
+	 * testGetOwnedContinent is used to test the getOwnedContinent method to check
+	 * if a player owns any continent
+	 */
+	@Test
+	void testGetOwnedContinent() {
+		Country country1 = new Country("Indonesia");
+		country1.setPlayerName("Test 1");
+		Country country2 = new Country("Guinea");
+		country2.setPlayerName("Test 1");
+		Country country3 = new Country("Western Australia");
+		country3.setPlayerName("Test 1");
+		Country country4 = new Country("Eastern Australia");
+		country4.setPlayerName("Test 1");
+		playersData.get(0).addTerritory(playersData.get(0), country1);
+		playersData.get(0).addTerritory(playersData.get(0), country2);
+		playersData.get(0).addTerritory(playersData.get(0), country3);
+		playersData.get(0).addTerritory(playersData.get(0), country4);
+		riskBoardModel.getContinentsMap().put("Australia", new Continent("Australia", 2));
+		riskBoardModel.getContinentsMap().get("Australia").addCountryInContinent(country1);
+		riskBoardModel.getContinentsMap().get("Australia").addCountryInContinent(country2);
+		riskBoardModel.getContinentsMap().get("Australia").addCountryInContinent(country3);
+		riskBoardModel.getContinentsMap().get("Australia").addCountryInContinent(country4);
+		String result = riskBoardModel.getOwnedContinent(playersData.get(0)).trim();
+		assertEquals("Australia", result);
+	}
+	
+	/**
+	 * This method is used to test the getNumberOfDicesPlayerWantsToThrow method
+	 * to check if the method get the correct number of dices the player wants to use
+	 */
+	@Test
+	void testGetNumberOfDicesPlayerWantsToThrow() {
+		int result = riskBoardModel.getNumberOfDicesPlayerWantsToThrow(10, riskBoardView, 3, true);
+		int result2 = riskBoardModel.getNumberOfDicesPlayerWantsToThrow(2, riskBoardView, 3, true);
+		assertEquals(3, result);
+		assertEquals(2, result2);
+	}
+	
+	/**
+	 * This method is used to test the findImageName method
+	 * to check after reading the map file whether the method get the correct image name file
+	 */
+	@Test
+	void testFindImageName() {
+		int playersCount = 2;
+		riskBoardModel.loadRequiredData(System.getProperty("user.dir")+"/resources/001_I72_Ghtroc 720.map");
+		riskBoardModel.assignCountriesToPlayers(playersCount);
+		assertEquals("001_I72_Ghtroc 720.bmp", riskBoardModel.getImageName());
+	}
 }
