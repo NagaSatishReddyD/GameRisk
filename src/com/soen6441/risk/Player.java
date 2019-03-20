@@ -63,4 +63,15 @@ public class Player {
 		player.getTerritoryOccupied().add(country);
 	}
 		
+	public void addCardToPlayer(Card card) {
+		this.playerCards.add(card);
+	}
+
+	public List<Card> getPlayerCards() {
+		return playerCards;
+	}
+
+	public void resetCards() {
+		this.playerCards = new ArrayList<>();
+	}
 }

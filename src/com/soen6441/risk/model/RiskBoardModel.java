@@ -548,7 +548,7 @@ public class RiskBoardModel{
 					JOptionPane.INFORMATION_MESSAGE, null,possibilities, possibilities[0]);
 		}
 		if(currentPlayerAttackingArmies > 0) {
-			currentPlayerDicesToRoll = getNumberOfDicesPlayerWantsToThrow(possibilities.length, riskBoardView, -1, true);
+			currentPlayerDicesToRoll = getNumberOfDicesPlayerWantsToThrow(currentPlayerAttackingArmies, riskBoardView, -1, true);
 			opponentPlayerDicesToRoll = getNumberOfDicesPlayerWantsToThrow(opponentPlayerCountry.getArmiesOnCountry(), riskBoardView, -1, false);
 			if(currentPlayerDicesToRoll != 0 && opponentPlayerDicesToRoll != 0) {
 				currentPlayerCountry.decreaseArmiesOnCountry(currentPlayerAttackingArmies);
@@ -613,9 +613,19 @@ public class RiskBoardModel{
 				for(int index = 0; index < possibilities.length; index++) {
 					possibilities[index] = index+1;
 				}
-				if(possibilities.length > 1) {
+				if(possibilities.length >= 1) {
 					selectedCardNumber = (Integer)JOptionPane.showInputDialog(riskBoardView.getBoardFrame(),"You have won the a card. Please take your card",
 							"Cards Selection",JOptionPane.INFORMATION_MESSAGE, null,possibilities, possibilities[0]);
+				}
+				if(selectedCardNumber > 0) {
+					Card selectedCard = cardsList.get(selectedCardNumber);
+					cardsList.remove(selectedCardNumber);
+					playersData.get(currentPlayerIndex).addCardToPlayer(selectedCard);
+				}
+				Player opponentPlayer = playersMap.get(opponentPlayerName);
+				if(opponentPlayer.getTerritoryOccupied().size() == 0) {
+					playersData.get(currentPlayerIndex).getPlayerCards().addAll(opponentPlayer.getPlayerCards());
+					opponentPlayer.resetCards();
 				}
 			}while(selectedCardNumber == 0);
 			isOcuppiedTerritory = false;
