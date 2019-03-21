@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -687,24 +688,25 @@ public class RiskBoardModel{
 			} while (currentPlayerAttackingArmies != 0 && opponentDefendingArmies != 0);
 			if(currentPlayerAttackingArmies > 0) {
 				Integer armiesOnCountry;
+				JOptionPane.showMessageDialog(riskBoardView.getBoardFrame(), currentPlayer.getPlayerName()+" WON ");
 				do {
-					JOptionPane.showMessageDialog(riskBoardView.getBoardFrame(), currentPlayer.getPlayerName()+" WON ");
 					possibilities = new Object [currentPlayerAttackingArmies];
 					for(int index = 0; index < currentPlayerAttackingArmies; index++) {
-						possibilities[index] = index;
+						possibilities[index] = index+1;
 					}
-					armiesOnCountry = (Integer) JOptionPane.showInputDialog(riskBoardView.getBoardFrame(),"How many armies to be used to attack", "Armies To Attack",
+					armiesOnCountry = (Integer) JOptionPane.showInputDialog(riskBoardView.getBoardFrame(),"How many armies you want to place on conquered terriroty", "Armies To Attack",
 							JOptionPane.INFORMATION_MESSAGE, null,possibilities, possibilities[0]);
-					if(armiesOnCountry != 0) {
+					if(Objects.nonNull(armiesOnCountry)) {
 						String opponentPlayerName = opponentPlayerCountry.getPlayerName();
 						playersMap.get(opponentPlayerCountry.getPlayerName()).getTerritoryOccupied().remove(opponentPlayerCountry);
 						currentPlayer.getTerritoryOccupied().add(opponentPlayerCountry);
 						opponentPlayerCountry.setPlayerName(currentPlayer.getPlayerName());
-						opponentPlayerCountry.setArmiesOnCountry(currentPlayerAttackingArmies);
+						opponentPlayerCountry.setArmiesOnCountry(armiesOnCountry);
+						currentPlayerCountry.incrementArmiesOnCountry(currentPlayerAttackingArmies - armiesOnCountry);
 						isOcuppiedTerritory = true;
 						isOpponentPlayerOutOfGame(opponentPlayerName, riskBoardView);
 					}
-				}while(armiesOnCountry == 0);
+				}while(Objects.isNull(armiesOnCountry));
 			}else if(currentPlayerAttackingArmies == 0 ){
 				opponentPlayerCountry.setArmiesOnCountry(opponentDefendingArmies);
 				JOptionPane.showMessageDialog(riskBoardView.getBoardFrame(), opponentPlayerCountry.getPlayerName()+" WON ");
