@@ -64,7 +64,7 @@ public class RiskBoardModel{
 		try(BufferedReader reader = new BufferedReader(new FileReader(new File(fileName)))) {
 			int section = 0;
 			String line;
-			while((line = reader.readLine()) != null) {
+			while((Objects.nonNull(line = reader.readLine()))) {
 				if(line.trim().equals(RiskGameConstants.SECTION_ONE)) {
 					section = 1;
 				}else if(line.trim().equals(RiskGameConstants.SECTION_TWO)){
@@ -130,7 +130,7 @@ public class RiskBoardModel{
 	 * @param view, RiskBoardView object used to update the components of the screen
 	 */
 	public void createOrUpdateImage(RiskBoardView view) {
-		if(view.getAdjacentCountryComboBox().getSelectedItem() != null) {
+		if(Objects.nonNull(view.getAdjacentCountryComboBox().getSelectedItem())) {
 			Player currentPlayer = playersData.get(currentPlayerIndex);
 			BufferedImage bufferedImage;
 			Country currentCountry = countriesMap.get(view.getCountryComboBox().getSelectedItem().toString());
@@ -179,7 +179,7 @@ public class RiskBoardModel{
 	 * @param line, country data line from the file
 	 */
 	private void createCountries(String line) {
-		if(countriesMap == null) {
+		if(Objects.isNull(countriesMap)) {
 			countriesMap = new HashMap<>();
 			countriesList = new ArrayList<>();
 		}
@@ -221,7 +221,7 @@ public class RiskBoardModel{
 	 * @param line, is the each continent information from the map file line by line
 	 */
 	public void createCountinents(String line) {
-		if(continentsMap == null) {
+		if(Objects.isNull(continentsMap)) {
 			continentsMap = new HashMap<>();
 		}
 		String[] continentArmies = line.split("=");
@@ -268,7 +268,7 @@ public class RiskBoardModel{
 		try {
 			random = SecureRandom.getInstanceStrong();
 			int index = 0;
-			if(playersData == null) {
+			if(Objects.isNull(playersData)) {
 				playersData = new ArrayList<>();
 				playersMap = new HashMap<>();
 			}
@@ -435,7 +435,7 @@ public class RiskBoardModel{
 	 * @param view, RiskBoardView object used to update the components of the screen
 	 */
 	public void getAdjacentCountriesForComboCountry(RiskBoardView view) {
-		if(view.getCountryComboBox().getSelectedItem() != null) {
+		if(Objects.nonNull(view.getCountryComboBox().getSelectedItem())) {
 			Player currentPlayer = playersData.get(currentPlayerIndex);
 			Country selectedCountry = countriesMap.get(view.getCountryComboBox().getSelectedItem().toString());
 			List<Country> adjacentCountriesList = selectedCountry.getAdjacentCountries();
@@ -465,7 +465,7 @@ public class RiskBoardModel{
 		Integer selectedValue = (Integer)JOptionPane.showInputDialog(view.getBoardFrame(),"Please enter armies to be added", "Armies To Add",
 				JOptionPane.INFORMATION_MESSAGE, null,possibilities, possibilities[0]);
 
-		if(selectedValue != null) {
+		if(Objects.nonNull(selectedValue)) {
 			Country country = countriesMap.get(view.getCountryComboBox().getSelectedItem().toString());
 			country.incrementArmiesOnCountry(selectedValue);
 			currentPlayer.decrementArmy(selectedValue);
@@ -543,7 +543,7 @@ public class RiskBoardModel{
 			Integer selectedValue = (Integer)JOptionPane.showInputDialog(view.getBoardFrame(),"Please enter armies to be added", "Armies To Add",
 					JOptionPane.INFORMATION_MESSAGE, null,possibilities, possibilities[0]);
 
-			if(selectedValue != null) {
+			if(Objects.nonNull(selectedValue)) {
 				country.decreaseArmiesOnCountry(selectedValue);
 				adjacentCountry.incrementArmiesOnCountry(selectedValue);
 				view.getArmiesCountAvailableLabel().setText(String.valueOf(currentPlayer.getArmyCountAvailable()));
@@ -805,7 +805,7 @@ public class RiskBoardModel{
 		}else {
 			dicesToThrow = playerArmies > currentPlayerDicesToRoll ? currentPlayerDicesToRoll : playerArmies; 
 		}
-		return dicesToThrow != null ? dicesToThrow : 0;
+		return Objects.nonNull(dicesToThrow) ? dicesToThrow : 0;
 	}
 
 	/**
@@ -925,15 +925,15 @@ public class RiskBoardModel{
 	 * @return ownedContinent, the continents owned by a specific player
 	 */
 	public String getOwnedContinent(Player player) {
-		String ownedContinent = "";
+		StringBuilder ownedContinent = new StringBuilder();
 		for(String continentKey : continentsMap.keySet()) {
 			List<Country> contriesList = continentsMap.get(continentKey).getCountriesInContinent();
 			Map<String, List<Country>> playersCountryData = contriesList.stream().collect(Collectors.groupingBy(Country::getPlayerName));
 			if(playersCountryData.containsKey(player.getPlayerName()) && playersCountryData.get(player.getPlayerName()).size() == contriesList.size()) {
-				ownedContinent += continentKey+" ";
+				ownedContinent.append(continentKey);
 			}
 		}
-		return ownedContinent;
+		return ownedContinent.toString();
 	}
 
 	/**
