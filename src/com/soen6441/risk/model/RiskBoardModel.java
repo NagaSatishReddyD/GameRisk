@@ -3,6 +3,7 @@ package com.soen6441.risk.model;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.TrayIcon.MessageType;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
@@ -630,67 +631,102 @@ public class RiskBoardModel{
 		Country currentPlayerCountry = countriesMap.get(riskBoardView.getCountryComboBox().getSelectedItem().toString());
 		Country opponentPlayerCountry = countriesMap.get(riskBoardView.getAdjacentCountryComboBox().getSelectedItem().toString());
 
-		Object [] possibilities = new Object [currentPlayerCountry.getArmiesOnCountry() - 1];
-		for(int index = 0; index < currentPlayerCountry.getArmiesOnCountry() - 1; index++) {
-			possibilities[index] = index+1;
+		Object [] possibilities = new Object [currentPlayerCountry.getArmiesOnCountry()];
+		possibilities[0] = "All Out";
+		for(int index = 1; index < currentPlayerCountry.getArmiesOnCountry(); index++) {
+			possibilities[index] = index;
 		}
 
-		Integer currentPlayerAttackingArmies = 0;
+		Object currentPlayerOption = 0;
 		int currentPlayerDicesToRoll = 0;
 		int opponentPlayerDicesToRoll = 0;
 		if(possibilities.length >= 1) {
-			currentPlayerAttackingArmies = (Integer)JOptionPane.showInputDialog(riskBoardView.getBoardFrame(),"How many armies to be used to attack", "Armies To Attack",
+			currentPlayerOption = JOptionPane.showInputDialog(riskBoardView.getBoardFrame(),"How many armies to be used to attack", "Armies To Attack",
 					JOptionPane.INFORMATION_MESSAGE, null,possibilities, possibilities[0]);
 		}
-		if(currentPlayerAttackingArmies > 0) {
+		int opponentDefendingArmies = opponentPlayerCountry.getArmiesOnCountry();
+		int currentPlayerAttackingArmies = 0;
+		if(currentPlayerOption.equals("All Out")) {
+			currentPlayerAttackingArmies  = currentPlayerCountry.getArmiesOnCountry() - 1;
+			currentPlayerDicesToRoll = getNumberOfDicesPlayerWantsToThrow(currentPlayerAttackingArmies, riskBoardView, 
+					currentPlayerAttackingArmies > 3? 3 : currentPlayerAttackingArmies, true);
+			opponentPlayerDicesToRoll = getNumberOfDicesPlayerWantsToThrow(opponentDefendingArmies, riskBoardView, 
+					opponentDefendingArmies > 2 ? 2 : opponentDefendingArmies, false);
+
+		}else if((Integer)currentPlayerOption > 0) {
+			currentPlayerAttackingArmies = (Integer)currentPlayerOption;
 			currentPlayerDicesToRoll = getNumberOfDicesPlayerWantsToThrow(currentPlayerAttackingArmies, riskBoardView, -1, true);
-			opponentPlayerDicesToRoll = getNumberOfDicesPlayerWantsToThrow(opponentPlayerCountry.getArmiesOnCountry(), riskBoardView, -1, false);
-			if(currentPlayerDicesToRoll != 0 && opponentPlayerDicesToRoll != 0) {
-				currentPlayerCountry.decreaseArmiesOnCountry(currentPlayerAttackingArmies);
-				int opponentDefendingArmies = opponentPlayerCountry.getArmiesOnCountry();
-				opponentPlayerCountry.decreaseArmiesOnCountry(opponentDefendingArmies);
-				do {
-					try {
-						currentPlayerDicesToRoll = getNumberOfDicesPlayerWantsToThrow(currentPlayerAttackingArmies, riskBoardView, currentPlayerDicesToRoll, true);
-						opponentPlayerDicesToRoll = getNumberOfDicesPlayerWantsToThrow(opponentDefendingArmies, riskBoardView, opponentPlayerDicesToRoll, false);
-						Integer[] currentPlayerDice = new Dice().diceRoll(currentPlayerDicesToRoll);
-						System.out.print("Current Player Dices: ");
-						printDicesValues(currentPlayerDice);
-						Integer[] opponentPlayerDice = new Dice().diceRoll(opponentPlayerDicesToRoll);
-						System.out.print("Opponent Player Dices: ");
-						printDicesValues(opponentPlayerDice);
-						if(currentPlayerDice[0] > opponentPlayerDice[0])
+			opponentPlayerDicesToRoll = getNumberOfDicesPlayerWantsToThrow(opponentDefendingArmies, riskBoardView, -1, false);
+		}
+		if(currentPlayerDicesToRoll != 0 && opponentPlayerDicesToRoll != 0) {
+			currentPlayerCountry.decreaseArmiesOnCountry(currentPlayerAttackingArmies);
+			opponentPlayerCountry.decreaseArmiesOnCountry(opponentDefendingArmies);
+			do {
+				try {
+					currentPlayerDicesToRoll = getNumberOfDicesPlayerWantsToThrow(currentPlayerAttackingArmies, riskBoardView, currentPlayerDicesToRoll, true);
+					opponentPlayerDicesToRoll = getNumberOfDicesPlayerWantsToThrow(opponentDefendingArmies, riskBoardView, opponentPlayerDicesToRoll, false);
+					Integer[] currentPlayerDice = new Dice().diceRoll(currentPlayerDicesToRoll);
+					System.out.print("Current Player Dices: ");
+					printDicesValues(currentPlayerDice);
+					Integer[] opponentPlayerDice = new Dice().diceRoll(opponentPlayerDicesToRoll);
+					System.out.print("Opponent Player Dices: ");
+					printDicesValues(opponentPlayerDice);
+					if(currentPlayerDice[0] > opponentPlayerDice[0])
+						opponentDefendingArmies--;
+					else
+						currentPlayerAttackingArmies--;
+					if(opponentPlayerDice.length > 1 && currentPlayerDice.length > 1) {
+						if(currentPlayerDice[1] > opponentPlayerDice[1])
 							opponentDefendingArmies--;
 						else
 							currentPlayerAttackingArmies--;
-						if(opponentPlayerDice.length > 1 && currentPlayerDice.length > 1) {
-							if(currentPlayerDice[1] > opponentPlayerDice[1])
-								opponentDefendingArmies--;
-							else
-								currentPlayerAttackingArmies--;
-						}
-					} catch (NoSuchAlgorithmException e) {
-						System.out.println(e.getMessage());
 					}
-				} while (currentPlayerAttackingArmies != 0 && opponentDefendingArmies != 0);
-				if(currentPlayerAttackingArmies > 0) {
-					String opponentPlayerName = opponentPlayerCountry.getPlayerName();
-					playersMap.get(opponentPlayerCountry.getPlayerName()).getTerritoryOccupied().remove(opponentPlayerCountry);
-					currentPlayer.getTerritoryOccupied().add(opponentPlayerCountry);
-					opponentPlayerCountry.setPlayerName(currentPlayer.getPlayerName());
-					opponentPlayerCountry.setArmiesOnCountry(currentPlayerAttackingArmies);
-					isOcuppiedTerritory = true;
-					JOptionPane.showMessageDialog(riskBoardView.getBoardFrame(), currentPlayer.getPlayerName()+" WON ");
-					getCard(opponentPlayerName, riskBoardView);
-				}else if(currentPlayerAttackingArmies == 0 ){
-					opponentPlayerCountry.setArmiesOnCountry(opponentDefendingArmies);
-					JOptionPane.showMessageDialog(riskBoardView.getBoardFrame(), opponentPlayerCountry.getPlayerName()+" WON ");
+				} catch (NoSuchAlgorithmException e) {
+					System.out.println(e.getMessage());
 				}
-				updateTheBoardScreenData(riskBoardView, RiskGameConstants.ATTACK_PHASE);
-				isPlayerWonTheGame();
+			} while (currentPlayerAttackingArmies != 0 && opponentDefendingArmies != 0);
+			if(currentPlayerAttackingArmies > 0) {
+				Integer armiesOnCountry;
+				do {
+					JOptionPane.showMessageDialog(riskBoardView.getBoardFrame(), currentPlayer.getPlayerName()+" WON ");
+					possibilities = new Object [currentPlayerAttackingArmies];
+					for(int index = 0; index < currentPlayerAttackingArmies; index++) {
+						possibilities[index] = index;
+					}
+					armiesOnCountry = (Integer) JOptionPane.showInputDialog(riskBoardView.getBoardFrame(),"How many armies to be used to attack", "Armies To Attack",
+							JOptionPane.INFORMATION_MESSAGE, null,possibilities, possibilities[0]);
+					if(armiesOnCountry != 0) {
+						String opponentPlayerName = opponentPlayerCountry.getPlayerName();
+						playersMap.get(opponentPlayerCountry.getPlayerName()).getTerritoryOccupied().remove(opponentPlayerCountry);
+						currentPlayer.getTerritoryOccupied().add(opponentPlayerCountry);
+						opponentPlayerCountry.setPlayerName(currentPlayer.getPlayerName());
+						opponentPlayerCountry.setArmiesOnCountry(currentPlayerAttackingArmies);
+						isOcuppiedTerritory = true;
+						isOpponentPlayerOutOfGame(opponentPlayerName, riskBoardView);
+					}
+				}while(armiesOnCountry == 0);
+			}else if(currentPlayerAttackingArmies == 0 ){
+				opponentPlayerCountry.setArmiesOnCountry(opponentDefendingArmies);
+				JOptionPane.showMessageDialog(riskBoardView.getBoardFrame(), opponentPlayerCountry.getPlayerName()+" WON ");
 			}
+			updateTheBoardScreenData(riskBoardView, RiskGameConstants.ATTACK_PHASE);
+			isPlayerWonTheGame();
 		}else {
 			showErrorMessage("You don't have enough armies to attack", false);
+		}
+	}
+
+	/**
+	 * isOpponentPlayerOutOfGame method checks whether the opponent player is done with the game if so
+	 * all opponent player cards will be given to attacked player.
+	 * @param opponentPlayerName, name of the defender player.
+	 * @param riskBoardView,instance of {@link RiskBoardView} object
+	 */
+	private void isOpponentPlayerOutOfGame(String opponentPlayerName, RiskBoardView riskBoardView) {
+		Player opponentPlayer = playersMap.get(opponentPlayerName);
+		if(!opponentPlayer.getTerritoryOccupied().isEmpty()) {
+			playersData.get(currentPlayerIndex).getPlayerCards().addAll(opponentPlayer.getPlayerCards());
+			opponentPlayer.resetCards();
 		}
 	}
 
@@ -698,9 +734,8 @@ public class RiskBoardModel{
 	 * getCard method checks whether the attacker player gets the cards if so it allows the player to get a card,
 	 * if the attacker removed all the opponent player from the game he gets all his cards.
 	 * @param riskBoardView,instance of {@link RiskBoardView} object
-	 * @param opponentPlayerName, name of the defender player.
 	 */
-	private void getCard(String opponentPlayerName, RiskBoardView riskBoardView) {
+	private void getCard(RiskBoardView riskBoardView) {
 		if(isOcuppiedTerritory) {
 			int selectedCardNumber = -1;
 			do {
@@ -716,11 +751,6 @@ public class RiskBoardModel{
 					Card selectedCard = cardsList.get(selectedCardNumber);
 					cardsList.remove(selectedCardNumber);
 					playersData.get(currentPlayerIndex).addCardToPlayer(selectedCard);
-				}
-				Player opponentPlayer = playersMap.get(opponentPlayerName);
-				if(opponentPlayer.getTerritoryOccupied().size() == 0) {
-					playersData.get(currentPlayerIndex).getPlayerCards().addAll(opponentPlayer.getPlayerCards());
-					opponentPlayer.resetCards();
 				}
 			}while(selectedCardNumber == 0);
 			isOcuppiedTerritory = false;
@@ -775,7 +805,7 @@ public class RiskBoardModel{
 		}
 		return dicesToThrow != null ? dicesToThrow : 0;
 	}
-	
+
 	/**
 	 * updatePlayersInfo method is used to update the information about percentage of map controlled, 
 	 * continents controlled and total armies controlled by all player
@@ -787,7 +817,7 @@ public class RiskBoardModel{
 			updatePlayerInfo(players.get(i), i, view);
 		}
 	}
-	
+
 	/**
 	 * updatePlayerInfo method is used to update the information of one player
 	 * @param player, player that has information to be updated
@@ -800,93 +830,93 @@ public class RiskBoardModel{
 		int totalArmies;
 		NumberFormat format = NumberFormat.getPercentInstance(Locale.US);
 		switch(index) {
-			case 0:
-				view.getPlayer1Label().setText(player.getPlayerName());
-				percent = (double) player.getTerritoryOccupied().size()/countriesList.size();
-				view.getPlayer1MapPercentage().setText(format.format(percent));
-				listOfContinent = getOwnedContinent(player).trim();
-				if(listOfContinent.equals("")) {
-					view.getPlayer1ContinentControl().setText("No continent owned");
-				}else {
-					view.getPlayer1ContinentControl().setText(listOfContinent);
-				}
-				totalArmies = getTotalArmies(player);
-				view.getPlayer1TotalArmies().setText(Integer.toString(totalArmies));
-				break;
-			
-			case 1:
-				view.getPlayer2Label().setText(player.getPlayerName());
-				percent = (double)player.getTerritoryOccupied().size()/countriesList.size();
-				view.getPlayer2MapPercentage().setText(format.format(percent));
-				listOfContinent = getOwnedContinent(player).trim();
-				if(listOfContinent.equals("")) {
-					view.getPlayer2ContinentControl().setText("No continent owned");
-				}else {
-					view.getPlayer2ContinentControl().setText(listOfContinent);
-				}
-				totalArmies = getTotalArmies(player);
-				view.getPlayer2TotalArmies().setText(Integer.toString(totalArmies));
-				break;	
-				
-			case 2:
-				view.getPlayer3Label().setText(player.getPlayerName());
-				percent =(double) player.getTerritoryOccupied().size()/countriesList.size();
-				view.getPlayer3MapPercentage().setText(format.format(percent));
-				listOfContinent = getOwnedContinent(player).trim();
-				if(listOfContinent.equals("")) {
-					view.getPlayer3ContinentControl().setText("No continent owned");
-				}else {
-					view.getPlayer3ContinentControl().setText(listOfContinent);
-				}
-				totalArmies = getTotalArmies(player);
-				view.getPlayer3TotalArmies().setText(Integer.toString(totalArmies));
-				break;	
-				
-			case 3:
-				view.getPlayer4Label().setText(player.getPlayerName());
-				percent = (double)player.getTerritoryOccupied().size()/countriesList.size();
-				view.getPlayer4MapPercentage().setText(format.format(percent));
-				listOfContinent = getOwnedContinent(player).trim();
-				if(listOfContinent.equals("")) {
-					view.getPlayer4ContinentControl().setText("No continent owned");
-				}else {
-					view.getPlayer4ContinentControl().setText(listOfContinent);
-				}
-				totalArmies = getTotalArmies(player);
-				view.getPlayer4TotalArmies().setText(Integer.toString(totalArmies));
-				break;	
-				
-			case 4:
-				view.getPlayer5Label().setText(player.getPlayerName());
-				percent = (double)player.getTerritoryOccupied().size()/countriesList.size();
-				view.getPlayer5MapPercentage().setText(format.format(percent));
-				listOfContinent = getOwnedContinent(player).trim();
-				if(listOfContinent.equals("")) {
-					view.getPlayer5ContinentControl().setText("No continent owned");
-				}else {
-					view.getPlayer5ContinentControl().setText(listOfContinent);
-				}
-				totalArmies = getTotalArmies(player);
-				view.getPlayer5TotalArmies().setText(Integer.toString(totalArmies));
-				break;	
-				
-			case 5:
-				view.getPlayer6Label().setText(player.getPlayerName());
-				percent = (double)player.getTerritoryOccupied().size()/countriesList.size();
-				view.getPlayer6MapPercentage().setText(format.format(percent));
-				listOfContinent = getOwnedContinent(player).trim();
-				if(listOfContinent.equals("")) {
-					view.getPlayer6ContinentControl().setText("No continent owned");
-				}else {
-					view.getPlayer6ContinentControl().setText(listOfContinent);
-				}
-				totalArmies = getTotalArmies(player);
-				view.getPlayer6TotalArmies().setText(Integer.toString(totalArmies));
-				break;	
-			
+		case 0:
+			view.getPlayer1Label().setText(player.getPlayerName());
+			percent = (double) player.getTerritoryOccupied().size()/countriesList.size();
+			view.getPlayer1MapPercentage().setText(format.format(percent));
+			listOfContinent = getOwnedContinent(player).trim();
+			if(listOfContinent.equals("")) {
+				view.getPlayer1ContinentControl().setText("No continent owned");
+			}else {
+				view.getPlayer1ContinentControl().setText(listOfContinent);
+			}
+			totalArmies = getTotalArmies(player);
+			view.getPlayer1TotalArmies().setText(Integer.toString(totalArmies));
+			break;
+
+		case 1:
+			view.getPlayer2Label().setText(player.getPlayerName());
+			percent = (double)player.getTerritoryOccupied().size()/countriesList.size();
+			view.getPlayer2MapPercentage().setText(format.format(percent));
+			listOfContinent = getOwnedContinent(player).trim();
+			if(listOfContinent.equals("")) {
+				view.getPlayer2ContinentControl().setText("No continent owned");
+			}else {
+				view.getPlayer2ContinentControl().setText(listOfContinent);
+			}
+			totalArmies = getTotalArmies(player);
+			view.getPlayer2TotalArmies().setText(Integer.toString(totalArmies));
+			break;	
+
+		case 2:
+			view.getPlayer3Label().setText(player.getPlayerName());
+			percent =(double) player.getTerritoryOccupied().size()/countriesList.size();
+			view.getPlayer3MapPercentage().setText(format.format(percent));
+			listOfContinent = getOwnedContinent(player).trim();
+			if(listOfContinent.equals("")) {
+				view.getPlayer3ContinentControl().setText("No continent owned");
+			}else {
+				view.getPlayer3ContinentControl().setText(listOfContinent);
+			}
+			totalArmies = getTotalArmies(player);
+			view.getPlayer3TotalArmies().setText(Integer.toString(totalArmies));
+			break;	
+
+		case 3:
+			view.getPlayer4Label().setText(player.getPlayerName());
+			percent = (double)player.getTerritoryOccupied().size()/countriesList.size();
+			view.getPlayer4MapPercentage().setText(format.format(percent));
+			listOfContinent = getOwnedContinent(player).trim();
+			if(listOfContinent.equals("")) {
+				view.getPlayer4ContinentControl().setText("No continent owned");
+			}else {
+				view.getPlayer4ContinentControl().setText(listOfContinent);
+			}
+			totalArmies = getTotalArmies(player);
+			view.getPlayer4TotalArmies().setText(Integer.toString(totalArmies));
+			break;	
+
+		case 4:
+			view.getPlayer5Label().setText(player.getPlayerName());
+			percent = (double)player.getTerritoryOccupied().size()/countriesList.size();
+			view.getPlayer5MapPercentage().setText(format.format(percent));
+			listOfContinent = getOwnedContinent(player).trim();
+			if(listOfContinent.equals("")) {
+				view.getPlayer5ContinentControl().setText("No continent owned");
+			}else {
+				view.getPlayer5ContinentControl().setText(listOfContinent);
+			}
+			totalArmies = getTotalArmies(player);
+			view.getPlayer5TotalArmies().setText(Integer.toString(totalArmies));
+			break;	
+
+		case 5:
+			view.getPlayer6Label().setText(player.getPlayerName());
+			percent = (double)player.getTerritoryOccupied().size()/countriesList.size();
+			view.getPlayer6MapPercentage().setText(format.format(percent));
+			listOfContinent = getOwnedContinent(player).trim();
+			if(listOfContinent.equals("")) {
+				view.getPlayer6ContinentControl().setText("No continent owned");
+			}else {
+				view.getPlayer6ContinentControl().setText(listOfContinent);
+			}
+			totalArmies = getTotalArmies(player);
+			view.getPlayer6TotalArmies().setText(Integer.toString(totalArmies));
+			break;	
+
 		}
 	}
-	
+
 	/**
 	 * getOwnedContinent method is used to get the continents owned a player
 	 * @param player, player that needs to get the information
@@ -920,11 +950,12 @@ public class RiskBoardModel{
 	/**
 	 * Enables the buttons required for the fortification phase and all the other buttons will be hidden
 	 * {@link RiskBoardView#getEndFortificationBtn()} and {@link RiskBoardView#getMoveArmiesBtn()} will be enabled
-	 * @param view, instance of {@link RiskBoardView} object
+	 * @param riskBoardView, instance of {@link RiskBoardView} object
 	 */
-	public void endAttackPhase(RiskBoardView view) {
-		enableDisableButtons(RiskGameConstants.FORTIFICATION_PHASE, view);
-		updateTheBoardScreenData(view, RiskGameConstants.FORTIFICATION_PHASE);
+	public void endAttackPhase(RiskBoardView riskBoardView) {
+		getCard(riskBoardView);
+		enableDisableButtons(RiskGameConstants.FORTIFICATION_PHASE, riskBoardView);
+		updateTheBoardScreenData(riskBoardView, RiskGameConstants.FORTIFICATION_PHASE);
 	}
 
 	/**
@@ -961,7 +992,7 @@ public class RiskBoardModel{
 	public boolean isInitialPhase() {
 		return isInitialPhase;
 	}
-	
+
 	/**
 	 * Returns the name of the image file
 	 * @return imageName, the name of the image file
