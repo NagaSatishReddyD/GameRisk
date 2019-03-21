@@ -7,9 +7,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.security.NoSuchAlgorithmException;
 
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
 import com.soen6441.risk.Dice;
 
 /**
@@ -18,19 +18,19 @@ import com.soen6441.risk.Dice;
  * @since 1.0
  *
  */
-class DiceTest {
+public class DiceTest {
 
 	static Dice dice;
 	/**
 	 * @throws java.lang.Exception
 	 */
-	@BeforeAll
-	static void setUpBeforeClass() throws Exception {
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
 		dice = new Dice();
 	}
 
 	@Test
-	void testDiceRoll() throws NoSuchAlgorithmException {
+	public void testDiceRoll() throws NoSuchAlgorithmException {
 		Integer[] diceArray = dice.diceRoll(3);
 		assertTrue(diceArray[0] >= diceArray[1] && diceArray[1] >= diceArray[2]);
 	}

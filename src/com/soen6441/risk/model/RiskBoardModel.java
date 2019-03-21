@@ -404,7 +404,7 @@ public class RiskBoardModel{
 	 * @param currentPlayer, current player object who is playing @see {@link Player}
 	 * @return bonusArmies, armies if a player concurred entire continent
 	 */
-	private int getBonusArmiesOnContinent(Player currentPlayer) {
+	public int getBonusArmiesOnContinent(Player currentPlayer) {
 		int bonusArmies = 0;
 		for(String continentKey : continentsMap.keySet()) {
 			List<Country> contriesList = continentsMap.get(continentKey).getCountriesInContinent();
@@ -421,7 +421,7 @@ public class RiskBoardModel{
 	 * @param currentPlayer, current player object who is playing @see {@link Player}
 	 * @return bonusArmies, armies based on the territories conquered
 	 */
-	private int getBonusArmiesOnTerritories(Player currentPlayer) {
+	public int getBonusArmiesOnTerritories(Player currentPlayer) {
 		int bonusArmies = currentPlayer.getTerritoryOccupied().size() / 3;
 		return bonusArmies < 3 ? 3 : bonusArmies;
 	}
@@ -462,7 +462,7 @@ public class RiskBoardModel{
 	 * @return true, if the both country and adjacent countries belong to current player
 	 * 		   false, if the both country and adjacent countries doesn't belong to current player  
 	 */
-	private boolean isCountriesOwnedByPlayers(Country country, Country adjacentCountry) {
+	public boolean isCountriesOwnedByPlayers(Country country, Country adjacentCountry) {
 		return country.getPlayerName().trim().equalsIgnoreCase(adjacentCountry.getPlayerName().trim());
 	}
 
@@ -495,7 +495,7 @@ public class RiskBoardModel{
 	 * if the player has to play attack phase then phase value will be {@link RiskGameConstants#ATTACK_PHASE}
 	 * if the player has to play fortification phase then value will be {@link RiskGameConstants#FORTIFICATION_PHASE}
 	 */
-	private void enableDisableButtons(String phase, RiskBoardView view) {
+	public void enableDisableButtons(String phase, RiskBoardView view) {
 		view.getReinforceBtn().setVisible(false);
 		view.getAttackBtn().setVisible(false);
 		view.getEndAttackButton().setVisible(false);
@@ -527,7 +527,7 @@ public class RiskBoardModel{
 
 	/**
 	 * attackBetweenCountries method is to attack between to players territories which are adjacent
-	 * @param view, RiskBoardView object used to update the components of the screen
+	 * @param riskBoardView, RiskBoardView object used to update the components of the screen
 	 */
 	public void attackBetweenCountries(RiskBoardView riskBoardView) {
 		Player currentPlayer = playersData.get(currentPlayerIndex);

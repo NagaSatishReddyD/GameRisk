@@ -3,8 +3,8 @@ package tests.com.soen6441.risk.model;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
+import org.junit.Test;
+import org.junit.BeforeClass;
 import com.soen6441.risk.model.RiskGameModel;
 import com.soen6441.risk.view.RiskGameView;
 
@@ -13,13 +13,13 @@ import com.soen6441.risk.view.RiskGameView;
  * @author Tosin 
  * @author Yinka
  */
-class RiskGameModelTest {
+public class RiskGameModelTest {
 
 	static RiskGameModel riskGameModel; 
 	static RiskGameView riskGameView; 
 	
-	@BeforeAll
-	static void setUpBeforeClass() throws Exception {
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
 		riskGameModel = new RiskGameModel(); 
 		riskGameView = new RiskGameView(); 
 	}
@@ -29,7 +29,7 @@ class RiskGameModelTest {
 	 * Expected result to be success for this test case
 	 */
 	@Test
-	void testShowPlayerDetailsMenu() {
+	public void testShowPlayerDetailsMenu() {
 		riskGameModel.showPlayerDetailsMenu(riskGameView);
 		assertEquals(riskGameView.getGameStartframe().isVisible(), false);
 	}
@@ -38,7 +38,7 @@ class RiskGameModelTest {
 	 * This test case is used to test and show the adding of map frame
 	 */
 	@Test
-	void testShowAddMapFrame() {
+	public void testShowAddMapFrame() {
 		riskGameModel.showPlayerDetailsMenu(riskGameView);
 		assertEquals(riskGameView.getGameStartframe().isVisible(), false);
 	}
