@@ -534,8 +534,8 @@ public class RiskBoardModel{
 		}else if(!isCountriesOwnedByPlayers(country, adjacentCountry)) {
 			JOptionPane.showMessageDialog(view.getBoardFrame(), "Selected Adjacent Country is owned by another player");
 		}else {
-			Object [] possibilities = new Object [country.getArmiesOnCountry()];
-			for(int index = 0; index < country.getArmiesOnCountry(); index++) {
+			Object [] possibilities = new Object [country.getArmiesOnCountry() - 1];
+			for(int index = 0; index < possibilities.length; index++) {
 				possibilities[index] = index+1;
 			}
 			Integer selectedValue = (Integer)JOptionPane.showInputDialog(view.getBoardFrame(),"Please enter armies to be added", "Armies To Add",
@@ -690,7 +690,7 @@ public class RiskBoardModel{
 				isPlayerWonTheGame();
 			}
 		}else {
-			showErrorMessage("Please select armies to attack", false);
+			showErrorMessage("You don't have enough armies to attack", false);
 		}
 	}
 
