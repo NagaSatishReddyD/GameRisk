@@ -69,6 +69,7 @@ public class RiskBoardView extends JFrame{
 	private JLabel player6MapPercentage;
 	private JLabel player6ContinentControl;
 	private JLabel player6TotalArmies;
+	private JLabel cardsCountLabel;
 	
 	/**
 	 * This constructor create the new frame which contains the components which is used to play the game
@@ -254,8 +255,24 @@ public class RiskBoardView extends JFrame{
 		player6TotalArmies = new JLabel();
 		player6TotalArmies.setBounds(381, 796, 61, 16);
 		boardFrame.getContentPane().add(player6TotalArmies);
+		
+		JLabel cardsLabel = new JLabel("Number of Cards");
+		cardsLabel.setBounds(23, 255, 119, 13);
+		boardFrame.getContentPane().add(cardsLabel);
+		
+		cardsCountLabel = new JLabel("");
+		cardsCountLabel.setBounds(148, 255, 45, 13);
+		boardFrame.getContentPane().add(cardsCountLabel);
 	}
 	
+	/**
+	 * Returns the cardsCountLabel object set on this frame.
+	 * @return the cardsCountLabel object of this frame
+	 */
+	public JLabel getCardsCountLabel() {
+		return cardsCountLabel;
+	}
+
 	/**
 	 * Returns the player1Label object set on this frame.
 	 * @return the player1Label object of this frame

@@ -2,9 +2,9 @@ package tests.com.soen6441.risk.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.Test;
 import org.junit.BeforeClass;
+import org.junit.Test;
+
 import com.soen6441.risk.model.RiskGameModel;
 import com.soen6441.risk.view.RiskGameView;
 

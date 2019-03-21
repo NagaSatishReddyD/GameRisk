@@ -9,7 +9,7 @@ import java.security.NoSuchAlgorithmException;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeAll;
+
 import com.soen6441.risk.Dice;
 
 /**

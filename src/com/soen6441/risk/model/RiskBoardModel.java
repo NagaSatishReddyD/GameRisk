@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -51,6 +52,7 @@ public class RiskBoardModel{
 	private boolean isInitialPhase = true;
 	private List<Card> cardsList;
 	private boolean isOcuppiedTerritory = false;
+	int cardExchangeCount = 0;
 
 	/**
 	 * loadRequiredData method is used to inital load the riskBoardView screen data
@@ -298,28 +300,119 @@ public class RiskBoardModel{
 	/**
 	 * updateTheBoardScreenData method is used to handle the actions done before the each turn for the player
 	 * @param phase, current phase of the player it can be {@link RiskGameConstants#REINFORCEMENT_PHASE}, {@link RiskGameConstants#ATTACK_PHASE}
-	 * @param view, RiskBoardView object used to update the components of the screen
+	 * @param riskBoardView, RiskBoardView object used to update the components of the screen
 	 */
-	public void updateTheBoardScreenData(RiskBoardView view, String phase) {
+	public void updateTheBoardScreenData(RiskBoardView riskBoardView, String phase) {
 		Player currentPlayer = playersData.get(currentPlayerIndex);
 		if(currentPlayer.getArmyCountAvailable() == 0 && phase.equals(RiskGameConstants.REINFORCEMENT_PHASE)) {
-			setTheBonusArmiesToPlayer(currentPlayer);
+			setTheBonusArmiesToPlayer(currentPlayer, riskBoardView);
 			isInitialPhase = false;
 		}
-		updatePlayersInfo(playersData, view);
+		updatePlayersInfo(playersData, riskBoardView);
 		if(phase.equals(RiskGameConstants.REINFORCEMENT_PHASE)) {
-			view.getPhaseInfo().setText(RiskGameConstants.REINFORCEMENT_PHASE_INFO);
+			riskBoardView.getPhaseInfo().setText(RiskGameConstants.REINFORCEMENT_PHASE_INFO);
 		}else if(phase.equals(RiskGameConstants.ATTACK_PHASE)) {
-			view.getPhaseInfo().setText(RiskGameConstants.ATTACK_PHASE_INFO);
+			riskBoardView.getPhaseInfo().setText(RiskGameConstants.ATTACK_PHASE_INFO);
 		}else if(phase.equals(RiskGameConstants.FORTIFICATION_PHASE)) {
-			view.getPhaseInfo().setText(RiskGameConstants.FORTIFICATION_PHASE_INFO);
+			riskBoardView.getPhaseInfo().setText(RiskGameConstants.FORTIFICATION_PHASE_INFO);
 		}
-		view.getCurrentPhase().setText(phase + " phase");
-		enableDisableButtons(phase, view);
-		view.getCurrentPlayerTurnLabel().setText(currentPlayer.getPlayerName()+" Turn !!");
-		view.getArmiesCountAvailableLabel().setText(String.valueOf(currentPlayer.getArmyCountAvailable()));
-		updateCountriesComboBox(currentPlayer, view);
-		createOrUpdateImage(view);
+		riskBoardView.getCurrentPhase().setText(phase + " phase");
+		enableDisableButtons(phase, riskBoardView);
+		riskBoardView.getCurrentPlayerTurnLabel().setText(currentPlayer.getPlayerName()+" Turn !!");
+		riskBoardView.getArmiesCountAvailableLabel().setText(String.valueOf(currentPlayer.getArmyCountAvailable()));
+		riskBoardView.getCardsCountLabel().setText(String.valueOf(currentPlayer.getPlayerCards().size()));
+		updateCountriesComboBox(currentPlayer, riskBoardView);
+		createOrUpdateImage(riskBoardView);
+	}
+
+	/**
+	 * canExchangeCards method to decide whether the player has to exchange the cards or not. 
+	 * If the player has maximum cards then the player definitely has to exchange.
+	 * @param riskBoardView, RiskBoardView object used to update the components of the screen
+	 * @return bonusArmies, bonus armies based on the exchange cards.
+	 */
+	private int canExchangeCards(RiskBoardView riskBoardView) {
+		Player player = playersData.get(currentPlayerIndex);
+		int bonusAmies = 0;
+		String message;
+		while(checkExchangeSet(player)) {
+			if(player.getPlayerCards().size() >= 5) {
+				message = "You have to exchange cards. It is mandatory.";
+			}else {
+				message = "Do you want to exchnage cards?";
+			}
+			int selectedValue = JOptionPane.showConfirmDialog(riskBoardView.getBoardFrame(), message, "Cards Exchange", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
+
+			if(selectedValue == 0) {
+				bonusAmies += getExchangeCardsArmies(player);
+			}else {
+				if(player.getPlayerCards().size() < 5)
+					break;
+			}
+		}
+		return bonusAmies;
+	}
+
+	/**
+	 * getExchangeCardsArmies methods to the exchange the cards
+	 * @param currentPlayer, current player object 
+	 * @return armies count, bonusArmiesToExchange.
+	 */
+	private int getExchangeCardsArmies(Player currentPlayer) {
+		List<Card> playersCards = currentPlayer.getPlayerCards();
+		Map<String, List<Card>> cardsData = currentPlayer.getPlayerCards().stream().collect(Collectors.groupingBy(Card::getArmyType));
+		if(cardsData.size() == 3) {
+			List<String> cardsArmyName = new ArrayList<>();
+			for(Card card : playersCards) {
+				if(!cardsArmyName.contains(card.getArmyType())) {
+					cardsArmyName.add(card.getArmyType());
+					playersCards.remove(card);
+				}
+			}
+			if(++cardExchangeCount < 6) {
+				return 4 + ((cardExchangeCount - 1) * 2);
+			}else {
+				return 5 * (cardExchangeCount - 3);
+			}
+		}else {
+			for(Entry<String, List<Card>> cards : cardsData.entrySet()) {
+				if(cards.getValue().size() >= 3) {
+					int count = 1;
+					for(Card card : playersCards) {
+						if(card.getArmyType().equals(cards.getValue().get(0).getArmyType())) {
+							playersCards.remove(card);
+							count++;
+						}
+						if(count == 3)
+							break;
+					}
+					if(++cardExchangeCount < 6) {
+						return 4 + ((cardExchangeCount - 1) * 2);
+					}else {
+						return 5 * (cardExchangeCount - 3);
+					}
+				}
+			}
+		}
+		return 0;
+	}
+
+	/**
+	 * checkExchangeSet method to check the whether the cards has the perfect set to exchange cards.
+	 * @param currentPlayer, value of the currentplayer index
+	 * @return true, if the data has a perfect set to exchange the cards.
+	 */
+	private boolean checkExchangeSet(Player currentPlayer) {
+		Map<String, List<Card>> cardsData = currentPlayer.getPlayerCards().stream().collect(Collectors.groupingBy(Card::getArmyType));
+		if(cardsData.size() == 3) {
+			return true;
+		}else {
+			for(Entry<String, List<Card>> card : cardsData.entrySet()) {
+				if(card.getValue().size() >=3)
+					return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -384,19 +477,21 @@ public class RiskBoardModel{
 
 	/**
 	 * setTheBonusArmiesToPlayer method for find the inital Armies setup for the player.
+	 * @param riskBoardView, RiskBoardView object used to update the components of the screen
 	 * @param currentPlayer, current player object
 	 */
-	private void setTheBonusArmiesToPlayer(Player currentPlayer) {
-		currentPlayer.incrementArmy(countArmiesBasedOnTerritories(currentPlayer));
+	private void setTheBonusArmiesToPlayer(Player currentPlayer, RiskBoardView riskBoardView) {
+		currentPlayer.incrementArmy(countArmiesBasedOnTerritories(currentPlayer, riskBoardView));
 	}
 
 	/**
 	 * countArmiesBasedOnTerritories method to calculate the armies count based on the player territories
+	 * @param riskBoardView, RiskBoardView object used to update the components of the screen
 	 * @param currentPlayer, current player object
 	 * @return count, how many armies are given to players for each round
 	 */
-	public int countArmiesBasedOnTerritories(Player currentPlayer) {
-		return getBonusArmiesOnTerritories(currentPlayer)+ getBonusArmiesOnContinent(currentPlayer);
+	public int countArmiesBasedOnTerritories(Player currentPlayer, RiskBoardView riskBoardView) {
+		return getBonusArmiesOnTerritories(currentPlayer)+ getBonusArmiesOnContinent(currentPlayer) + canExchangeCards(riskBoardView);
 	}
 
 	/**

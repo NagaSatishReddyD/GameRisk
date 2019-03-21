@@ -1,13 +1,10 @@
 package tests.com.soen6441.risk.model;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
 import org.junit.Ignore;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 
 import com.soen6441.risk.controller.RiskBoardController;
 import com.soen6441.risk.model.RiskBoardModel;

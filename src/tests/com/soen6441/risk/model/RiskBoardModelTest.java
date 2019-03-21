@@ -1,6 +1,5 @@
 package tests.com.soen6441.risk.model;
 
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
@@ -10,10 +9,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Test;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.Test;
+
 import com.soen6441.risk.Continent;
 import com.soen6441.risk.Country;
 import com.soen6441.risk.Player;
@@ -117,7 +116,7 @@ public class RiskBoardModelTest {
 		riskBoardModel.getContinentsMap().get("Australia").addCountryInContinent(country2);
 		riskBoardModel.getContinentsMap().get("Australia").addCountryInContinent(country3);
 		riskBoardModel.getContinentsMap().get("Australia").addCountryInContinent(country4);
-		int result = riskBoardModel.countArmiesBasedOnTerritories(playersData.get(0));
+		int result = riskBoardModel.countArmiesBasedOnTerritories(playersData.get(0), riskBoardView);
 		assertEquals(5, result);
 		
 	}
