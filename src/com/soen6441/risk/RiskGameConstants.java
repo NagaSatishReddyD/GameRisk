@@ -17,4 +17,6 @@ public class RiskGameConstants {
 	public static final String REINFORCEMENT_PHASE_INFO = "Current player can place their reinforcement armies on their countries";
 	public static final String ATTACK_PHASE_INFO = "Current player can attack other player's country in this phase";
 	public static final String FORTIFICATION_PHASE_INFO = "Current player can move their armies between their own countries";
+	public static final String ALL_OUT = "All Out";
+	public static final String NO_CONTINENTS_OWNED = "No continent owned";
 }

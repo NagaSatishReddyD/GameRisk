@@ -3,7 +3,6 @@ package com.soen6441.risk.model;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.TrayIcon.MessageType;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
@@ -18,8 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -53,7 +52,6 @@ public class RiskBoardModel{
 	private int currentPlayerIndex = 0;
 	private boolean isInitialPhase = true;
 	private List<Card> cardsList;
-
 	private boolean isOcuppiedTerritory = false;
 	int cardExchangeCount = 0;
 
@@ -65,7 +63,7 @@ public class RiskBoardModel{
 		try(BufferedReader reader = new BufferedReader(new FileReader(new File(fileName)))) {
 			int section = 0;
 			String line;
-			while((Objects.nonNull(line = reader.readLine()))) {
+			while(Objects.nonNull(line = reader.readLine())) {
 				if(line.trim().equals(RiskGameConstants.SECTION_ONE)) {
 					section = 1;
 				}else if(line.trim().equals(RiskGameConstants.SECTION_TWO)){
@@ -76,12 +74,70 @@ public class RiskBoardModel{
 					findTheSectionToParseData(section, line.trim());
 				}
 			}
-			verifyTheCountriesConnections();
+			verifyTheMapIsConnected();
 			createCardsData();
 		} catch (FileNotFoundException e) {
 			showErrorMessage("Problem with the file. Couldn't read the file", true);
 		} catch (IOException e) {
 			showErrorMessage("Problem while reading the file data", true);
+		}
+	}
+
+	/**
+	 * verifyTheMapIsConnected method checks the map is connected or not.
+	 */
+	private void verifyTheMapIsConnected() {
+		verifyTheCountriesConnections();
+		verifyTheContinentsConnections();
+	}
+
+	/**
+	 * verifyTheContinentsConnections method checks the continents are connected or not
+	 */
+	private void verifyTheContinentsConnections() {
+		List<String> continentsNamesList = continentsMap.keySet().stream().collect(Collectors.toList());
+		List<String> connectedContinentsList = new ArrayList<>();
+		connectedContinentsList.add(continentsNamesList.get(0));
+		int index = 0;
+		while(index < connectedContinentsList.size()) {
+			addAdjacentCotinentsToList(connectedContinentsList, connectedContinentsList.get(index));
+			index++;
+		}
+		if(continentsNamesList.size() != connectedContinentsList.size()) {
+			showErrorMessage("Continents are not connected. Please check the config file", true);
+		}
+	}
+
+	/**
+	 * addAdjacentCotinentsToList method checks the adjacent continent name and adds the name to the connectedContinentsList
+	 * @param continentName, current continent name where we checks with the connected the continent.
+	 * @param connectedContinentsList, list of continents connected.
+	 */
+	private void addAdjacentCotinentsToList(List<String> connectedContinentsList, String continentName) {
+		List<String> countriesNamesList = continentsMap.get(continentName).getCountriesInContinent().stream().map(country -> country.getCountryName()).collect(Collectors.toList());
+		for(String countryName : countriesNamesList) {
+			List<String> adjacentCountriesNameList = countriesMap.get(countryName).getAdjacentCountries().stream().map(country -> country.getCountryName()).collect(Collectors.toList());
+			while(!adjacentCountriesNameList.isEmpty()) {
+				String adjacentCountryName = adjacentCountriesNameList.get(0);
+				if(!countriesNamesList.contains(adjacentCountryName)) {
+					findContinentName(adjacentCountryName, connectedContinentsList);
+				}
+				adjacentCountriesNameList.remove(0);
+			}
+		}
+	}
+
+	/**
+	 * findContinentName method checks the adjacentCountryName belongs to which continent and adds the continent name in the connectedContinentsList.
+	 * @param adjacentCountryName, adjacent country name to which the continent is checked.
+	 * @param connectedContinentsList, list of continents connected
+	 */
+	private void findContinentName(String adjacentCountryName, List<String> connectedContinentsList) {
+		for(Entry<String, Continent> continent : continentsMap.entrySet()) {
+			List<String> countriesNamesList = continent.getValue().getCountriesInContinent().stream().map(country -> country.getCountryName()).collect(Collectors.toList());
+			if(countriesNamesList.contains(adjacentCountryName) && !connectedContinentsList.contains(continent.getKey())) {
+				connectedContinentsList.add(continent.getKey());
+			}
 		}
 	}
 
@@ -366,10 +422,13 @@ public class RiskBoardModel{
 		Map<String, List<Card>> cardsData = currentPlayer.getPlayerCards().stream().collect(Collectors.groupingBy(Card::getArmyType));
 		if(cardsData.size() == 3) {
 			List<String> cardsArmyName = new ArrayList<>();
-			for(Card card : playersCards) {
-				if(!cardsArmyName.contains(card.getArmyType())) {
-					cardsArmyName.add(card.getArmyType());
-					playersCards.remove(card);
+			int index = 0;
+			while(index < playersCards.size()) {
+				if(!cardsArmyName.contains(playersCards.get(index).getArmyType())) {
+					cardsArmyName.add(playersCards.get(index).getArmyType());
+					playersCards.remove(index);
+				}else {
+					index++;
 				}
 			}
 			if(++cardExchangeCount < 6) {
@@ -381,10 +440,13 @@ public class RiskBoardModel{
 			for(Entry<String, List<Card>> cards : cardsData.entrySet()) {
 				if(cards.getValue().size() >= 3) {
 					int count = 1;
-					for(Card card : playersCards) {
-						if(card.getArmyType().equals(cards.getValue().get(0).getArmyType())) {
-							playersCards.remove(card);
+					int index = 0;
+					while(index < playersCards.size()) {
+						if(playersCards.get(0).getArmyType().equals(cards.getValue().get(0).getArmyType())) {
+							playersCards.remove(index);
 							count++;
+						}else {
+							index++;
 						}
 						if(count == 3)
 							break;
@@ -634,7 +696,7 @@ public class RiskBoardModel{
 		Country opponentPlayerCountry = countriesMap.get(riskBoardView.getAdjacentCountryComboBox().getSelectedItem().toString());
 
 		Object [] possibilities = new Object [currentPlayerCountry.getArmiesOnCountry()];
-		possibilities[0] = "All Out";
+		possibilities[0] = RiskGameConstants.ALL_OUT;
 		for(int index = 1; index < currentPlayerCountry.getArmiesOnCountry(); index++) {
 			possibilities[index] = index;
 		}
@@ -648,7 +710,7 @@ public class RiskBoardModel{
 		}
 		int opponentDefendingArmies = opponentPlayerCountry.getArmiesOnCountry();
 		int currentPlayerAttackingArmies = 0;
-		if(currentPlayerOption.equals("All Out")) {
+		if(currentPlayerOption.equals(RiskGameConstants.ALL_OUT)) {
 			currentPlayerAttackingArmies  = currentPlayerCountry.getArmiesOnCountry() - 1;
 			currentPlayerDicesToRoll = getNumberOfDicesPlayerWantsToThrow(currentPlayerAttackingArmies, riskBoardView, 
 					currentPlayerAttackingArmies > 3? 3 : currentPlayerAttackingArmies, true);
@@ -705,7 +767,7 @@ public class RiskBoardModel{
 						opponentPlayerCountry.setArmiesOnCountry(armiesOnCountry);
 						currentPlayerCountry.incrementArmiesOnCountry(currentPlayerAttackingArmies - armiesOnCountry);
 						isOcuppiedTerritory = true;
-						isOpponentPlayerOutOfGame(opponentPlayerName, riskBoardView);
+						isOpponentPlayerOutOfGame(opponentPlayerName);
 					}
 				}while(Objects.isNull(armiesOnCountry));
 			}else if(currentPlayerAttackingArmies == 0 ){
@@ -723,9 +785,8 @@ public class RiskBoardModel{
 	 * isOpponentPlayerOutOfGame method checks whether the opponent player is done with the game if so
 	 * all opponent player cards will be given to attacked player.
 	 * @param opponentPlayerName, name of the defender player.
-	 * @param riskBoardView,instance of {@link RiskBoardView} object
 	 */
-	private void isOpponentPlayerOutOfGame(String opponentPlayerName, RiskBoardView riskBoardView) {
+	private void isOpponentPlayerOutOfGame(String opponentPlayerName) {
 		Player opponentPlayer = playersMap.get(opponentPlayerName);
 		if(!opponentPlayer.getTerritoryOccupied().isEmpty()) {
 			playersData.get(currentPlayerIndex).getPlayerCards().addAll(opponentPlayer.getPlayerCards());
@@ -839,7 +900,7 @@ public class RiskBoardModel{
 			view.getPlayer1MapPercentage().setText(format.format(percent));
 			listOfContinent = getOwnedContinent(player).trim();
 			if(listOfContinent.equals("")) {
-				view.getPlayer1ContinentControl().setText("No continent owned");
+				view.getPlayer1ContinentControl().setText(RiskGameConstants.NO_CONTINENTS_OWNED);
 			}else {
 				view.getPlayer1ContinentControl().setText(listOfContinent);
 			}
@@ -853,7 +914,7 @@ public class RiskBoardModel{
 			view.getPlayer2MapPercentage().setText(format.format(percent));
 			listOfContinent = getOwnedContinent(player).trim();
 			if(listOfContinent.equals("")) {
-				view.getPlayer2ContinentControl().setText("No continent owned");
+				view.getPlayer2ContinentControl().setText(RiskGameConstants.NO_CONTINENTS_OWNED);
 			}else {
 				view.getPlayer2ContinentControl().setText(listOfContinent);
 			}
@@ -867,7 +928,7 @@ public class RiskBoardModel{
 			view.getPlayer3MapPercentage().setText(format.format(percent));
 			listOfContinent = getOwnedContinent(player).trim();
 			if(listOfContinent.equals("")) {
-				view.getPlayer3ContinentControl().setText("No continent owned");
+				view.getPlayer3ContinentControl().setText(RiskGameConstants.NO_CONTINENTS_OWNED);
 			}else {
 				view.getPlayer3ContinentControl().setText(listOfContinent);
 			}
@@ -881,7 +942,7 @@ public class RiskBoardModel{
 			view.getPlayer4MapPercentage().setText(format.format(percent));
 			listOfContinent = getOwnedContinent(player).trim();
 			if(listOfContinent.equals("")) {
-				view.getPlayer4ContinentControl().setText("No continent owned");
+				view.getPlayer4ContinentControl().setText(RiskGameConstants.NO_CONTINENTS_OWNED);
 			}else {
 				view.getPlayer4ContinentControl().setText(listOfContinent);
 			}
@@ -895,7 +956,7 @@ public class RiskBoardModel{
 			view.getPlayer5MapPercentage().setText(format.format(percent));
 			listOfContinent = getOwnedContinent(player).trim();
 			if(listOfContinent.equals("")) {
-				view.getPlayer5ContinentControl().setText("No continent owned");
+				view.getPlayer5ContinentControl().setText(RiskGameConstants.NO_CONTINENTS_OWNED);
 			}else {
 				view.getPlayer5ContinentControl().setText(listOfContinent);
 			}
@@ -909,7 +970,7 @@ public class RiskBoardModel{
 			view.getPlayer6MapPercentage().setText(format.format(percent));
 			listOfContinent = getOwnedContinent(player).trim();
 			if(listOfContinent.equals("")) {
-				view.getPlayer6ContinentControl().setText("No continent owned");
+				view.getPlayer6ContinentControl().setText(RiskGameConstants.NO_CONTINENTS_OWNED);
 			}else {
 				view.getPlayer6ContinentControl().setText(listOfContinent);
 			}
@@ -927,11 +988,12 @@ public class RiskBoardModel{
 	 */
 	public String getOwnedContinent(Player player) {
 		StringBuilder ownedContinent = new StringBuilder();
-		for(String continentKey : continentsMap.keySet()) {
-			List<Country> contriesList = continentsMap.get(continentKey).getCountriesInContinent();
+		for(Entry<String, Continent> continentKey : continentsMap.entrySet()) {
+			List<Country> contriesList = continentKey.getValue().getCountriesInContinent();
 			Map<String, List<Country>> playersCountryData = contriesList.stream().collect(Collectors.groupingBy(Country::getPlayerName));
-			if(playersCountryData.containsKey(player.getPlayerName()) && playersCountryData.get(player.getPlayerName()).size() == contriesList.size()) {
-				ownedContinent.append(continentKey);
+			if(playersCountryData.containsKey(player.getPlayerName()) && 
+					playersCountryData.get(player.getPlayerName()).size() == contriesList.size()) {
+				ownedContinent.append(continentKey).append(" ");
 			}
 		}
 		return ownedContinent.toString();
