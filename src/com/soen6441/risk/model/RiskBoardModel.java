@@ -993,7 +993,7 @@ public class RiskBoardModel{
 			Map<String, List<Country>> playersCountryData = contriesList.stream().collect(Collectors.groupingBy(Country::getPlayerName));
 			if(playersCountryData.containsKey(player.getPlayerName()) && 
 					playersCountryData.get(player.getPlayerName()).size() == contriesList.size()) {
-				ownedContinent.append(continentKey).append(" ");
+				ownedContinent.append(continentKey.getKey()).append(" ");
 			}
 		}
 		return ownedContinent.toString();
