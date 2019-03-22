@@ -53,6 +53,7 @@ public class RiskBoardModel{
 	private int currentPlayerIndex = 0;
 	private boolean isInitialPhase = true;
 	private List<Card> cardsList;
+
 	private boolean isOcuppiedTerritory = false;
 	int cardExchangeCount = 0;
 
@@ -360,7 +361,7 @@ public class RiskBoardModel{
 	 * @param currentPlayer, current player object 
 	 * @return armies count, bonusArmiesToExchange.
 	 */
-	private int getExchangeCardsArmies(Player currentPlayer) {
+	public int getExchangeCardsArmies(Player currentPlayer) {
 		List<Card> playersCards = currentPlayer.getPlayerCards();
 		Map<String, List<Card>> cardsData = currentPlayer.getPlayerCards().stream().collect(Collectors.groupingBy(Card::getArmyType));
 		if(cardsData.size() == 3) {
@@ -404,7 +405,7 @@ public class RiskBoardModel{
 	 * @param currentPlayer, value of the currentplayer index
 	 * @return true, if the data has a perfect set to exchange the cards.
 	 */
-	private boolean checkExchangeSet(Player currentPlayer) {
+	public boolean checkExchangeSet(Player currentPlayer) {
 		Map<String, List<Card>> cardsData = currentPlayer.getPlayerCards().stream().collect(Collectors.groupingBy(Card::getArmyType));
 		if(cardsData.size() == 3) {
 			return true;
@@ -1001,5 +1002,13 @@ public class RiskBoardModel{
 	 */
 	public String getImageName() {
 		return imageName;
+	}
+	
+	/**
+	 * Return the complete list of cards
+	 * @return cardsList, the list contains all of the cards
+	 */
+	public List<Card> getCardsList() {
+		return cardsList;
 	}
 }

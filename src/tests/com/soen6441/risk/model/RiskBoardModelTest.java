@@ -1,5 +1,7 @@
 package tests.com.soen6441.risk.model;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
@@ -13,6 +15,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import com.soen6441.risk.Card;
 import com.soen6441.risk.Continent;
 import com.soen6441.risk.Country;
 import com.soen6441.risk.Player;
@@ -45,10 +48,14 @@ public class RiskBoardModelTest {
 		countriesMap = new HashMap<String, Country> ();
 		riskBoardView = new RiskBoardView();
 		playersData = new ArrayList<>();
-		playersData.add(new Player("Test 1", 2));
-		playersData.add(new Player("Test 2", 2));
-		playersData.add(new Player("Test 3", 2));
-		playersData.add(new Player("Test 4", 2));
+		playersData.add(new Player("Player 1", 2));
+		playersData.add(new Player("Player 2", 2));
+		playersData.add(new Player("Player 3", 2));
+		playersData.add(new Player("Player 4", 2));
+		playersData.get(0).getPlayerCards().add(new Card("Country A", "Infantry"));
+		playersData.get(0).getPlayerCards().add(new Card("Country B", "Infantry"));
+		playersData.get(0).getPlayerCards().add(new Card("Country C", "Cavalry"));
+		playersData.get(0).getPlayerCards().add(new Card("Country D", "Infantry"));
 		int playersCount = 4;
 		riskBoardModel.loadRequiredData(System.getProperty("user.dir")+"/resources/World.map");
 		riskBoardModel.assignCountriesToPlayers(playersCount);
@@ -100,13 +107,13 @@ public class RiskBoardModelTest {
 	@Test
 	public void testCalculateReinforcement() {
 		Country country1 = new Country("Indonesia");
-		country1.setPlayerName("Test 1");
+		country1.setPlayerName("Player 1");
 		Country country2 = new Country("Guinea");
-		country2.setPlayerName("Test 1");
+		country2.setPlayerName("Player 1");
 		Country country3 = new Country("Western Australia");
-		country3.setPlayerName("Test 1");
+		country3.setPlayerName("Player 1");
 		Country country4 = new Country("Eastern Australia");
-		country4.setPlayerName("Test 1");
+		country4.setPlayerName("Player 1");
 		playersData.get(0).addTerritory(playersData.get(0), country1);
 		playersData.get(0).addTerritory(playersData.get(0), country2);
 		playersData.get(0).addTerritory(playersData.get(0), country3);
@@ -121,6 +128,29 @@ public class RiskBoardModelTest {
 		
 	}
 	
+	@Test
+	public void testGetBonusArmiesOnContinent() {
+		Country country1 = new Country("Indonesia");
+		country1.setPlayerName("Player 1");
+		Country country2 = new Country("Guinea");
+		country2.setPlayerName("Player 1");
+		Country country3 = new Country("Western Australia");
+		country3.setPlayerName("Player 1");
+		Country country4 = new Country("Eastern Australia");
+		country4.setPlayerName("Player 1");
+		playersData.get(0).addTerritory(playersData.get(0), country1);
+		playersData.get(0).addTerritory(playersData.get(0), country2);
+		playersData.get(0).addTerritory(playersData.get(0), country3);
+		playersData.get(0).addTerritory(playersData.get(0), country4);
+		riskBoardModel.getContinentsMap().put("Australia", new Continent("Australia", 3));
+		riskBoardModel.getContinentsMap().get("Australia").addCountryInContinent(country1);
+		riskBoardModel.getContinentsMap().get("Australia").addCountryInContinent(country2);
+		riskBoardModel.getContinentsMap().get("Australia").addCountryInContinent(country3);
+		riskBoardModel.getContinentsMap().get("Australia").addCountryInContinent(country4);
+		int result = riskBoardModel.getBonusArmiesOnContinent(playersData.get(0));
+		assertEquals(3, result);
+		
+	}
 	
 	/**
 	 * testReadInvalidMap is used to test when reading an invalid map file
@@ -172,16 +202,16 @@ public class RiskBoardModelTest {
 	@Test
 	public void testGetTotalArmies() {
 		Country country1 = new Country("Indonesia");
-		country1.setPlayerName("Test 1");
+		country1.setPlayerName("Player 1");
 		country1.setArmiesOnCountry(3);
 		Country country2 = new Country("Guinea");
-		country2.setPlayerName("Test 1");
+		country2.setPlayerName("Player 1");
 		country2.setArmiesOnCountry(5);
 		Country country3 = new Country("Western Australia");
-		country3.setPlayerName("Test 1");
+		country3.setPlayerName("Player 1");
 		country3.setArmiesOnCountry(10);
 		Country country4 = new Country("Eastern Australia");
-		country4.setPlayerName("Test 1");
+		country4.setPlayerName("Player 1");
 		country4.setArmiesOnCountry(15);
 		playersData.get(0).addTerritory(playersData.get(0), country1);
 		playersData.get(0).addTerritory(playersData.get(0), country2);
@@ -198,13 +228,13 @@ public class RiskBoardModelTest {
 	@Test
 	public void testGetOwnedContinent() {
 		Country country1 = new Country("Indonesia");
-		country1.setPlayerName("Test 1");
+		country1.setPlayerName("Player 1");
 		Country country2 = new Country("Guinea");
-		country2.setPlayerName("Test 1");
+		country2.setPlayerName("Player 1");
 		Country country3 = new Country("Western Australia");
-		country3.setPlayerName("Test 1");
+		country3.setPlayerName("Player 1");
 		Country country4 = new Country("Eastern Australia");
-		country4.setPlayerName("Test 1");
+		country4.setPlayerName("Player 1");
 		playersData.get(0).addTerritory(playersData.get(0), country1);
 		playersData.get(0).addTerritory(playersData.get(0), country2);
 		playersData.get(0).addTerritory(playersData.get(0), country3);
@@ -240,11 +270,11 @@ public class RiskBoardModelTest {
 	@Test
 	public void testIsCountriesOwnedByPlayers() {
 		Country country1 = new Country("Country A");
-		country1.setPlayerName("Test 1");
+		country1.setPlayerName("Player 1");
 		Country country2 = new Country("Country B");
-		country2.setPlayerName("Test 2");
+		country2.setPlayerName("Player 2");
 		Country country3 = new Country("Country C");
-		country3.setPlayerName("Test 1");
+		country3.setPlayerName("Player 1");
 		boolean result1 = riskBoardModel.isCountriesOwnedByPlayers(country1, country2);
 		boolean result2 = riskBoardModel.isCountriesOwnedByPlayers(country1, country3);
 		assertEquals(false, result1);
@@ -357,6 +387,25 @@ public class RiskBoardModelTest {
 	@Test 
 	public void testCreateCountries(){
 		assertEquals(42, riskBoardModel.getCountriesList().size());
+	}
+	
+	/**
+	 * This method is used to test if the checkExchangeSet method correctly checked if the player has a set of cards
+	 * to exchange or not
+	 */
+	@Test
+	public void testCheckExchangeSet() {
+		boolean result = riskBoardModel.checkExchangeSet(playersData.get(0));
+		assertTrue(result);
+	}
+	
+	/**
+	 * This method is used to test if after loading the map, the correct number of cards is generated that equals
+	 * to the number of countries
+	 */
+	@Test
+	public void testCreateCardsData() {
+		assertEquals(42, riskBoardModel.getCardsList().size());
 	}
 	
 }
