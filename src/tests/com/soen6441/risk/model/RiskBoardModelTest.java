@@ -1,5 +1,6 @@
 package tests.com.soen6441.risk.model;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -51,14 +52,13 @@ public class RiskBoardModelTest {
 		playersData.add(new Player("Player 2", 2));
 		playersData.add(new Player("Player 3", 2));
 		playersData.add(new Player("Player 4", 2));
+		int playersCount = 4;
+		riskBoardModel.loadRequiredData(System.getProperty("user.dir")+"/resources/World.map");
+		riskBoardModel.assignCountriesToPlayers(playersCount);
 		playersData.get(0).getPlayerCards().add(new Card("Country A", "Infantry"));
 		playersData.get(0).getPlayerCards().add(new Card("Country B", "Infantry"));
 		playersData.get(0).getPlayerCards().add(new Card("Country C", "Cavalry"));
 		playersData.get(0).getPlayerCards().add(new Card("Country D", "Infantry"));
-		int playersCount = 4;
-		riskBoardModel.loadRequiredData(System.getProperty("user.dir")+"/resources/World.map");
-		riskBoardModel.assignCountriesToPlayers(playersCount);
-
 	}
 	
 	
@@ -382,17 +382,27 @@ public class RiskBoardModelTest {
 	 */
 	@Test
 	public void testCheckExchangeSet() {
+		playersData.get(0).getPlayerCards().add(new Card("Country A", "Infantry"));
+		playersData.get(0).getPlayerCards().add(new Card("Country B", "Infantry"));
+		playersData.get(0).getPlayerCards().add(new Card("Country C", "Cavalry"));
+		playersData.get(0).getPlayerCards().add(new Card("Country D", "Infantry"));
 		boolean result = riskBoardModel.checkExchangeSet(playersData.get(0));
 		assertTrue(result);
 	}
 	
 	/**
 	 * This method is used to test if after loading the map, the correct number of cards is generated that equals
-	 * to the number of countries
+	 * to the total number of countries
 	 */
 	@Test
 	public void testCreateCardsData() {
 		assertEquals(42, riskBoardModel.getCardsList().size());
+	}
+	
+	@Test
+	public void testGetExchangeCardsArmies() {
+		int result = riskBoardModel.getExchangeCardsArmies(playersData.get(0));
+		assertEquals(4, result);
 	}
 	
 }
