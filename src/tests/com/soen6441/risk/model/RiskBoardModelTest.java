@@ -21,9 +21,12 @@ import com.soen6441.risk.Player;
 import com.soen6441.risk.RiskGameConstants;
 import com.soen6441.risk.model.RiskBoardModel;
 import com.soen6441.risk.view.RiskBoardView;
+
 /**
- * RiskBoardModelTest class contains unit test cases to check the functionalities for in the RiskBoardModel file
- * @author Tosin 
+ * RiskBoardModelTest class contains unit test cases to check the
+ * functionalities for in the RiskBoardModel file
+ * 
+ * @author Tosin
  * @author Yinka
  * 
  */
@@ -34,17 +37,17 @@ public class RiskBoardModelTest {
 	private static HashMap<String, Country> countriesMap;
 	static RiskBoardView riskBoardView;
 	static List<Player> playersData;
-	
-	
+
 	/**
-	 * test for setUpBefore: ALL variables instantiated for the tests are defined here
+	 * test for setUpBefore: ALL variables instantiated for the tests are defined
+	 * here
 	 * 
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		riskBoardModel = new RiskBoardModel();
 		continentsMap = new HashMap<String, Continent>();
-		countriesMap = new HashMap<String, Country> ();
+		countriesMap = new HashMap<String, Country>();
 		riskBoardView = new RiskBoardView();
 		playersData = new ArrayList<>();
 		playersData.add(new Player("Player 1", 2));
@@ -52,41 +55,41 @@ public class RiskBoardModelTest {
 		playersData.add(new Player("Player 3", 2));
 		playersData.add(new Player("Player 4", 2));
 		int playersCount = 4;
-		riskBoardModel.loadRequiredData(System.getProperty("user.dir")+"/resources/World.map");
+		riskBoardModel.loadRequiredData(System.getProperty("user.dir") + "/resources/World.map");
 		riskBoardModel.assignCountriesToPlayers(playersCount);
 		playersData.get(0).getPlayerCards().add(new Card("Country A", "Infantry"));
 		playersData.get(0).getPlayerCards().add(new Card("Country B", "Infantry"));
 		playersData.get(0).getPlayerCards().add(new Card("Country C", "Cavalry"));
 		playersData.get(0).getPlayerCards().add(new Card("Country D", "Infantry"));
 	}
-	
-	
+
 	/**
-	 * testCreateCountinents to check the CreateCountinents method works as expected, a sample Array
-	 * of continent list created and compared with output from the object
+	 * testCreateCountinents to check the CreateCountinents method works as
+	 * expected, a sample Array of continent list created and compared with output
+	 * from the object
 	 */
 	@Test
 	public void testCreateCountinents() {
-		String [] linesArray = {"North America=5","South America=2","Africa=3","Europe=5","Asia=7","Australia=2"};
+		String[] linesArray = { "North America=5", "South America=2", "Africa=3", "Europe=5", "Asia=7", "Australia=2" };
 		continentsMap.put("North America", new Continent("North America", 5));
 		continentsMap.put("South America", new Continent("South America", 2));
 		continentsMap.put("Africa", new Continent("Africa", 3));
 		continentsMap.put("Europe", new Continent("Europe", 5));
 		continentsMap.put("Asia", new Continent("Asia", 7));
 		continentsMap.put("Australia", new Continent("Australia", 2));
-		for(int i = 0; i< linesArray.length;i++) {
+		for (int i = 0; i < linesArray.length; i++) {
 			riskBoardModel.createCountinents(linesArray[i]);
 		}
 		assertEquals(continentsMap.size(), riskBoardModel.getContinentsMap().size());
 		assertEquals(5, riskBoardModel.getContinentsMap().get("North America").getArmiesGainedAfterConquer());
 		assertEquals(3, riskBoardModel.getContinentsMap().get("Africa").getArmiesGainedAfterConquer());
-	
+
 	}
-	
-	
+
 	/**
-	 * testUpdateTheBoardScreenData to check theUpdateTheBoardScreenData method works as expected, a sample for 2 players was initialized
-	 * and tested
+	 * testUpdateTheBoardScreenData to check theUpdateTheBoardScreenData method
+	 * works as expected, a sample for 2 players was initialized and tested
+	 * 
 	 * @throws IOException NoSuchAlgorithmException
 	 */
 	@Test
@@ -96,11 +99,11 @@ public class RiskBoardModelTest {
 		assertEquals(riskBoardView.getEndAttackButton().isVisible(), false);
 		assertEquals(riskBoardView.getReinforceBtn().isVisible(), true);
 	}
-	
-	
+
 	/**
-	 * TestCalculateReinforcement is used to test the calculation of reinforce armies at the beginning of the player's turn
-	 * Expected result to be success for this test case
+	 * TestCalculateReinforcement is used to test the calculation of reinforce
+	 * armies at the beginning of the player's turn Expected result to be success
+	 * for this test case
 	 */
 	@Test
 	public void testCalculateReinforcement() {
@@ -123,9 +126,9 @@ public class RiskBoardModelTest {
 		riskBoardModel.getContinentsMap().get("Australia").addCountryInContinent(country4);
 		int result = riskBoardModel.countArmiesBasedOnTerritories(playersData.get(0), riskBoardView);
 		assertEquals(5, result);
-		
+
 	}
-	
+
 	@Test
 	public void testGetBonusArmiesOnContinent() {
 		Country country1 = new Country("Indonesia");
@@ -147,22 +150,23 @@ public class RiskBoardModelTest {
 		riskBoardModel.getContinentsMap().get("Australia").addCountryInContinent(country4);
 		int result = riskBoardModel.getBonusArmiesOnContinent(playersData.get(0));
 		assertEquals(3, result);
-		
+
 	}
-	
+
 	/**
-	 * testReadInvalidMap is used to test when reading an invalid map file
-	 * Expected to be failed when loading the map
+	 * testReadInvalidMap is used to test when reading an invalid map file Expected
+	 * to be failed when loading the map
+	 * 
 	 * @throws IOException
 	 */
 	@Ignore
 	public void testReadInvalidMap() throws IOException {
-		riskBoardModel.loadRequiredData(System.getProperty("user.dir")+"/resources/001_I72_GhTroc 720.map");
+		riskBoardModel.loadRequiredData(System.getProperty("user.dir") + "/resources/001_I72_GhTroc 720.map");
 	}
 
-	
 	/**
 	 * This test case is used to test the EndFortification Phase
+	 * 
 	 * @throws NoSuchAlgorithmException
 	 */
 	@Test
@@ -171,15 +175,14 @@ public class RiskBoardModelTest {
 		assertEquals(riskBoardModel.isInitialPhase(), true);
 	}
 
-	
 	/**
 	 * This test case is used to test the object loads the world map correctly
-	  */
+	 */
 	@Test
 	public void testLoadRequiredData() throws IOException {
-		riskBoardModel.loadRequiredData(System.getProperty("user.dir")+"/resources/World.map");
+		riskBoardModel.loadRequiredData(System.getProperty("user.dir") + "/resources/World.map");
 	}
-	
+
 	/**
 	 * testEndAttackPhase is used to test the End Attack phase correctly
 	 */
@@ -191,11 +194,11 @@ public class RiskBoardModelTest {
 		assertEquals(riskBoardView.getEndAttackButton().isVisible(), false);
 		assertEquals(riskBoardView.getMoveArmiesBtn().isVisible(), true);
 		assertEquals(riskBoardView.getEndFortificationBtn().isVisible(), true);
-}
+	}
 
 	/**
-	 * testGetTotalArmies is used to test the getTotalArmies method to calculate
-	 * the total armies owned by a player
+	 * testGetTotalArmies is used to test the getTotalArmies method to calculate the
+	 * total armies owned by a player
 	 */
 	@Test
 	public void testGetTotalArmies() {
@@ -218,7 +221,7 @@ public class RiskBoardModelTest {
 		int armies = riskBoardModel.getTotalArmies(playersData.get(0));
 		assertEquals(33, armies);
 	}
-	
+
 	/**
 	 * testGetOwnedContinent is used to test the getOwnedContinent method to check
 	 * if a player owns any continent
@@ -240,27 +243,29 @@ public class RiskBoardModelTest {
 		String result = riskBoardModel.getOwnedContinent(playersData.get(0)).trim();
 		assertEquals("Australia", result);
 	}
-	
+
 	/**
-	 * This method is used to test the findImageName method
-	 * to check after reading the map file whether the method get the correct image name file
+	 * This method is used to test the findImageName method to check after reading
+	 * the map file whether the method get the correct image name file
 	 */
 	@Test
 	public void testFindImageName() {
 		assertEquals("world.bmp", riskBoardModel.getImageName());
 	}
-	
+
 	/**
-	 * This method is used to test if the correct buttons are visible for Reinforcement phase
+	 * This method is used to test if the correct buttons are visible for
+	 * Reinforcement phase
 	 */
 	@Test
 	public void testEnableDisableButtonsForReinforcementPhase() {
 		riskBoardModel.enableDisableButtons(RiskGameConstants.REINFORCEMENT_PHASE, riskBoardView);
 		assertEquals(true, riskBoardView.getReinforceBtn().isVisible());
 	}
-	
+
 	/**
-	 * This method is used to test if the correct buttons are visible for attack phase
+	 * This method is used to test if the correct buttons are visible for attack
+	 * phase
 	 */
 	@Test
 	public void testEnableDisableButtonsForAttackPhase() {
@@ -268,9 +273,10 @@ public class RiskBoardModelTest {
 		assertEquals(true, riskBoardView.getAttackBtn().isVisible());
 		assertEquals(true, riskBoardView.getEndAttackButton().isVisible());
 	}
-	
+
 	/**
-	 * This method is used to test if the correct buttons are visible for fortification phase
+	 * This method is used to test if the correct buttons are visible for
+	 * fortification phase
 	 */
 	@Test
 	public void testEnableDisableButtonsForFortificationPhase() {
@@ -278,9 +284,10 @@ public class RiskBoardModelTest {
 		assertEquals(true, riskBoardView.getMoveArmiesBtn().isVisible());
 		assertEquals(true, riskBoardView.getEndFortificationBtn().isVisible());
 	}
-	
+
 	/**
-	 * This method is used to test if the calculation of armies based on the number of countries owned by a player is correct
+	 * This method is used to test if the calculation of armies based on the number
+	 * of countries owned by a player is correct
 	 */
 	@Test
 	public void testGetBonusArmiesOnTerritories() {
@@ -319,9 +326,10 @@ public class RiskBoardModelTest {
 		assertEquals(3, result1);
 		assertEquals(3, result2);
 	}
-	
+
 	/**
-	 * This method is used to test if the Reinforcement phase information is shown correctly
+	 * This method is used to test if the Reinforcement phase information is shown
+	 * correctly
 	 */
 	@Test
 	public void testReinforcementPhaseView() {
@@ -329,9 +337,10 @@ public class RiskBoardModelTest {
 		String phase = riskBoardView.getCurrentPhase().getText().trim();
 		assertEquals("Reinforcement phase", phase);
 	}
-	
+
 	/**
-	 * This method is used to test if the Attack phase information is shown correctly
+	 * This method is used to test if the Attack phase information is shown
+	 * correctly
 	 */
 	@Test
 	public void testAttackPhaseView() {
@@ -339,9 +348,10 @@ public class RiskBoardModelTest {
 		String phase = riskBoardView.getCurrentPhase().getText().trim();
 		assertEquals("Attack phase", phase);
 	}
-	
+
 	/**
-	 * This method is used to test if the Fortification phase information is shown correctly
+	 * This method is used to test if the Fortification phase information is shown
+	 * correctly
 	 */
 	@Test
 	public void testFortificationPhaseView() {
@@ -349,18 +359,19 @@ public class RiskBoardModelTest {
 		String phase = riskBoardView.getCurrentPhase().getText().trim();
 		assertEquals("Fortification phase", phase);
 	}
-	
+
 	/**
-	 * This method is used to test if after reading the map file, a correct list of countries is created
+	 * This method is used to test if after reading the map file, a correct list of
+	 * countries is created
 	 */
-	@Test 
-	public void testCreateCountries(){
+	@Test
+	public void testCreateCountries() {
 		assertEquals(42, riskBoardModel.getCountriesList().size());
 	}
-	
+
 	/**
-	 * This method is used to test if the checkExchangeSet method correctly checked if the player has a set of cards
-	 * to exchange or not
+	 * This method is used to test if the checkExchangeSet method correctly checked
+	 * if the player has a set of cards to exchange or not
 	 */
 	@Test
 	public void testCheckExchangeSet() {
@@ -371,20 +382,20 @@ public class RiskBoardModelTest {
 		boolean result = riskBoardModel.checkExchangeSet(playersData.get(0));
 		assertTrue(result);
 	}
-	
+
 	/**
-	 * This method is used to test if after loading the map, the correct number of cards is generated that equals
-	 * to the total number of countries
+	 * This method is used to test if after loading the map, the correct number of
+	 * cards is generated that equals to the total number of countries
 	 */
 	@Test
 	public void testCreateCardsData() {
 		assertEquals(42, riskBoardModel.getCardsList().size());
 	}
-	
+
 	@Test
 	public void testGetExchangeCardsArmies() {
 		int result = riskBoardModel.getExchangeCardsArmies(playersData.get(0));
 		assertEquals(4, result);
 	}
-	
+
 }

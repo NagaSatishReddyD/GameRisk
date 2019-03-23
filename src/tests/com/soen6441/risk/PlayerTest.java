@@ -6,7 +6,7 @@ package tests.com.soen6441.risk;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.BeforeClass;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.soen6441.risk.Country;
 import com.soen6441.risk.Player;
@@ -17,12 +17,12 @@ import com.soen6441.risk.view.RiskBoardView;
  * @author Naga Satish Reddy
  *
  */
-class PlayerTest {
+public class PlayerTest {
 	static Player player;
 	static RiskBoardView riskBoardView;
 
 	@BeforeClass
-	static void setUpBeforeClass() {
+	public static void setUpBeforeClass() {
 		player = new Player("Player 1", 2);
 		riskBoardView = new RiskBoardView();
 	}
