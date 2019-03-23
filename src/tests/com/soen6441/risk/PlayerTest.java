@@ -12,6 +12,7 @@ import com.soen6441.risk.Player;
 import com.soen6441.risk.view.RiskBoardView;
 
 /**
+ * Player class is used to test the {@link Player} methods.
  * @author Naga Satish Reddy
  *
  */
