@@ -246,4 +246,42 @@ public class Player {
 		}
 		return Objects.nonNull(dicesToThrow) ? dicesToThrow : 0;
 	}
+
+	/**
+	 * moveArmiesBetweenInCountries method is used to move armies between neighboring countries
+	 * @param country, from which country armies need to move.
+	 * @param adjacentCountry, to which country armies need to move.
+	 * @param riskBoardview, RiskBoardView object used to update the components of the screen
+	 */
+	public void moveArmiesBetweenCountries(Country country, Country adjacentCountry, RiskBoardView riskBoardview) {
+		if(country.getArmiesOnCountry() == 0){
+			JOptionPane.showMessageDialog(riskBoardview.getBoardFrame(), "No armies on selected country to move");
+		}else if(!isCountriesOwnedByPlayers(country, adjacentCountry)) {
+			JOptionPane.showMessageDialog(riskBoardview.getBoardFrame(), "Selected Adjacent Country is owned by another player");
+		}else {
+			Object [] possibilities = new Object [country.getArmiesOnCountry() - 1];
+			for(int index = 0; index < possibilities.length; index++) {
+				possibilities[index] = index+1;
+			}
+			Integer selectedValue = (Integer)JOptionPane.showInputDialog(riskBoardview.getBoardFrame(),"Please enter armies to be added", "Armies To Add",
+					JOptionPane.INFORMATION_MESSAGE, null,possibilities, possibilities[0]);
+
+			if(Objects.nonNull(selectedValue)) {
+				country.decreaseArmiesOnCountry(selectedValue);
+				adjacentCountry.incrementArmiesOnCountry(selectedValue);
+				riskBoardview.getArmiesCountAvailableLabel().setText(String.valueOf(this.getArmyCountAvailable()));
+			}
+		}
+	}
+	
+	/**
+	 * isCountriesOwnedByPlayers method is used to check whether the two countries are owned by the same player or not.
+	 * @param country, one of the country from the {@link RiskBoardView#getCountryComboBox()}
+	 * @param adjacentCountry, one of the country from the {@link RiskBoardView#getAdjacentCountryComboBox()}
+	 * @return true, if the both country and adjacent countries belong to current player
+	 * 		   false, if the both country and adjacent countries doesn't belong to current player  
+	 */
+	public boolean isCountriesOwnedByPlayers(Country country, Country adjacentCountry) {
+		return country.getPlayerName().trim().equalsIgnoreCase(adjacentCountry.getPlayerName().trim());
+	}
 }

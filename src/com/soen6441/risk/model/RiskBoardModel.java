@@ -575,42 +575,14 @@ public class RiskBoardModel{
 
 	/**
 	 * moveArmiesBetweenInCountries method is used to move armies between neighboring countries
-	 * @param view, RiskBoardView object used to update the components of the screen
+	 * @param riskBoardview, RiskBoardView object used to update the components of the screen
 	 */
-	public void moveArmiesBetweenCountries(RiskBoardView view) {
+	public void moveArmiesBetweenCountries(RiskBoardView riskBoardview) {
 		Player currentPlayer = playersData.get(currentPlayerIndex);
-		Country country = countriesMap.get(view.getCountryComboBox().getSelectedItem().toString());
-		Country adjacentCountry = countriesMap.get(view.getAdjacentCountryComboBox().getSelectedItem().toString());
-		if(country.getArmiesOnCountry() == 0){
-			JOptionPane.showMessageDialog(view.getBoardFrame(), "No armies on selected country to move");
-		}else if(!isCountriesOwnedByPlayers(country, adjacentCountry)) {
-			JOptionPane.showMessageDialog(view.getBoardFrame(), "Selected Adjacent Country is owned by another player");
-		}else {
-			Object [] possibilities = new Object [country.getArmiesOnCountry() - 1];
-			for(int index = 0; index < possibilities.length; index++) {
-				possibilities[index] = index+1;
-			}
-			Integer selectedValue = (Integer)JOptionPane.showInputDialog(view.getBoardFrame(),"Please enter armies to be added", "Armies To Add",
-					JOptionPane.INFORMATION_MESSAGE, null,possibilities, possibilities[0]);
-
-			if(Objects.nonNull(selectedValue)) {
-				country.decreaseArmiesOnCountry(selectedValue);
-				adjacentCountry.incrementArmiesOnCountry(selectedValue);
-				view.getArmiesCountAvailableLabel().setText(String.valueOf(currentPlayer.getArmyCountAvailable()));
-				createOrUpdateImage(view);
-			}
-		}
-	}
-
-	/**
-	 * isCountriesOwnedByPlayers method is used to check whether the two countries are owned by the same player or not.
-	 * @param country, one of the country from the {@link RiskBoardView#getCountryComboBox()}
-	 * @param adjacentCountry, one of the country from the {@link RiskBoardView#getAdjacentCountryComboBox()}
-	 * @return true, if the both country and adjacent countries belong to current player
-	 * 		   false, if the both country and adjacent countries doesn't belong to current player  
-	 */
-	public boolean isCountriesOwnedByPlayers(Country country, Country adjacentCountry) {
-		return country.getPlayerName().trim().equalsIgnoreCase(adjacentCountry.getPlayerName().trim());
+		Country country = countriesMap.get(riskBoardview.getCountryComboBox().getSelectedItem().toString());
+		Country adjacentCountry = countriesMap.get(riskBoardview.getAdjacentCountryComboBox().getSelectedItem().toString());
+		currentPlayer.moveArmiesBetweenCountries(country, adjacentCountry, riskBoardview);
+		createOrUpdateImage(riskBoardview);
 	}
 
 	/**

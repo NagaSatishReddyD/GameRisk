@@ -1,6 +1,5 @@
 package tests.com.soen6441.risk.model;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -249,23 +248,6 @@ public class RiskBoardModelTest {
 	@Test
 	public void testFindImageName() {
 		assertEquals("world.bmp", riskBoardModel.getImageName());
-	}
-	
-	/**
-	 * This method is used to test if 2 adjacent countries is owned by one player or not
-	 */
-	@Test
-	public void testIsCountriesOwnedByPlayers() {
-		Country country1 = new Country("Country A");
-		country1.setPlayerName("Player 1");
-		Country country2 = new Country("Country B");
-		country2.setPlayerName("Player 2");
-		Country country3 = new Country("Country C");
-		country3.setPlayerName("Player 1");
-		boolean result1 = riskBoardModel.isCountriesOwnedByPlayers(country1, country2);
-		boolean result2 = riskBoardModel.isCountriesOwnedByPlayers(country1, country3);
-		assertEquals(false, result1);
-		assertEquals(true, result2);
 	}
 	
 	/**
