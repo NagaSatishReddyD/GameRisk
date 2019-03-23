@@ -31,7 +31,6 @@ import javax.swing.JOptionPane;
 import com.soen6441.risk.Card;
 import com.soen6441.risk.Continent;
 import com.soen6441.risk.Country;
-import com.soen6441.risk.Dice;
 import com.soen6441.risk.Player;
 import com.soen6441.risk.RiskGameConstants;
 import com.soen6441.risk.view.RiskBoardView;
@@ -516,27 +515,15 @@ public class RiskBoardModel{
 
 	/**
 	 * updateArmiesInCountries method is used to update the armies in the contries by using a dialog
-	 * @param view, RiskBoardView object used to update the components of the screen
+	 * @param riskBoardView, RiskBoardView object used to update the components of the screen
 	 */
-	public void updateArmiesInCountries(RiskBoardView view) {
+	public void updateArmiesInCountries(RiskBoardView riskBoardView) {
 		Player currentPlayer = playersData.get(currentPlayerIndex);
-
-		Object [] possibilities = new Object [currentPlayer.getArmyCountAvailable()];
-		for(int index = 0; index < currentPlayer.getArmyCountAvailable(); index++) {
-			possibilities[index] = index+1;
-		}
-		Integer selectedValue = (Integer)JOptionPane.showInputDialog(view.getBoardFrame(),"Please enter armies to be added", "Armies To Add",
-				JOptionPane.INFORMATION_MESSAGE, null,possibilities, possibilities[0]);
-
-		if(Objects.nonNull(selectedValue)) {
-			Country country = countriesMap.get(view.getCountryComboBox().getSelectedItem().toString());
-			country.incrementArmiesOnCountry(selectedValue);
-			currentPlayer.decrementArmy(selectedValue);
-			view.getArmiesCountAvailableLabel().setText(String.valueOf(currentPlayer.getArmyCountAvailable()));
-			createOrUpdateImage(view);
-			if(currentPlayer.getArmyCountAvailable() == 0) {
-				nextPlayer(view);
-			}
+		Country country = countriesMap.get(riskBoardView.getCountryComboBox().getSelectedItem().toString());
+		currentPlayer.reinforceArmyToCountry(country, riskBoardView);
+		createOrUpdateImage(riskBoardView);
+		if(currentPlayer.getArmyCountAvailable() == 0) {
+			nextPlayer(riskBoardView);
 		}
 	}
 
@@ -691,107 +678,14 @@ public class RiskBoardModel{
 	 */
 	public void attackBetweenCountries(RiskBoardView riskBoardView) {
 		Player currentPlayer = playersData.get(currentPlayerIndex);
-
 		Country currentPlayerCountry = countriesMap.get(riskBoardView.getCountryComboBox().getSelectedItem().toString());
 		Country opponentPlayerCountry = countriesMap.get(riskBoardView.getAdjacentCountryComboBox().getSelectedItem().toString());
-
-		Object [] possibilities = new Object [currentPlayerCountry.getArmiesOnCountry()];
-		possibilities[0] = RiskGameConstants.ALL_OUT;
-		for(int index = 1; index < currentPlayerCountry.getArmiesOnCountry(); index++) {
-			possibilities[index] = index;
-		}
-
-		Object currentPlayerOption = 0;
-		int currentPlayerDicesToRoll = 0;
-		int opponentPlayerDicesToRoll = 0;
-		if(possibilities.length >= 1) {
-			currentPlayerOption = JOptionPane.showInputDialog(riskBoardView.getBoardFrame(),"How many armies to be used to attack", "Armies To Attack",
-					JOptionPane.INFORMATION_MESSAGE, null,possibilities, possibilities[0]);
-		}
-		int opponentDefendingArmies = opponentPlayerCountry.getArmiesOnCountry();
-		int currentPlayerAttackingArmies = 0;
-		if(currentPlayerOption.equals(RiskGameConstants.ALL_OUT)) {
-			currentPlayerAttackingArmies  = currentPlayerCountry.getArmiesOnCountry() - 1;
-			currentPlayerDicesToRoll = getNumberOfDicesPlayerWantsToThrow(currentPlayerAttackingArmies, riskBoardView, 
-					currentPlayerAttackingArmies > 3? 3 : currentPlayerAttackingArmies, true);
-			opponentPlayerDicesToRoll = getNumberOfDicesPlayerWantsToThrow(opponentDefendingArmies, riskBoardView, 
-					opponentDefendingArmies > 2 ? 2 : opponentDefendingArmies, false);
-
-		}else if((Integer)currentPlayerOption > 0) {
-			currentPlayerAttackingArmies = (Integer)currentPlayerOption;
-			currentPlayerDicesToRoll = getNumberOfDicesPlayerWantsToThrow(currentPlayerAttackingArmies, riskBoardView, -1, true);
-			opponentPlayerDicesToRoll = getNumberOfDicesPlayerWantsToThrow(opponentDefendingArmies, riskBoardView, -1, false);
-		}
-		if(currentPlayerDicesToRoll != 0 && opponentPlayerDicesToRoll != 0) {
-			currentPlayerCountry.decreaseArmiesOnCountry(currentPlayerAttackingArmies);
-			opponentPlayerCountry.decreaseArmiesOnCountry(opponentDefendingArmies);
-			do {
-				try {
-					currentPlayerDicesToRoll = getNumberOfDicesPlayerWantsToThrow(currentPlayerAttackingArmies, riskBoardView, currentPlayerDicesToRoll, true);
-					opponentPlayerDicesToRoll = getNumberOfDicesPlayerWantsToThrow(opponentDefendingArmies, riskBoardView, opponentPlayerDicesToRoll, false);
-					Integer[] currentPlayerDice = new Dice().diceRoll(currentPlayerDicesToRoll);
-					System.out.print("Current Player Dices: ");
-					printDicesValues(currentPlayerDice);
-					Integer[] opponentPlayerDice = new Dice().diceRoll(opponentPlayerDicesToRoll);
-					System.out.print("Opponent Player Dices: ");
-					printDicesValues(opponentPlayerDice);
-					if(currentPlayerDice[0] > opponentPlayerDice[0])
-						opponentDefendingArmies--;
-					else
-						currentPlayerAttackingArmies--;
-					if(opponentPlayerDice.length > 1 && currentPlayerDice.length > 1) {
-						if(currentPlayerDice[1] > opponentPlayerDice[1])
-							opponentDefendingArmies--;
-						else
-							currentPlayerAttackingArmies--;
-					}
-				} catch (NoSuchAlgorithmException e) {
-					System.out.println(e.getMessage());
-				}
-			} while (currentPlayerAttackingArmies != 0 && opponentDefendingArmies != 0);
-			if(currentPlayerAttackingArmies > 0) {
-				Integer armiesOnCountry;
-				JOptionPane.showMessageDialog(riskBoardView.getBoardFrame(), currentPlayer.getPlayerName()+" WON ");
-				do {
-					possibilities = new Object [currentPlayerAttackingArmies];
-					for(int index = 0; index < currentPlayerAttackingArmies; index++) {
-						possibilities[index] = index+1;
-					}
-					armiesOnCountry = (Integer) JOptionPane.showInputDialog(riskBoardView.getBoardFrame(),"How many armies you want to place on conquered terriroty", "Armies To Attack",
-							JOptionPane.INFORMATION_MESSAGE, null,possibilities, possibilities[0]);
-					if(Objects.nonNull(armiesOnCountry)) {
-						String opponentPlayerName = opponentPlayerCountry.getPlayerName();
-						playersMap.get(opponentPlayerCountry.getPlayerName()).getTerritoryOccupied().remove(opponentPlayerCountry);
-						currentPlayer.getTerritoryOccupied().add(opponentPlayerCountry);
-						opponentPlayerCountry.setPlayerName(currentPlayer.getPlayerName());
-						opponentPlayerCountry.setArmiesOnCountry(armiesOnCountry);
-						currentPlayerCountry.incrementArmiesOnCountry(currentPlayerAttackingArmies - armiesOnCountry);
-						isOcuppiedTerritory = true;
-						isOpponentPlayerOutOfGame(opponentPlayerName);
-					}
-				}while(Objects.isNull(armiesOnCountry));
-			}else if(currentPlayerAttackingArmies == 0 ){
-				opponentPlayerCountry.setArmiesOnCountry(opponentDefendingArmies);
-				JOptionPane.showMessageDialog(riskBoardView.getBoardFrame(), opponentPlayerCountry.getPlayerName()+" WON ");
-			}
-			updateTheBoardScreenData(riskBoardView, RiskGameConstants.ATTACK_PHASE);
-			isPlayerWonTheGame();
-		}else {
-			showErrorMessage("You don't have enough armies to attack", false);
-		}
-	}
-
-	/**
-	 * isOpponentPlayerOutOfGame method checks whether the opponent player is done with the game if so
-	 * all opponent player cards will be given to attacked player.
-	 * @param opponentPlayerName, name of the defender player.
-	 */
-	private void isOpponentPlayerOutOfGame(String opponentPlayerName) {
-		Player opponentPlayer = playersMap.get(opponentPlayerName);
-		if(!opponentPlayer.getTerritoryOccupied().isEmpty()) {
-			playersData.get(currentPlayerIndex).getPlayerCards().addAll(opponentPlayer.getPlayerCards());
-			opponentPlayer.resetCards();
-		}
+		Player opponentPlayer = playersMap.get(opponentPlayerCountry.getPlayerName());
+		boolean isWon = currentPlayer.attackBetweenCountries(currentPlayerCountry, opponentPlayerCountry, riskBoardView, opponentPlayer);
+		if(!isOcuppiedTerritory)
+			isOcuppiedTerritory = isWon;
+		updateTheBoardScreenData(riskBoardView, RiskGameConstants.ATTACK_PHASE);
+		isPlayerWonTheGame();
 	}
 
 	/**
@@ -830,44 +724,6 @@ public class RiskBoardModel{
 		if(currentPlayer.getTerritoryOccupied().size() == countriesList.size()) {
 			showErrorMessage(currentPlayer.getPlayerName()+" WON THE GAME", true);
 		}
-	}
-
-	/**
-	 * printDicesValues method prints the dice rolled result on the console.
-	 * @param currentPlayerDice, array of the dices values
-	 */
-	private void printDicesValues(Integer[] currentPlayerDice) {
-		int  i = 0;
-		while(i < currentPlayerDice.length) {
-			System.out.print(currentPlayerDice[i++]+" ");
-		}
-		System.out.println();
-	}
-
-	/**
-	 * getNumberOfDicesPlayerWantsToThrow method is used to get the number of armies an player wants to use in the attack phase
-	 * @param isAttacker, whether dices is throwning by attacker or defender, if true attacker else defender
-	 * @param currentPlayerDicesToRoll, -1 if the player hasnot selected yet, else some value what the player selected
-	 * @param riskBoardView,instance of {@link RiskBoardView} object
-	 * @param playerArmies, number armies available to attack or defend on the country.
-	 * @return numberOfDices, number of dices to be used to throw.
-	 */
-	public int getNumberOfDicesPlayerWantsToThrow(Integer playerArmies, RiskBoardView riskBoardView, int currentPlayerDicesToRoll, boolean isAttacker) {
-		Integer dicesToThrow = 0;
-		int maxDicesToThrow = isAttacker ? 3:2;
-		if(currentPlayerDicesToRoll == -1) {
-			Object [] possibilities = new Object [playerArmies > maxDicesToThrow ? maxDicesToThrow: playerArmies];
-			for(int index = 0; index < possibilities.length; index++) {
-				possibilities[index] = index+1;
-			}
-			if(possibilities.length >= 1) {
-				dicesToThrow = (Integer)JOptionPane.showInputDialog(riskBoardView.getBoardFrame(),"How many dices you want to thow by "+ (isAttacker ? "Attacker":"Defender"),
-						"Dices To Throw",JOptionPane.INFORMATION_MESSAGE, null,possibilities, possibilities[0]);
-			}
-		}else {
-			dicesToThrow = playerArmies > currentPlayerDicesToRoll ? currentPlayerDicesToRoll : playerArmies; 
-		}
-		return Objects.nonNull(dicesToThrow) ? dicesToThrow : 0;
 	}
 
 	/**

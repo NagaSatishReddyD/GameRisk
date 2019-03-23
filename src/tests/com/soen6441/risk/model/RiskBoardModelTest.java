@@ -243,18 +243,6 @@ public class RiskBoardModelTest {
 	}
 	
 	/**
-	 * This method is used to test the getNumberOfDicesPlayerWantsToThrow method
-	 * to check if the method get the correct number of dices the player wants to use
-	 */
-	@Test
-	public void testGetNumberOfDicesPlayerWantsToThrow() {
-		int result = riskBoardModel.getNumberOfDicesPlayerWantsToThrow(10, riskBoardView, 3, true);
-		int result2 = riskBoardModel.getNumberOfDicesPlayerWantsToThrow(2, riskBoardView, 3, true);
-		assertEquals(3, result);
-		assertEquals(2, result2);
-	}
-	
-	/**
 	 * This method is used to test the findImageName method
 	 * to check after reading the map file whether the method get the correct image name file
 	 */
