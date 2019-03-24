@@ -19,4 +19,6 @@ public class RiskGameConstants {
 	public static final String FORTIFICATION_PHASE_INFO = "Current player can move their armies between their own countries";
 	public static final String ALL_OUT = "All Out";
 	public static final String NO_CONTINENTS_OWNED = "No continent owned";
+	public static final String RESOURCES_FOLDER = "/resources/";
+	public static final String USER_DIR = "user.dir";
 }

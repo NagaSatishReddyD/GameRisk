@@ -113,9 +113,9 @@ public class RiskBoardModel{
 	 * @param connectedContinentsList, list of continents connected.
 	 */
 	private void addAdjacentCotinentsToList(List<String> connectedContinentsList, String continentName) {
-		List<String> countriesNamesList = continentsMap.get(continentName).getCountriesInContinent().stream().map(country -> country.getCountryName()).collect(Collectors.toList());
+		List<String> countriesNamesList = continentsMap.get(continentName).getCountriesInContinent().stream().map(Country::getCountryName).collect(Collectors.toList());
 		for(String countryName : countriesNamesList) {
-			List<String> adjacentCountriesNameList = countriesMap.get(countryName).getAdjacentCountries().stream().map(country -> country.getCountryName()).collect(Collectors.toList());
+			List<String> adjacentCountriesNameList = countriesMap.get(countryName).getAdjacentCountries().stream().map(Country::getCountryName).collect(Collectors.toList());
 			while(!adjacentCountriesNameList.isEmpty()) {
 				String adjacentCountryName = adjacentCountriesNameList.get(0);
 				if(!countriesNamesList.contains(adjacentCountryName)) {
@@ -133,7 +133,7 @@ public class RiskBoardModel{
 	 */
 	private void findContinentName(String adjacentCountryName, List<String> connectedContinentsList) {
 		for(Entry<String, Continent> continent : continentsMap.entrySet()) {
-			List<String> countriesNamesList = continent.getValue().getCountriesInContinent().stream().map(country -> country.getCountryName()).collect(Collectors.toList());
+			List<String> countriesNamesList = continent.getValue().getCountriesInContinent().stream().map(Country::getCountryName).collect(Collectors.toList());
 			if(countriesNamesList.contains(adjacentCountryName) && !connectedContinentsList.contains(continent.getKey())) {
 				connectedContinentsList.add(continent.getKey());
 			}
@@ -553,11 +553,11 @@ public class RiskBoardModel{
 	 */
 	public int getBonusArmiesOnContinent(Player currentPlayer) {
 		int bonusArmies = 0;
-		for(String continentKey : continentsMap.keySet()) {
-			List<Country> contriesList = continentsMap.get(continentKey).getCountriesInContinent();
+		for(Entry<String, Continent> continentKey : continentsMap.entrySet()) {
+			List<Country> contriesList = continentKey.getValue().getCountriesInContinent();
 			Map<String, List<Country>> playersCountryData = contriesList.stream().collect(Collectors.groupingBy(Country::getPlayerName));
 			if(playersCountryData.containsKey(currentPlayer.getPlayerName()) && playersCountryData.get(currentPlayer.getPlayerName()).size() == contriesList.size()) {
-				bonusArmies += continentsMap.get(continentKey).getArmiesGainedAfterConquer();
+				bonusArmies += continentKey.getValue().getArmiesGainedAfterConquer();
 			}
 		}
 		return bonusArmies;

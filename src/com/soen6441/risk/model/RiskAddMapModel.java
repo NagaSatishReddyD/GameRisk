@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import com.soen6441.risk.RiskGameConstants;
 import com.soen6441.risk.controller.RiskPlayerController;
 import com.soen6441.risk.view.RiskAddMapView;
 import com.soen6441.risk.view.RiskPlayerView;
@@ -38,17 +39,17 @@ public class RiskAddMapModel {
 			if(files[0].getName().endsWith("map")) {
 				model.loadRequiredData(files[0].getAbsolutePath());
 				Path sourceMap = Paths.get(files[0].getAbsolutePath());
-				Path destinationMap = Paths.get(System.getProperty("user.dir")+"/resources/"+files[0].getName());
+				Path destinationMap = Paths.get(System.getProperty(RiskGameConstants.USER_DIR)+RiskGameConstants.RESOURCES_FOLDER+files[0].getName());
 				Files.copy(sourceMap, destinationMap);
 				sourceImage = Paths.get(files[1].getAbsolutePath());
-				destinationImage = Paths.get(System.getProperty("user.dir")+"/resources/"+files[1].getName());
+				destinationImage = Paths.get(System.getProperty(RiskGameConstants.USER_DIR)+RiskGameConstants.RESOURCES_FOLDER+files[1].getName());
 			}else {
 				model.loadRequiredData(files[1].getAbsolutePath());
 				Path sourceMap = Paths.get(files[1].getAbsolutePath());
-				Path destinationMap = Paths.get(System.getProperty("user.dir")+"/resources/"+files[1].getName());
+				Path destinationMap = Paths.get(System.getProperty(RiskGameConstants.USER_DIR)+RiskGameConstants.RESOURCES_FOLDER+files[1].getName());
 				Files.copy(sourceMap, destinationMap);
 				sourceImage = Paths.get(files[0].getAbsolutePath());
-				destinationImage = Paths.get(System.getProperty("user.dir")+"/resources/"+files[0].getName());
+				destinationImage = Paths.get(System.getProperty(RiskGameConstants.USER_DIR)+RiskGameConstants.RESOURCES_FOLDER+files[0].getName());
 			}
 			Files.copy(sourceImage, destinationImage);
 			RiskPlayerModel riskPlayerModel = new RiskPlayerModel();
@@ -56,7 +57,7 @@ public class RiskAddMapModel {
 			RiskPlayerController riskPlayerController = new RiskPlayerController(riskPlayerModel, riskPlayerView);
 			riskPlayerController.initalizeGame();
 		}catch(IOException e) {
-			
+			System.out.println(e.getMessage());
 		}
 	}
 }
