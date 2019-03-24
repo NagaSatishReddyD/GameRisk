@@ -391,7 +391,11 @@ public class RiskBoardModelTest {
 	public void testCreateCardsData() {
 		assertEquals(42, riskBoardModel.getCardsList().size());
 	}
-
+	
+	/**
+	 * This method is used to test after exchanging the cards, the correct number of
+	 * reinforcement armies is calculated
+	 */
 	@Test
 	public void testGetExchangeCardsArmies() {
 		int result = riskBoardModel.getExchangeCardsArmies(playersData.get(0));

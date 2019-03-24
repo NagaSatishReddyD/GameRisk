@@ -438,10 +438,10 @@ public class RiskBoardModel{
 		}else {
 			for(Entry<String, List<Card>> cards : cardsData.entrySet()) {
 				if(cards.getValue().size() >= 3) {
-					int count = 1;
+					int count = 0;
 					int index = 0;
 					while(index < playersCards.size()) {
-						if(playersCards.get(0).getArmyType().equals(cards.getValue().get(0).getArmyType())) {
+						if(playersCards.get(index).getArmyType().equals(cards.getValue().get(0).getArmyType())) {
 							playersCards.remove(index);
 							count++;
 						}else {
