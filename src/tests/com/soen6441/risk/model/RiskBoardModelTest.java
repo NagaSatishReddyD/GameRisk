@@ -26,9 +26,7 @@ import com.soen6441.risk.view.RiskBoardView;
  * RiskBoardModelTest class contains unit test cases to check the
  * functionalities for in the RiskBoardModel file
  * 
- * @author Tosin
- * @author Yinka
- * 
+ * @author An Nguyen
  */
 public class RiskBoardModelTest {
 

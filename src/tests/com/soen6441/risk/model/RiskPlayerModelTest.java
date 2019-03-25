@@ -14,8 +14,7 @@ import com.soen6441.risk.view.RiskPlayerView;
 
 /**
  * RiskPlayerModelTest class contains unit test cases to check the functionalities for in the RiskPlayerModel file
- * @author Tosin 
- * @author Yinka
+ * @author An Nguyen
  */
 class RiskPlayerModelTest {
 	

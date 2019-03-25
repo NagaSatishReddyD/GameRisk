@@ -7,5 +7,10 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({RiskBoardModelTest.class,
 			   RiskGameModelTest.class})
+
+/**
+ * This test suite will run the RiskBoardModelTest class and RiskGameModelTest class
+ * @author An Nguyen
+ */
 public class ModelTestSuite {
 }
