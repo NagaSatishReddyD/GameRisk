@@ -8,5 +8,10 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({DiceTest.class,
 			   PlayerTest.class})
 
+/**
+ * This test suite class will run the DiceTest class and PlayerTest class
+ * @author An Nguyen
+ *
+ */
 public class DiceAndPlayerTestSuite {
 }
