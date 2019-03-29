@@ -3,8 +3,6 @@ package tests.com.soen6441.risk.model;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,7 +40,7 @@ public class RiskBoardModelTest {
 	 * 
 	 */
 	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
+	public static void setUpBeforeClass() {
 		riskBoardModel = new RiskBoardModel();
 		continentsMap = new HashMap<String, Continent>();
 		countriesMap = new HashMap<String, Country>();
@@ -87,11 +85,9 @@ public class RiskBoardModelTest {
 	/**
 	 * testUpdateTheBoardScreenData to check theUpdateTheBoardScreenData method
 	 * works as expected, a sample for 2 players was initialized and tested
-	 * 
-	 * @throws IOException NoSuchAlgorithmException
 	 */
 	@Test
-	public void testUpdateTheBoardScreenData() throws IOException, NoSuchAlgorithmException {
+	public void testUpdateTheBoardScreenData(){
 		riskBoardModel.updateTheBoardScreenData(riskBoardView, RiskGameConstants.REINFORCEMENT_PHASE);
 		assertEquals(riskBoardView.getAttackBtn().isVisible(), false);
 		assertEquals(riskBoardView.getEndAttackButton().isVisible(), false);
@@ -155,20 +151,17 @@ public class RiskBoardModelTest {
 	 * testReadInvalidMap is used to test when reading an invalid map file Expected
 	 * to be failed when loading the map
 	 * 
-	 * @throws IOException
 	 */
 	@Ignore
-	public void testReadInvalidMap() throws IOException {
+	public void testReadInvalidMap() {
 		riskBoardModel.loadRequiredData(System.getProperty("user.dir") + "/resources/001_I72_GhTroc 720.map");
 	}
 
 	/**
 	 * This test case is used to test the EndFortification Phase
-	 * 
-	 * @throws NoSuchAlgorithmException
 	 */
 	@Test
-	public void testEndFortificationPhase() throws NoSuchAlgorithmException {
+	public void testEndFortificationPhase(){
 		riskBoardModel.endFortificationPhase(riskBoardView);
 		assertEquals(riskBoardModel.isInitialPhase(), true);
 	}
@@ -177,7 +170,7 @@ public class RiskBoardModelTest {
 	 * This test case is used to test the object loads the world map correctly
 	 */
 	@Test
-	public void testLoadRequiredData() throws IOException {
+	public void testLoadRequiredData(){
 		riskBoardModel.loadRequiredData(System.getProperty("user.dir") + "/resources/World.map");
 	}
 

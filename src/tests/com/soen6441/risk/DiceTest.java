@@ -22,10 +22,10 @@ public class DiceTest {
 
 	static Dice dice;
 	/**
-	 * @throws java.lang.Exception
+	 * setUpBeforeClass class created the object intially before the class to create the object.
 	 */
 	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
+	public static void setUpBeforeClass() {
 		dice = new Dice();
 	}
 

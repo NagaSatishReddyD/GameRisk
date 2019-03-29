@@ -84,7 +84,6 @@ public class Player {
 	/**
 	 * reinforceArmyToCountry method places the armies which are not placed on the country.
 	 * @param riskBoardView, RiskBoardView object used to update the components of the screen
-	 * @param selectedValue, how many armies user wants to place on the country
 	 * @param country, {@link Country} to which the armies to be placed.
 	 */
 	public void reinforceArmyToCountry(Country country, RiskBoardView riskBoardView) {
