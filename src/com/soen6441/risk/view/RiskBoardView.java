@@ -8,7 +8,10 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 
 /**
  * <b>RiskBoardView</b>
@@ -70,6 +73,7 @@ public class RiskBoardView extends JFrame{
 	private JLabel player6ContinentControl;
 	private JLabel player6TotalArmies;
 	private JLabel cardsCountLabel;
+	private JTextArea cardsObtainedTextArea;
 	
 	/**
 	 * This constructor create the new frame which contains the components which is used to play the game
@@ -143,7 +147,7 @@ public class RiskBoardView extends JFrame{
 		boardFrame.getContentPane().add(endFortificationBtn);
 		
 		mapPanel = new JPanel();
-		mapPanel.setBounds(552, 24, 1300, 850);
+		mapPanel.setBounds(552, 24, 1300, 667);
 		imageLabel = new JLabel();
 		mapPanel.add(imageLabel);
 		boardFrame.getContentPane().add(mapPanel);
@@ -263,8 +267,33 @@ public class RiskBoardView extends JFrame{
 		cardsCountLabel = new JLabel("");
 		cardsCountLabel.setBounds(148, 255, 45, 13);
 		boardFrame.getContentPane().add(cardsCountLabel);
+		
+		JMenuBar menuBar = new JMenuBar();
+		menuBar.setBounds(0, 0, 1522, 22);
+		boardFrame.getContentPane().add(menuBar);
+		
+		JMenuItem mntmSaveGame = new JMenuItem("Save Game");
+		menuBar.add(mntmSaveGame);
+		
+		JLabel cardsObtainedLabel = new JLabel("Cards Obtained :");
+		cardsObtainedLabel.setBounds(552, 744, 101, 27);
+		boardFrame.getContentPane().add(cardsObtainedLabel);
+		
+		cardsObtainedTextArea = new JTextArea();
+		cardsObtainedTextArea.setEnabled(false);
+		cardsObtainedTextArea.setEditable(false);
+		cardsObtainedTextArea.setBounds(701, 715, 658, 86);
+		boardFrame.getContentPane().add(cardsObtainedTextArea);
 	}
 	
+	/**
+	 * Returns the CardsObtainedTextArea object set on this frame.
+	 * @return the CardsObtainedTextArea object of this frame
+	 */
+	public JTextArea getCardsObtainedTextArea() {
+		return cardsObtainedTextArea;
+	}
+
 	/**
 	 * Returns the cardsCountLabel object set on this frame.
 	 * @return the cardsCountLabel object of this frame

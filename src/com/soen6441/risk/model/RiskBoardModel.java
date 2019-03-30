@@ -380,7 +380,26 @@ public class RiskBoardModel{
 		riskBoardView.getArmiesCountAvailableLabel().setText(String.valueOf(currentPlayer.getArmyCountAvailable()));
 		riskBoardView.getCardsCountLabel().setText(String.valueOf(currentPlayer.getPlayerCards().size()));
 		updateCountriesComboBox(currentPlayer, riskBoardView);
+		updateCardsTextArea(currentPlayer, riskBoardView);
 		createOrUpdateImage(riskBoardView);
+	}
+
+	/**
+	 * updateCardsTextArea method updates the cards which are available to the user on the view.
+	 * @param currentPlayer, currentPlayer of the currentplayer.
+	 * @param riskBoardView, RiskBoardView object used to update the components of the screen
+	 */
+	private void updateCardsTextArea(Player currentPlayer, RiskBoardView riskBoardView) {
+		StringBuilder cardsBuilder = new StringBuilder();
+		List<Card> currentPlayerCards = currentPlayer.getPlayerCards();
+		if(!currentPlayerCards.isEmpty()) {
+			for(Card card:currentPlayerCards) {
+				cardsBuilder.append(card.getArmyType()).append("(").append(card.getTerritoryName()).append(")").append(" ");
+			}
+		}else {
+			cardsBuilder.append("No cards obtained yet ");
+		}
+		riskBoardView.getCardsObtainedTextArea().setText(cardsBuilder.toString());
 	}
 
 	/**
