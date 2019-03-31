@@ -100,11 +100,11 @@ public class RiskBoardView extends JFrame{
 		boardFrame.getContentPane().setLayout(null);
 
 		currentPlayerTurnLabel = new JLabel("Player 1 ");
-		currentPlayerTurnLabel.setBounds(23, 17, 110, 16);
+		currentPlayerTurnLabel.setBounds(23, 52, 110, 16);
 		boardFrame.getContentPane().add(currentPlayerTurnLabel);
 
 		countryComboBox = new JComboBox<>();
-		countryComboBox.setBounds(183, 75, 129, 27);
+		countryComboBox.setBounds(183, 108, 129, 27);
 		boardFrame.getContentPane().add(countryComboBox);
 
 		adjacentCountryComboBox = new JComboBox<>();
@@ -112,11 +112,11 @@ public class RiskBoardView extends JFrame{
 		boardFrame.getContentPane().add(adjacentCountryComboBox);
 
 		reinforceBtn = new JButton("Reinforce");
-		reinforceBtn.setBounds(364, 12, 117, 29);
+		reinforceBtn.setBounds(364, 47, 117, 29);
 		boardFrame.getContentPane().add(reinforceBtn);
 
 		attackBtn = new JButton("Attack");
-		attackBtn.setBounds(364, 74, 117, 29);
+		attackBtn.setBounds(364, 107, 117, 29);
 		attackBtn.setVisible(false);
 		boardFrame.getContentPane().add(attackBtn);
 
@@ -138,7 +138,7 @@ public class RiskBoardView extends JFrame{
 		boardFrame.getContentPane().add(armiesCountAvailableLabel);
 
 		Label ownCountriesLabel = new Label("Own Countries");
-		ownCountriesLabel.setBounds(23, 75, 119, 22);
+		ownCountriesLabel.setBounds(23, 113, 119, 22);
 		boardFrame.getContentPane().add(ownCountriesLabel);
 		
 		endFortificationBtn = new JButton("End Fortification");
@@ -153,15 +153,15 @@ public class RiskBoardView extends JFrame{
 		boardFrame.getContentPane().add(mapPanel);
 		
 		endAttackButton = new JButton("Attack Finished");
-		endAttackButton.setBounds(364, 136, 117, 27);
+		endAttackButton.setBounds(364, 148, 117, 27);
 		boardFrame.getContentPane().add(endAttackButton);
 		
 		currentPhase = new JLabel("Reinforcement phase");
-		currentPhase.setBounds(183, 17, 169, 16);
+		currentPhase.setBounds(183, 52, 169, 16);
 		boardFrame.getContentPane().add(currentPhase);
 		
 		phaseInfo = new JLabel();
-		phaseInfo.setBounds(23, 45, 517, 16);
+		phaseInfo.setBounds(23, 80, 517, 16);
 		boardFrame.getContentPane().add(phaseInfo);
 		
 		player1Label = new JLabel();
@@ -276,7 +276,7 @@ public class RiskBoardView extends JFrame{
 		menuBar.add(mntmSaveGame);
 		
 		JLabel cardsObtainedLabel = new JLabel("Cards Obtained :");
-		cardsObtainedLabel.setBounds(552, 744, 101, 27);
+		cardsObtainedLabel.setBounds(552, 744, 117, 27);
 		boardFrame.getContentPane().add(cardsObtainedLabel);
 		
 		cardsObtainedTextArea = new JTextArea();
