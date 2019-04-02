@@ -51,7 +51,7 @@ public class RiskBoardModelTest {
 		playersData.add(new Player("Player 3", 2));
 		playersData.add(new Player("Player 4", 2));
 		int playersCount = 4;
-		riskBoardModel.loadRequiredData(System.getProperty("user.dir") + "/resources/World.map");
+		riskBoardModel.loadRequiredData(System.getProperty("user.dir") + "/resources/World.map", true);
 		riskBoardModel.assignCountriesToPlayers(playersCount);
 		playersData.get(0).getPlayerCards().add(new Card("Country A", "Infantry"));
 		playersData.get(0).getPlayerCards().add(new Card("Country B", "Infantry"));
@@ -109,10 +109,10 @@ public class RiskBoardModelTest {
 		country3.setPlayerName("Player 1");
 		Country country4 = new Country("Eastern Australia");
 		country4.setPlayerName("Player 1");
-		playersData.get(0).addTerritory(playersData.get(0), country1);
-		playersData.get(0).addTerritory(playersData.get(0), country2);
-		playersData.get(0).addTerritory(playersData.get(0), country3);
-		playersData.get(0).addTerritory(playersData.get(0), country4);
+		playersData.get(0).addTerritory(country1);
+		playersData.get(0).addTerritory(country2);
+		playersData.get(0).addTerritory(country3);
+		playersData.get(0).addTerritory(country4);
 		riskBoardModel.getContinentsMap().put("Australia", new Continent("Australia", 2));
 		riskBoardModel.getContinentsMap().get("Australia").addCountryInContinent(country1);
 		riskBoardModel.getContinentsMap().get("Australia").addCountryInContinent(country2);
@@ -133,10 +133,10 @@ public class RiskBoardModelTest {
 		country3.setPlayerName("Player 1");
 		Country country4 = new Country("Eastern Australia");
 		country4.setPlayerName("Player 1");
-		playersData.get(0).addTerritory(playersData.get(0), country1);
-		playersData.get(0).addTerritory(playersData.get(0), country2);
-		playersData.get(0).addTerritory(playersData.get(0), country3);
-		playersData.get(0).addTerritory(playersData.get(0), country4);
+		playersData.get(0).addTerritory(country1);
+		playersData.get(0).addTerritory(country2);
+		playersData.get(0).addTerritory(country3);
+		playersData.get(0).addTerritory(country4);
 		riskBoardModel.getContinentsMap().put("Australia", new Continent("Australia", 3));
 		riskBoardModel.getContinentsMap().get("Australia").addCountryInContinent(country1);
 		riskBoardModel.getContinentsMap().get("Australia").addCountryInContinent(country2);
@@ -154,7 +154,7 @@ public class RiskBoardModelTest {
 	 */
 	@Ignore
 	public void testReadInvalidMap() {
-		riskBoardModel.loadRequiredData(System.getProperty("user.dir") + "/resources/001_I72_GhTroc 720.map");
+		riskBoardModel.loadRequiredData(System.getProperty("user.dir") + "/resources/001_I72_GhTroc 720.map", true);
 	}
 
 	/**
@@ -171,7 +171,7 @@ public class RiskBoardModelTest {
 	 */
 	@Test
 	public void testLoadRequiredData(){
-		riskBoardModel.loadRequiredData(System.getProperty("user.dir") + "/resources/World.map");
+		riskBoardModel.loadRequiredData(System.getProperty("user.dir") + "/resources/World.map", true);
 	}
 
 	/**
@@ -205,10 +205,10 @@ public class RiskBoardModelTest {
 		Country country4 = new Country("Eastern Australia");
 		country4.setPlayerName("Player 1");
 		country4.setArmiesOnCountry(15);
-		playersData.get(0).addTerritory(playersData.get(0), country1);
-		playersData.get(0).addTerritory(playersData.get(0), country2);
-		playersData.get(0).addTerritory(playersData.get(0), country3);
-		playersData.get(0).addTerritory(playersData.get(0), country4);
+		playersData.get(0).addTerritory(country1);
+		playersData.get(0).addTerritory(country2);
+		playersData.get(0).addTerritory(country3);
+		playersData.get(0).addTerritory(country4);
 		int armies = riskBoardModel.getTotalArmies(playersData.get(0));
 		assertEquals(33, armies);
 	}
@@ -227,10 +227,10 @@ public class RiskBoardModelTest {
 		country3.setPlayerName("Player 1");
 		Country country4 = new Country("Eastern Australia");
 		country4.setPlayerName("Player 1");
-		playersData.get(0).addTerritory(playersData.get(0), country1);
-		playersData.get(0).addTerritory(playersData.get(0), country2);
-		playersData.get(0).addTerritory(playersData.get(0), country3);
-		playersData.get(0).addTerritory(playersData.get(0), country4);
+		playersData.get(0).addTerritory(country1);
+		playersData.get(0).addTerritory(country2);
+		playersData.get(0).addTerritory(country3);
+		playersData.get(0).addTerritory(country4);
 		String result = riskBoardModel.getOwnedContinent(playersData.get(0)).trim();
 		assertEquals("Australia", result);
 	}
@@ -302,16 +302,16 @@ public class RiskBoardModelTest {
 		country9.setPlayerName("Test 1");
 		Country country10 = new Country("Country J");
 		country10.setPlayerName("Test 2");
-		playersData.get(2).addTerritory(playersData.get(2), country1);
-		playersData.get(2).addTerritory(playersData.get(2), country2);
-		playersData.get(2).addTerritory(playersData.get(2), country3);
-		playersData.get(2).addTerritory(playersData.get(2), country4);
-		playersData.get(2).addTerritory(playersData.get(2), country5);
-		playersData.get(2).addTerritory(playersData.get(2), country6);
-		playersData.get(2).addTerritory(playersData.get(2), country7);
-		playersData.get(2).addTerritory(playersData.get(2), country8);
-		playersData.get(2).addTerritory(playersData.get(2), country9);
-		playersData.get(3).addTerritory(playersData.get(3), country10);
+		playersData.get(2).addTerritory(country1);
+		playersData.get(2).addTerritory(country2);
+		playersData.get(2).addTerritory(country3);
+		playersData.get(2).addTerritory(country4);
+		playersData.get(2).addTerritory(country5);
+		playersData.get(2).addTerritory(country6);
+		playersData.get(2).addTerritory(country7);
+		playersData.get(2).addTerritory(country8);
+		playersData.get(2).addTerritory(country9);
+		playersData.get(3).addTerritory(country10);
 		int result1 = riskBoardModel.getBonusArmiesOnTerritories(playersData.get(2));
 		int result2 = riskBoardModel.getBonusArmiesOnTerritories(playersData.get(3));
 		assertEquals(3, result1);
