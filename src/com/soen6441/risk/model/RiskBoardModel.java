@@ -1049,6 +1049,14 @@ public class RiskBoardModel{
 	public List<Card> getCardsList() {
 		return cardsList;
 	}
+	
+	/**
+	 * Set the phase of the game
+	 * @param isGamePhase, the variable contains the current phase
+	 */
+	public void setIsGamePhase(String isGamePhase) {
+		this.isGamePhase = isGamePhase;
+	}
 
 	/**
 	 * @param view

@@ -88,7 +88,8 @@ public class RiskBoardModelTest {
 	 */
 	@Test
 	public void testUpdateTheBoardScreenData(){
-		riskBoardModel.updateTheBoardScreenData(riskBoardView, RiskGameConstants.REINFORCEMENT_PHASE);
+		riskBoardModel.setIsGamePhase(RiskGameConstants.REINFORCEMENT_PHASE);
+		riskBoardModel.updateTheBoardScreenData(riskBoardView);
 		assertEquals(riskBoardView.getAttackBtn().isVisible(), false);
 		assertEquals(riskBoardView.getEndAttackButton().isVisible(), false);
 		assertEquals(riskBoardView.getReinforceBtn().isVisible(), true);
@@ -324,7 +325,8 @@ public class RiskBoardModelTest {
 	 */
 	@Test
 	public void testReinforcementPhaseView() {
-		riskBoardModel.updateTheBoardScreenData(riskBoardView, RiskGameConstants.REINFORCEMENT_PHASE);
+		riskBoardModel.setIsGamePhase(RiskGameConstants.REINFORCEMENT_PHASE);
+		riskBoardModel.updateTheBoardScreenData(riskBoardView);
 		String phase = riskBoardView.getCurrentPhase().getText().trim();
 		assertEquals("Reinforcement phase", phase);
 	}
@@ -335,7 +337,8 @@ public class RiskBoardModelTest {
 	 */
 	@Test
 	public void testAttackPhaseView() {
-		riskBoardModel.updateTheBoardScreenData(riskBoardView, RiskGameConstants.ATTACK_PHASE);
+		riskBoardModel.setIsGamePhase(RiskGameConstants.ATTACK_PHASE);
+		riskBoardModel.updateTheBoardScreenData(riskBoardView);
 		String phase = riskBoardView.getCurrentPhase().getText().trim();
 		assertEquals("Attack phase", phase);
 	}
@@ -346,7 +349,8 @@ public class RiskBoardModelTest {
 	 */
 	@Test
 	public void testFortificationPhaseView() {
-		riskBoardModel.updateTheBoardScreenData(riskBoardView, RiskGameConstants.FORTIFICATION_PHASE);
+		riskBoardModel.setIsGamePhase(RiskGameConstants.FORTIFICATION_PHASE);
+		riskBoardModel.updateTheBoardScreenData(riskBoardView);
 		String phase = riskBoardView.getCurrentPhase().getText().trim();
 		assertEquals("Fortification phase", phase);
 	}
