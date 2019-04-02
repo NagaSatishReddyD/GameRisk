@@ -55,7 +55,7 @@ public class RiskBoardModel{
 	private boolean isOcuppiedTerritory = false;
 	int cardExchangeCount = 0;
 	private boolean isGameResume = false;
-	private String isGameResumePhase;
+	private String isGamePhase = RiskGameConstants.REINFORCEMENT_PHASE;
 
 	/**
 	 * loadRequiredData method is used to inital load the riskBoardView screen data
@@ -118,7 +118,7 @@ public class RiskBoardModel{
 				if(lineCounter == 1) {
 					currentPlayerIndex = Integer.parseInt(line.split("=")[1].trim());
 				}else if(lineCounter == 2) {
-					isGameResumePhase = line.split("=")[1].trim();
+					isGamePhase = line.split("=")[1].trim();
 				}else if(lineCounter == 4) {
 					createCardsFromSaveFile(line);
 				}else if(lineCounter > 5) {
@@ -180,7 +180,7 @@ public class RiskBoardModel{
 			String[] countryData = contryName.split(",");
 			countriesMap.get(countryData[0].trim()).setPlayerName(player.getPlayerName());
 			countriesMap.get(countryData[0].trim()).setArmiesOnCountry(Integer.parseInt(countryData[1]));
-			player.addTerritory(countriesMap.get(contryName.trim()));
+			player.addTerritory(countriesMap.get(countryData[0].trim()));
 		}
 	}
 
@@ -301,29 +301,34 @@ public class RiskBoardModel{
 	 * @param view, RiskBoardView object used to update the components of the screen
 	 */
 	public void createOrUpdateImage(RiskBoardView view) {
+		boolean hasAdjacentOpponent = false;
 		if(Objects.nonNull(view.getAdjacentCountryComboBox().getSelectedItem())) {
-			Player currentPlayer = playersData.get(currentPlayerIndex);
-			BufferedImage bufferedImage;
-			Country currentCountry = countriesMap.get(view.getCountryComboBox().getSelectedItem().toString());
-			Country adjacentCountry = countriesMap.get(view.getAdjacentCountryComboBox().getSelectedItem().toString());
-			try {
-				bufferedImage = ImageIO.read(new File(System.getProperty("user.dir")+"/resources/"+imageName));
-				Graphics2D graphics = bufferedImage.createGraphics();
-				for(Country country: countriesList) {
-					graphics.setColor(Color.BLACK);
+			hasAdjacentOpponent  = true;
+		}
+		Player currentPlayer = playersData.get(currentPlayerIndex);
+		BufferedImage bufferedImage;
+		Country currentCountry = countriesMap.get(view.getCountryComboBox().getSelectedItem().toString());
+		Country adjacentCountry = null;
+		if(hasAdjacentOpponent)
+			adjacentCountry = countriesMap.get(view.getAdjacentCountryComboBox().getSelectedItem().toString());
+		try {
+			bufferedImage = ImageIO.read(new File(System.getProperty("user.dir")+"/resources/"+imageName));
+			Graphics2D graphics = bufferedImage.createGraphics();
+			for(Country country: countriesList) {
+				graphics.setColor(Color.BLACK);
+				if(hasAdjacentOpponent)
 					graphics.fillOval((int)adjacentCountry.getxCoordinate(), (int)adjacentCountry.getyCoordinate(), 10, 10);
-					graphics.setColor(currentPlayer.getPlayerName().equals(country.getPlayerName()) ? Color.RED: Color.BLACK);
-					graphics.drawString(String.valueOf(country.getArmiesOnCountry()), country.getxCoordinate(), country.getyCoordinate());
-					if(currentCountry.getCountryName().equals(country.getCountryName())) {
-						graphics.fillOval((int)country.getxCoordinate(), (int)country.getyCoordinate(), 10, 10);
-					}
+				graphics.setColor(currentPlayer.getPlayerName().equals(country.getPlayerName()) ? Color.RED: Color.BLACK);
+				graphics.drawString(String.valueOf(country.getArmiesOnCountry()), country.getxCoordinate(), country.getyCoordinate());
+				if(currentCountry.getCountryName().equals(country.getCountryName())) {
+					graphics.fillOval((int)country.getxCoordinate(), (int)country.getyCoordinate(), 10, 10);
 				}
-				Image scaledImage = bufferedImage.getScaledInstance(view.getMapPanel().getWidth(), view.getMapPanel().getHeight(), Image.SCALE_SMOOTH);
-				ImageIcon mapImageIcon = new ImageIcon(scaledImage);
-				view.getImageLabel().setIcon(mapImageIcon);
-			} catch (IOException e) {
-				JOptionPane.showMessageDialog(view.getBoardFrame(), "Image File Not Found...");
 			}
+			Image scaledImage = bufferedImage.getScaledInstance(view.getMapPanel().getWidth(), view.getMapPanel().getHeight(), Image.SCALE_SMOOTH);
+			ImageIcon mapImageIcon = new ImageIcon(scaledImage);
+			view.getImageLabel().setIcon(mapImageIcon);
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(view.getBoardFrame(), "Image File Not Found...");
 		}
 	}
 
@@ -480,24 +485,22 @@ public class RiskBoardModel{
 	 * @param phase, current phase of the player it can be {@link RiskGameConstants#REINFORCEMENT_PHASE}, {@link RiskGameConstants#ATTACK_PHASE}
 	 * @param riskBoardView, RiskBoardView object used to update the components of the screen
 	 */
-	public void updateTheBoardScreenData(RiskBoardView riskBoardView, String phase) {
+	public void updateTheBoardScreenData(RiskBoardView riskBoardView) {
 		Player currentPlayer = playersData.get(currentPlayerIndex);
-		if(!isGameResume  && currentPlayer.getArmyCountAvailable() == 0 && phase.equals(RiskGameConstants.REINFORCEMENT_PHASE)) {
+		if(!isGameResume  && currentPlayer.getArmyCountAvailable() == 0 && isGamePhase.equals(RiskGameConstants.REINFORCEMENT_PHASE)) {
 			setTheBonusArmiesToPlayer(currentPlayer, riskBoardView);
 			isInitialPhase = false;
-		}else {
-			phase = isGameResumePhase;
 		}
 		updatePlayersInfo(playersData, riskBoardView);
-		if(phase.equals(RiskGameConstants.REINFORCEMENT_PHASE)) {
+		if(isGamePhase.equals(RiskGameConstants.REINFORCEMENT_PHASE)) {
 			riskBoardView.getPhaseInfo().setText(RiskGameConstants.REINFORCEMENT_PHASE_INFO);
-		}else if(phase.equals(RiskGameConstants.ATTACK_PHASE)) {
+		}else if(isGamePhase.equals(RiskGameConstants.ATTACK_PHASE)) {
 			riskBoardView.getPhaseInfo().setText(RiskGameConstants.ATTACK_PHASE_INFO);
-		}else if(phase.equals(RiskGameConstants.FORTIFICATION_PHASE)) {
+		}else if(isGamePhase.equals(RiskGameConstants.FORTIFICATION_PHASE)) {
 			riskBoardView.getPhaseInfo().setText(RiskGameConstants.FORTIFICATION_PHASE_INFO);
 		}
-		riskBoardView.getCurrentPhase().setText(phase + " phase");
-		enableDisableButtons(phase, riskBoardView);
+		riskBoardView.getCurrentPhase().setText(isGamePhase + " phase");
+		enableDisableButtons(isGamePhase, riskBoardView);
 		riskBoardView.getCurrentPlayerTurnLabel().setText(currentPlayer.getPlayerName()+" Turn !!");
 		riskBoardView.getArmiesCountAvailableLabel().setText(String.valueOf(currentPlayer.getArmyCountAvailable()));
 		riskBoardView.getCardsCountLabel().setText(String.valueOf(currentPlayer.getPlayerCards().size()));
@@ -737,10 +740,12 @@ public class RiskBoardModel{
 			currentPlayerIndex++;
 			currentPlayerIndex = currentPlayerIndex%playersData.size();
 			JOptionPane.showMessageDialog(view.getBoardFrame(), "Next Player Turn");
-			updateTheBoardScreenData(view, RiskGameConstants.REINFORCEMENT_PHASE);
+			isGamePhase = RiskGameConstants.REINFORCEMENT_PHASE;
+			updateTheBoardScreenData(view);
 		}else {
+			isGamePhase = RiskGameConstants.ATTACK_PHASE;
 			enableDisableButtons(RiskGameConstants.ATTACK_PHASE, view);
-			updateTheBoardScreenData(view, RiskGameConstants.ATTACK_PHASE);
+			updateTheBoardScreenData(view);
 		}
 	}
 
@@ -797,7 +802,8 @@ public class RiskBoardModel{
 		boolean isWon = currentPlayer.attackBetweenCountries(currentPlayerCountry, opponentPlayerCountry, riskBoardView, opponentPlayer);
 		if(!isOcuppiedTerritory)
 			isOcuppiedTerritory = isWon;
-		updateTheBoardScreenData(riskBoardView, RiskGameConstants.ATTACK_PHASE);
+		isGamePhase = RiskGameConstants.ATTACK_PHASE;
+		updateTheBoardScreenData(riskBoardView);
 		isPlayerWonTheGame();
 	}
 
@@ -989,7 +995,8 @@ public class RiskBoardModel{
 	public void endAttackPhase(RiskBoardView riskBoardView) {
 		getCard(riskBoardView);
 		enableDisableButtons(RiskGameConstants.FORTIFICATION_PHASE, riskBoardView);
-		updateTheBoardScreenData(riskBoardView, RiskGameConstants.FORTIFICATION_PHASE);
+		isGamePhase = RiskGameConstants.FORTIFICATION_PHASE;
+		updateTheBoardScreenData(riskBoardView);
 	}
 
 	/**

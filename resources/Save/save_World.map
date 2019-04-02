@@ -5,24 +5,13 @@ Infantry,Alaska:Cavalry,Northwest Territory:Artillery,Alberta:Infantry,Greenland
 
 Player 1
 Army Count =0
-Conutry Count = 11
+Conutry Count = 21
 Cards Count = 0
-Ural,Venezuala,Ontario,Eastern United States,Argentina,Eastern Australia,Indonesia,Great Britain,Congo,Western Europe,New Guinea
+Ural,27:Argentina,1:Western Australia,1:Siberia,1:Alaska,1:India,1:China,1:Mongolia,1:Brazil,1:Western Europe,1:Indonesia,1:Egypt,1:Northern Europe,1:Afghanistan,1:Congo,1:Eastern United States,1:Kamchatka,1:Central America,1:New Guinea,1:Venezuala,1:Ukraine,1
 
 Player 2
 Army Count =0
-Conutry Count = 11
+Conutry Count = 21
 Cards Count = 0
-Siberia,Peru,Scandinavia,Mongolia,Kamchatka,India,Alberta,Middle East,Western United States,Quebec,Siam
+Peru,20:Ontario,1:Irkutsk,1:Iceland,1:North Africa,1:Eastern Australia,1:Northwest Territory,1:South Africa,1:Japan,1:East Africa,1:Scandinavia,1:Western United States,1:Siam,1:Madagascar,1:Quebec,1:Yatusk,1:Alberta,1:Middle East,1:Great Britain,1:Southern Europe,1:Greenland,1
 
-Player 3
-Army Count =0
-Conutry Count = 10
-Cards Count = 0
-Brazil,Yatusk,East Africa,Alaska,Western Australia,Japan,Afghanistan,Central America,Ukraine,Northwest Territory
-
-Player 4
-Army Count =0
-Conutry Count = 10
-Cards Count = 0
-Irkutsk,Madagascar,China,Greenland,Northern Europe,Iceland,South Africa,Southern Europe,North Africa,Egypt
