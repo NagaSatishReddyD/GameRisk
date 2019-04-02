@@ -37,14 +37,14 @@ public class RiskAddMapModel {
 			Path sourceImage;
 			Path destinationImage;
 			if(files[0].getName().endsWith("map")) {
-				model.loadRequiredData(files[0].getAbsolutePath());
+				model.loadRequiredData(files[0].getAbsolutePath(), false);
 				Path sourceMap = Paths.get(files[0].getAbsolutePath());
 				Path destinationMap = Paths.get(System.getProperty(RiskGameConstants.USER_DIR)+RiskGameConstants.RESOURCES_FOLDER+files[0].getName());
 				Files.copy(sourceMap, destinationMap);
 				sourceImage = Paths.get(files[1].getAbsolutePath());
 				destinationImage = Paths.get(System.getProperty(RiskGameConstants.USER_DIR)+RiskGameConstants.RESOURCES_FOLDER+files[1].getName());
 			}else {
-				model.loadRequiredData(files[1].getAbsolutePath());
+				model.loadRequiredData(files[1].getAbsolutePath(), false);
 				Path sourceMap = Paths.get(files[1].getAbsolutePath());
 				Path destinationMap = Paths.get(System.getProperty(RiskGameConstants.USER_DIR)+RiskGameConstants.RESOURCES_FOLDER+files[1].getName());
 				Files.copy(sourceMap, destinationMap);

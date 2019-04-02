@@ -8,6 +8,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -53,13 +54,29 @@ public class RiskBoardModel{
 	private List<Card> cardsList;
 	private boolean isOcuppiedTerritory = false;
 	int cardExchangeCount = 0;
+	private boolean isGameResume = false;
+	private String isGameResumePhase;
 
 	/**
 	 * loadRequiredData method is used to inital load the riskBoardView screen data
+	 * @param isLoadGame, true if the method is triggered from RiskBoardController
+	 *                    false if triggered from other methods
 	 * @param fileName, name of the file to be loaded to frame
 	 */
-	public void loadRequiredData(String fileName){
-		try(BufferedReader reader = new BufferedReader(new FileReader(new File(fileName)))) {
+	public void loadRequiredData(String fileName, boolean isLoadGame){
+		File loadFile = new File(fileName);
+		String loadingFileName = fileName.substring(fileName.lastIndexOf("/")+1);
+		File saveFile = new File(System.getProperty("user.dir")+RiskGameConstants.RESOURCES_FOLDER+"/Save/save_"+loadingFileName);
+		boolean loadSaveGame = false;
+		if(isLoadGame && saveFile.exists()) {
+			int result = JOptionPane.showConfirmDialog(null, "Do you want to load saved game?","Resume Game",JOptionPane.OK_CANCEL_OPTION);
+			if(result == 0) {
+				loadSaveGame = true;
+			}else {
+				saveFile.delete();
+			}
+		}
+		try(BufferedReader reader = new BufferedReader(new FileReader(loadFile))) {
 			int section = 0;
 			String line;
 			while(Objects.nonNull(line = reader.readLine())) {
@@ -70,15 +87,113 @@ public class RiskBoardModel{
 				}else if(line.trim().equals(RiskGameConstants.SECTION_THREE)){
 					section = 3;
 				}else {
-					findTheSectionToParseData(section, line.trim());
+					findTheSectionToParseData(section, line.trim(), loadSaveGame);
 				}
 			}
-			verifyTheMapIsConnected();
-			createCardsData();
+			if(!loadSaveGame) {
+				verifyTheMapIsConnected();
+				createCardsData();
+			}else {
+				loadGameFromSaveFile(saveFile);
+			}
 		} catch (FileNotFoundException e) {
 			showErrorMessage("Problem with the file. Couldn't read the file", true);
 		} catch (IOException e) {
 			showErrorMessage("Problem while reading the file data", true);
+		}
+	}
+
+	/**
+	 * loadGameFromSaveFile method loads the data from the save file
+	 * @param saveFile, game loading file which was saved.
+	 * 
+	 */
+	private void loadGameFromSaveFile(File saveFile) {
+		isGameResume = true;
+		playersData =  new ArrayList<>();
+		try(BufferedReader reader = new BufferedReader(new FileReader(saveFile))) {
+			String line;
+			int lineCounter = 1;
+			while(Objects.nonNull(line = reader.readLine())) {
+				if(lineCounter == 1) {
+					currentPlayerIndex = Integer.parseInt(line.split("=")[1].trim());
+				}else if(lineCounter == 2) {
+					isGameResumePhase = line.split("=")[1].trim();
+				}else if(lineCounter == 4) {
+					createCardsFromSaveFile(line);
+				}else if(lineCounter > 5) {
+					createPlayersFromSaveFile(line, lineCounter);
+				}
+				lineCounter++;
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * createPlayersFromSaveFile method creates the players from the saved file
+	 * @param lineCounter, line number of the file 
+	 * @param line, line from the save file
+	 */
+	private void createPlayersFromSaveFile(String line, int lineCounter) {
+		int currentIndex = lineCounter / 6 - 1;
+		if(lineCounter % 6 == 0) {
+			Player player = new Player(line, 0);
+			playersData.add(player);
+		}
+		if(lineCounter % 6 == 1) {
+			playersData.get(currentIndex).setArmyCountAvailable(Integer.parseInt(line.split("=")[1].trim()));
+		}else if(lineCounter % 6 == 4) {
+			assignCountriesToPlayer(line, playersData.get(currentIndex));
+		}else if(lineCounter % 6 == 5) {
+			assignCardsToPlayers(line, playersData.get(currentIndex));
+		}
+	}
+
+	/**
+	 * @param line
+	 * @param player
+	 */
+	private void assignCardsToPlayers(String line, Player player) {
+		for(String cardTerritoryName: line.split(",")) {
+			for(int index = 0; index < cardsList.size(); index++) {
+				if(cardsList.get(index).getTerritoryName().equals(cardTerritoryName.trim())) {
+					Card selectedCard = cardsList.get(index);
+					cardsList.remove(index);
+					player.addCardToPlayer(selectedCard);
+					break;
+				}
+			}
+		}
+	}
+
+	/**
+	 * assignCountriesToPlayer method loads the data from the file.
+	 * @param line
+	 * @param player
+	 */
+	private void assignCountriesToPlayer(String line, Player player) {
+		for(String contryName: line.split(":")) {
+			String[] countryData = contryName.split(",");
+			countriesMap.get(countryData[0].trim()).setPlayerName(player.getPlayerName());
+			countriesMap.get(countryData[0].trim()).setArmiesOnCountry(Integer.parseInt(countryData[1]));
+			player.addTerritory(countriesMap.get(contryName.trim()));
+		}
+	}
+
+	/**
+	 * createCardsFromSaveFile method create the cards from the save file 
+	 * @param cardsInformation contains the cards information from the previous game.
+	 */
+	private void createCardsFromSaveFile(String cardsInformation) {
+		cardsList = new ArrayList<>();
+		for(String cardData : cardsInformation.split(":")) {
+			String[] cardDataArray = cardData.split(",");
+			Card card = new Card(cardDataArray[1].trim(), cardDataArray[0].trim());
+			cardsList.add(card);
 		}
 	}
 
@@ -214,10 +329,12 @@ public class RiskBoardModel{
 
 	/**
 	 * findTheSectionToParseData gets the data from the config file and parses the data based on the section
+	 * @param loadSaveGame, true if the game to be loaded from saved game.
+	 *                      false if the game to be loaded from normal file
 	 * @param section, section=1([MAPS]), section=2([CONTINENTS]), section=3([TERRITORIES])
 	 * @param line, each line from the file
 	 */
-	private void findTheSectionToParseData(int section, String line) {
+	private void findTheSectionToParseData(int section, String line, boolean loadSaveGame) {
 		if(line.trim().equals("")) {
 			return;
 		}
@@ -226,15 +343,16 @@ public class RiskBoardModel{
 		}else if(section == 2) {
 			createCountinents(line);
 		}else {
-			createCountries(line);
+			createCountries(line, loadSaveGame);
 		}
 	}
 
 	/**
 	 * createContries is used to create the territories and linked to the adjacent territories
+	 * @param loadSaveGame
 	 * @param line, country data line from the file
 	 */
-	private void createCountries(String line) {
+	private void createCountries(String line, boolean loadSaveGame) {
 		if(Objects.isNull(countriesMap)) {
 			countriesMap = new HashMap<>();
 			countriesList = new ArrayList<>();
@@ -320,6 +438,8 @@ public class RiskBoardModel{
 	 * @param playersCount, count of the players how many players are playing the game
 	 */
 	public void assignCountriesToPlayers(int playersCount) {
+		if(Objects.nonNull(playersData))
+			return;
 		Random random;
 		try {
 			random = SecureRandom.getInstanceStrong();
@@ -344,7 +464,7 @@ public class RiskBoardModel{
 				Player player = playersData.get(index % playersCount);
 				Country country = countriesList.get(assignedCountriesList.get(countryIndex));
 				country.setPlayerName(player.getPlayerName());
-				player.addTerritory(player, country);
+				player.addTerritory(country);
 				assignedCountriesList.remove(countryIndex);
 			}
 			for(int i = 0; i < playersData.size();i++) {
@@ -362,9 +482,11 @@ public class RiskBoardModel{
 	 */
 	public void updateTheBoardScreenData(RiskBoardView riskBoardView, String phase) {
 		Player currentPlayer = playersData.get(currentPlayerIndex);
-		if(currentPlayer.getArmyCountAvailable() == 0 && phase.equals(RiskGameConstants.REINFORCEMENT_PHASE)) {
+		if(!isGameResume  && currentPlayer.getArmyCountAvailable() == 0 && phase.equals(RiskGameConstants.REINFORCEMENT_PHASE)) {
 			setTheBonusArmiesToPlayer(currentPlayer, riskBoardView);
 			isInitialPhase = false;
+		}else {
+			phase = isGameResumePhase;
 		}
 		updatePlayersInfo(playersData, riskBoardView);
 		if(phase.equals(RiskGameConstants.REINFORCEMENT_PHASE)) {
@@ -912,12 +1034,76 @@ public class RiskBoardModel{
 	public String getImageName() {
 		return imageName;
 	}
-	
+
 	/**
 	 * Return the complete list of cards
 	 * @return cardsList, the list contains all of the cards
 	 */
 	public List<Card> getCardsList() {
 		return cardsList;
+	}
+
+	/**
+	 * @param view
+	 * @param mapFileName 
+	 */
+	public void saveGameCurrentState(RiskBoardView view, String mapFileName) {
+		JOptionPane.showMessageDialog(null, "Save is under development");
+		if(Objects.nonNull(mapFileName)) {
+			File saveFile = new File(System.getProperty("user.dir")+RiskGameConstants.RESOURCES_FOLDER+"/Save/"+"save_"+mapFileName+RiskGameConstants.MAP_FILE_EXTENSION);
+			try {
+				FileWriter writer = new FileWriter(saveFile);
+				savePlayersData(writer, view);
+				writer.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+		}
+	}
+
+	/**
+	 * savePlayersData method saves the players data to save the game.
+	 * @param view 
+	 * @param writer, writer object to write to the file
+	 * @throws IOException 
+	 */
+	private void savePlayersData(FileWriter writer, RiskBoardView view) throws IOException {
+		writer.write("Current Player Index="+currentPlayerIndex+"\n");
+		writer.write("CurrentPhase="+getCurrentPhase(view)+"\n");
+		writer.write("[CARDS]\n");
+		StringBuilder cardsData = new StringBuilder();
+		cardsList.stream().forEach(data -> {
+			cardsData.append(data.getArmyType()).append(",").append(data.getTerritoryName()).append(":");
+		});
+		writer.write(cardsData.toString()+"\n\n");
+		for(Player player:playersData) {
+			writer.write(player.getPlayerName()+"\n");
+			writer.write("Army Count ="+player.getArmyCountAvailable()+"\n");
+			writer.write("Conutry Count = "+player.getTerritoryOccupied().size()+"\n");
+			writer.write("Cards Count = "+player.getPlayerCards().size()+"\n");
+			StringBuilder countryNames = new StringBuilder();
+			for( Country country:player.getTerritoryOccupied()) {
+				countryNames.append(country.getCountryName()).append(",").append(country.getArmiesOnCountry()).append(":");
+			}
+			writer.write(countryNames.toString().substring(0, countryNames.toString().length() - 1)+"\n");
+			String cardsNames = player.getPlayerCards().stream().map(Card :: getTerritoryName).collect(Collectors.joining(","));
+			writer.write(cardsNames+"\n");
+		}
+	}
+
+	/**
+	 * getCurrentPhase method gets the current phase of the player.
+	 * @param riskBoardView 
+	 * @return currentPhase.
+	 */
+	private String getCurrentPhase(RiskBoardView riskBoardView) {
+		if(riskBoardView.getReinforceBtn().isVisible())
+			return RiskGameConstants.REINFORCEMENT_PHASE;
+		else if(riskBoardView.getAttackBtn().isVisible())
+			return RiskGameConstants.ATTACK_PHASE;
+		else if(riskBoardView.getEndFortificationBtn().isVisible())
+			return RiskGameConstants.FORTIFICATION_PHASE;
+		return null;
 	}
 }

@@ -74,6 +74,7 @@ public class RiskBoardView extends JFrame{
 	private JLabel player6TotalArmies;
 	private JLabel cardsCountLabel;
 	private JTextArea cardsObtainedTextArea;
+	private JMenuItem gameSaveMenuItem;
 	
 	/**
 	 * This constructor create the new frame which contains the components which is used to play the game
@@ -272,8 +273,9 @@ public class RiskBoardView extends JFrame{
 		menuBar.setBounds(0, 0, 1522, 22);
 		boardFrame.getContentPane().add(menuBar);
 		
-		JMenuItem mntmSaveGame = new JMenuItem("Save Game");
-		menuBar.add(mntmSaveGame);
+		gameSaveMenuItem = new JMenuItem("Save Game");
+		gameSaveMenuItem.setBounds(0, 0, 50, 22);
+		menuBar.add(gameSaveMenuItem);
 		
 		JLabel cardsObtainedLabel = new JLabel("Cards Obtained :");
 		cardsObtainedLabel.setBounds(552, 744, 117, 27);
@@ -286,6 +288,14 @@ public class RiskBoardView extends JFrame{
 		boardFrame.getContentPane().add(cardsObtainedTextArea);
 	}
 	
+	/**
+	 * Returns the GameSaveMenuItem object set on this frame.
+	 * @return the GameSaveMenuItem object of this frame
+	 */
+	public JMenuItem getGameSaveMenuItem() {
+		return gameSaveMenuItem;
+	}
+
 	/**
 	 * Returns the CardsObtainedTextArea object set on this frame.
 	 * @return the CardsObtainedTextArea object of this frame

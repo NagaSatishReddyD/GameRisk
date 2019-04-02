@@ -65,8 +65,8 @@ public class Player {
 	 * @param player, player object {@link Player}
 	 * @param country, country occupied by player {@link Country}
 	 */
-	public void addTerritory(Player player, Country country) {
-		player.getTerritoryOccupied().add(country);
+	public void addTerritory(Country country) {
+		this.getTerritoryOccupied().add(country);
 	}
 		
 	public void addCardToPlayer(Card card) {
