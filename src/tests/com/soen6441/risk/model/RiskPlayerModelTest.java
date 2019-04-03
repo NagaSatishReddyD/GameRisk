@@ -40,7 +40,7 @@ class RiskPlayerModelTest {
 
 	@Ignore
 	void testStartBoard() throws NumberFormatException, NoSuchAlgorithmException, IOException {
-		riskPlayerModel.startBoardFrame(riskPlayerView);
+		riskPlayerModel.startStrategyFrame(riskPlayerView);
 		//assertEquals(false, riskPlayerView.getPlayerStartframe().isVisible());
 	}
 

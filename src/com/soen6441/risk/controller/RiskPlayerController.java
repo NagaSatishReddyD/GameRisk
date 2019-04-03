@@ -29,8 +29,8 @@ public class RiskPlayerController {
 	 * InitializeGame method contains the event handlers for the components in the {@link RiskPlayerView} frame.
 	 * It triggers the respective methods in the {@link RiskPlayerModel} class
 	 */
-	public void initalizeGame() {
-		this.view.getLoadGameButton().addActionListener(e -> model.startBoardFrame(this.view));
+	public void initalizePlayerStrategy() {
+		this.view.getNextButton().addActionListener(e -> model.startStrategyFrame(this.view));
 	}
 
 }

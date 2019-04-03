@@ -21,7 +21,7 @@ public class RiskPlayerView extends JFrame {
 
 	private JFrame playerStartframe;
 	private JComboBox<String> playerCountCombo;
-	private JButton loadGameButton;
+	private JButton nextButton;
 	private JComboBox<String> mapComboBox;
 
 
@@ -51,9 +51,9 @@ public class RiskPlayerView extends JFrame {
 		playerStartframe.getContentPane().add(playerCountCombo);
 		
 		
-		loadGameButton = new JButton("Load Game");
-		loadGameButton.setBounds(166, 118, 213, 21);
-		playerStartframe.getContentPane().add(loadGameButton);
+		nextButton = new JButton("Next");
+		nextButton.setBounds(166, 118, 213, 21);
+		playerStartframe.getContentPane().add(nextButton);
 		
 		JLabel mapLabel = new JLabel("Choose map");
 		mapLabel.setBounds(166, 74, 78, 16);
@@ -105,11 +105,11 @@ public class RiskPlayerView extends JFrame {
 	}
 
 	/**
-	 * Returns the frame object set on this frame.
-	 * @return the frame object of this frame
+	 * Returns the next button object set on this frame.
+	 * @return the next button object of this frame
 	 */
-	public JButton getLoadGameButton() {
-		return loadGameButton;
+	public JButton getNextButton() {
+		return nextButton;
 	}
 
 }

@@ -24,7 +24,7 @@ public class RiskGameModel {
 		RiskPlayerModel riskPlayerModel = new RiskPlayerModel();
 		RiskPlayerView riskPlayerView = new RiskPlayerView();
 		RiskPlayerController riskPlayerController = new RiskPlayerController(riskPlayerModel, riskPlayerView);
-		riskPlayerController.initalizeGame();
+		riskPlayerController.initalizePlayerStrategy();
 	}
 
 	/**

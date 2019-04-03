@@ -34,7 +34,7 @@ public class RiskBoardController{
 	 * @param playerCount, count of players playing the game
 	 * @param fileName, file from the countries data need to be loaded
 	 */
-	public void intializeBoardGame(int playerCount, String fileName) {
+	public void intializeBoardGame(int playerCount, String fileName, String[] behaviors) {
 		this.fileName = fileName;
 		this.model.loadRequiredData(System.getProperty("user.dir")+RiskGameConstants.RESOURCES_FOLDER+fileName+RiskGameConstants.MAP_FILE_EXTENSION, true);
 		this.model.assignCountriesToPlayers(playerCount);

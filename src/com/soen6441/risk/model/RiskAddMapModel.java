@@ -55,7 +55,7 @@ public class RiskAddMapModel {
 			RiskPlayerModel riskPlayerModel = new RiskPlayerModel();
 			RiskPlayerView riskPlayerView = new RiskPlayerView();
 			RiskPlayerController riskPlayerController = new RiskPlayerController(riskPlayerModel, riskPlayerView);
-			riskPlayerController.initalizeGame();
+			riskPlayerController.initalizePlayerStrategy();
 		}catch(IOException e) {
 			System.out.println(e.getMessage());
 		}
