@@ -1,14 +1,13 @@
 package com.soen6441.risk;
 
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Random;
 
 import javax.swing.JOptionPane;
 
+import com.soen6441.risk.playerstrategy.PlayerBehaviourStrategyInterface;
 import com.soen6441.risk.view.RiskBoardView;
 
 /**
@@ -22,7 +21,7 @@ public class Player {
 	List<Country> territoryOccupied;
 	int armyCountAvailable;
 	List<Card> playerCards;
-	String playerStrategy;
+	PlayerBehaviourStrategyInterface playerStrategy;
 
 	public Player(String playerName, int initalArmiesAssigned) {
 		this.playerName = playerName;
@@ -31,15 +30,13 @@ public class Player {
 		playerCards = new ArrayList<>();
 	}
 
-	public String getPlayerStrategy() {
-		return playerStrategy;
-	}
-
-	public void setPlayerStrategy(String playerStrategy) {
+	public void setPlayerStrategy(PlayerBehaviourStrategyInterface playerStrategy) {
 		this.playerStrategy = playerStrategy;
 	}
 
-
+	public PlayerBehaviourStrategyInterface getPlayerStrategy() {
+		return this.playerStrategy;
+	}
 
 	public void incrementArmy(int number) {
 		armyCountAvailable += number;
@@ -101,29 +98,7 @@ public class Player {
 	 * @param country, {@link Country} to which the armies to be placed.
 	 */
 	public void reinforceArmyToCountry(Country country, RiskBoardView riskBoardView, boolean isInitialPhase) {
-		Integer selectedValue = null;
-		if(this.getPlayerStrategy().equals(RiskGameConstants.HUMAN)) {
-			Object [] possibilities = new Object [this.getArmyCountAvailable()];
-			for(int index = 0; index < this.getArmyCountAvailable(); index++) {
-				possibilities[index] = index+1;
-			}
-			selectedValue = (Integer)JOptionPane.showInputDialog(riskBoardView.getBoardFrame(),"Please enter armies to be added", "Armies To Add",
-					JOptionPane.INFORMATION_MESSAGE, null,possibilities, possibilities[0]);
-		}else {
-			if(isInitialPhase) {
-				Random random;
-				try {
-					random = SecureRandom.getInstanceStrong();
-					selectedValue = random.nextInt(this.getArmyCountAvailable()+1);
-				} catch (NoSuchAlgorithmException e) {
-					e.printStackTrace();
-				}
-			}else {
-				if(this.playerStrategy.equals(RiskGameConstants.AGGRESSIVE)) {
-					selectedValue = this.getArmyCountAvailable();
-				}
-			}
-		}
+		Integer selectedValue = this.playerStrategy.reinforceArmyToCountry(country, riskBoardView, isInitialPhase, this);
 		if(Objects.nonNull(selectedValue)) {
 			country.incrementArmiesOnCountry(selectedValue);
 			this.decrementArmy(selectedValue);

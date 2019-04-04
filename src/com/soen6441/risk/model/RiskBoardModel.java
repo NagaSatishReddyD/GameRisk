@@ -35,6 +35,12 @@ import com.soen6441.risk.Continent;
 import com.soen6441.risk.Country;
 import com.soen6441.risk.Player;
 import com.soen6441.risk.RiskGameConstants;
+import com.soen6441.risk.playerstrategy.AggressiveStrategy;
+import com.soen6441.risk.playerstrategy.BenevolentStrategy;
+import com.soen6441.risk.playerstrategy.CheaterStrategy;
+import com.soen6441.risk.playerstrategy.HumanStrategy;
+import com.soen6441.risk.playerstrategy.PlayerBehaviourStrategyInterface;
+import com.soen6441.risk.playerstrategy.RandomStrategy;
 import com.soen6441.risk.view.RiskBoardView;
 
 /**
@@ -456,7 +462,7 @@ public class RiskBoardModel{
 					String playerName = "Player "+ ++index;
 					int initalArmiesAssigned = 5 * (10 - playersCount);
 					Player player =  new Player(playerName, initalArmiesAssigned);
-					player.setPlayerStrategy(behaviors[index-1]);
+					player.setPlayerStrategy(getStrategyOfPlayer(behaviors[index-1]));
 					playersData.add(player);
 					playersMap.put(playerName, player);
 				}
@@ -479,6 +485,33 @@ public class RiskBoardModel{
 		} catch (NoSuchAlgorithmException e) {
 			showErrorMessage("Problem while assigning players. Please restart the game\n"+e.getMessage(), true);
 		}
+	}
+
+	/**
+	 * @param string
+	 * @return
+	 */
+	private PlayerBehaviourStrategyInterface getStrategyOfPlayer(String playerStrategy) {
+		PlayerBehaviourStrategyInterface playerBehaviourStrategy;
+		switch (playerStrategy) {
+		case RiskGameConstants.HUMAN:
+			playerBehaviourStrategy = new HumanStrategy();
+			break;
+		case RiskGameConstants.AGGRESSIVE:
+			playerBehaviourStrategy = new AggressiveStrategy();
+			break;
+		case RiskGameConstants.BENEVOLENT:
+			playerBehaviourStrategy = new BenevolentStrategy();
+			break;
+		case RiskGameConstants.RANDOM:
+			playerBehaviourStrategy = new RandomStrategy();
+		case RiskGameConstants.CHEATER:
+			playerBehaviourStrategy = new CheaterStrategy();
+		default:
+			playerBehaviourStrategy = new HumanStrategy();
+			break;
+		}
+		return playerBehaviourStrategy;
 	}
 
 	/**
@@ -517,29 +550,68 @@ public class RiskBoardModel{
 	 * @param currentPlayer, currentPlayer object
 	 */
 	private void playerStrategyActions(Player currentPlayer, RiskBoardView riskBoardView) {
-		if(currentPlayer.getPlayerStrategy().equals(RiskGameConstants.AGGRESSIVE)) {
-			checkTheAggressiveStrategy(currentPlayer, riskBoardView);
-		}else if(currentPlayer.getPlayerStrategy().equals(RiskGameConstants.BENEVOLENT)) {
-			
-		}else if(currentPlayer.getPlayerStrategy().equals(RiskGameConstants.RANDOM)) {
-			
-		}else if(currentPlayer.getPlayerStrategy().equals(RiskGameConstants.CHEATER)) {
-			
+		if(currentPlayer.getPlayerStrategy() instanceof AggressiveStrategy) {
+			implementTheAggressiveStrategy(currentPlayer, riskBoardView);
+		}else if(currentPlayer.getPlayerStrategy() instanceof BenevolentStrategy) {
+			implementBenevolentStrategy(currentPlayer, riskBoardView);
+		}else if(currentPlayer.getPlayerStrategy() instanceof RandomStrategy) {
+			implementRandomBehaviour(currentPlayer, riskBoardView);
+		}else if(currentPlayer.getPlayerStrategy() instanceof CheaterStrategy) {
+			implementCheaterStrategy(currentPlayer, riskBoardView);
 		}
 	}
 
 	/**
-	 * checkTheAggressiveStrategy method implements the aggressive strategy.
+	 * @param currentPlayer
+	 * @param riskBoardView
+	 */
+	private void implementCheaterStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
+		if(isInitialPhase) {
+			placeArmiesToCountries(currentPlayer, riskBoardView);
+		}
+	}
+
+	/**
+	 * @param currentPlayer
+	 * @param riskBoardView
+	 */
+	private void implementRandomBehaviour(Player currentPlayer, RiskBoardView riskBoardView) {
+		if(isInitialPhase) {
+			placeArmiesToCountries(currentPlayer, riskBoardView);
+		}
+	}
+
+	/**
+	 * @param currentPlayer
+	 * @param riskBoardView
+	 */
+	private void implementBenevolentStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
+		if(isInitialPhase) {
+			placeArmiesToCountries(currentPlayer, riskBoardView);
+		}
+	}
+
+	/**
+	 * implementTheAggressiveStrategy method implements the aggressive strategy.
 	 * @param riskBoardView 
 	 * @param currentPlayer, current player object references
 	 */
-	private void checkTheAggressiveStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
+	private void implementTheAggressiveStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
 		if(isInitialPhase) {
 			placeArmiesToCountries(currentPlayer, riskBoardView);
 		}else if(isGamePhase.equals(RiskGameConstants.REINFORCEMENT_PHASE)) {
 			placeArmiesForAggressiveStrategy(currentPlayer, riskBoardView);
 			updateTheBoardScreenData(riskBoardView);
+		}else if(isGamePhase.equals(RiskGameConstants.ATTACK_PHASE)) {
+			attackForAggressiveStrategy(riskBoardView);
 		}
+	}
+
+	/**
+	 * @param riskBoardView
+	 */
+	private void attackForAggressiveStrategy(RiskBoardView riskBoardView) {
+
 	}
 
 	/**
@@ -812,7 +884,7 @@ public class RiskBoardModel{
 			currentPlayerIndex++;
 			currentPlayerIndex = currentPlayerIndex%playersData.size();
 			Player player = playersData.get(currentPlayerIndex);
-			if(player.getPlayerStrategy().equals(RiskGameConstants.HUMAN))
+			if(player.getPlayerStrategy() instanceof HumanStrategy)
 				JOptionPane.showMessageDialog(view.getBoardFrame(), "Next Player Turn");
 			isGamePhase = RiskGameConstants.REINFORCEMENT_PHASE;
 			updateTheBoardScreenData(view);
