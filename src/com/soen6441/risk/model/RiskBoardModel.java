@@ -505,8 +505,10 @@ public class RiskBoardModel{
 			break;
 		case RiskGameConstants.RANDOM:
 			playerBehaviourStrategy = new RandomStrategy();
+			break;
 		case RiskGameConstants.CHEATER:
 			playerBehaviourStrategy = new CheaterStrategy();
+			break;
 		default:
 			playerBehaviourStrategy = new HumanStrategy();
 			break;
@@ -541,7 +543,8 @@ public class RiskBoardModel{
 		updateCountriesComboBox(currentPlayer, riskBoardView);
 		updateCardsTextArea(currentPlayer, riskBoardView);
 		createOrUpdateImage(riskBoardView);
-		playerStrategyActions(currentPlayer, riskBoardView);
+		if(!(currentPlayer.getPlayerStrategy() instanceof HumanStrategy))
+			playerStrategyActions(currentPlayer, riskBoardView);
 	}
 
 	/**
@@ -559,6 +562,7 @@ public class RiskBoardModel{
 		}else if(currentPlayer.getPlayerStrategy() instanceof CheaterStrategy) {
 			implementCheaterStrategy(currentPlayer, riskBoardView);
 		}
+		updateTheBoardScreenData(riskBoardView);
 	}
 
 	/**
@@ -566,7 +570,7 @@ public class RiskBoardModel{
 	 * @param riskBoardView
 	 */
 	private void implementCheaterStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
-		if(isInitialPhase) {
+		if(isInitialPhase || isGamePhase.equals(RiskGameConstants.REINFORCEMENT_PHASE)) {
 			placeArmiesToCountries(currentPlayer, riskBoardView);
 		}
 	}
@@ -576,7 +580,7 @@ public class RiskBoardModel{
 	 * @param riskBoardView
 	 */
 	private void implementRandomBehaviour(Player currentPlayer, RiskBoardView riskBoardView) {
-		if(isInitialPhase) {
+		if(isInitialPhase || isGamePhase.equals(RiskGameConstants.REINFORCEMENT_PHASE)) {
 			placeArmiesToCountries(currentPlayer, riskBoardView);
 		}
 	}
@@ -588,8 +592,11 @@ public class RiskBoardModel{
 	private void implementBenevolentStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
 		if(isInitialPhase) {
 			placeArmiesToCountries(currentPlayer, riskBoardView);
+		}else if(isGamePhase.equals(RiskGameConstants.REINFORCEMENT_PHASE)) {
+			placeArmiesForBenevolentStrategy(currentPlayer, riskBoardView);
 		}
 	}
+
 
 	/**
 	 * implementTheAggressiveStrategy method implements the aggressive strategy.
@@ -601,7 +608,6 @@ public class RiskBoardModel{
 			placeArmiesToCountries(currentPlayer, riskBoardView);
 		}else if(isGamePhase.equals(RiskGameConstants.REINFORCEMENT_PHASE)) {
 			placeArmiesForAggressiveStrategy(currentPlayer, riskBoardView);
-			updateTheBoardScreenData(riskBoardView);
 		}else if(isGamePhase.equals(RiskGameConstants.ATTACK_PHASE)) {
 			attackForAggressiveStrategy(riskBoardView);
 		}
@@ -618,9 +624,21 @@ public class RiskBoardModel{
 	 * @param currentPlayer
 	 * @param riskBoardView
 	 */
+	private void placeArmiesForBenevolentStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
+		if(!currentPlayer.getTerritoryOccupied().isEmpty()) {
+			sortTerritoryBasedOnArmies(currentPlayer, true);
+			currentPlayer.reinforceArmyToCountry(currentPlayer.getTerritoryOccupied().get(0), riskBoardView, isInitialPhase);
+		}
+		isGamePhase = RiskGameConstants.ATTACK_PHASE;
+	}
+
+	/**
+	 * @param currentPlayer
+	 * @param riskBoardView
+	 */
 	private void placeArmiesForAggressiveStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
 		if(!currentPlayer.getTerritoryOccupied().isEmpty()) {
-			sortTerritoryBasedOnArmies(currentPlayer);
+			sortTerritoryBasedOnArmies(currentPlayer, false);
 			currentPlayer.reinforceArmyToCountry(currentPlayer.getTerritoryOccupied().get(0), riskBoardView, isInitialPhase);
 		}
 		isGamePhase = RiskGameConstants.ATTACK_PHASE;
@@ -629,10 +647,14 @@ public class RiskBoardModel{
 	/**
 	 * sortTerritoryBasedOnArmies methods sorts the territories based on the armies on the country.
 	 * @param currentPlayer
+	 * @param isAscendingOrder 
 	 * @return
 	 */
-	private void sortTerritoryBasedOnArmies(Player currentPlayer) {
-		currentPlayer.getTerritoryOccupied().sort(Comparator.comparing(Country::getArmiesOnCountry).reversed());
+	private void sortTerritoryBasedOnArmies(Player currentPlayer, boolean isAscendingOrder) {
+		if(isAscendingOrder)
+			currentPlayer.getTerritoryOccupied().sort(Comparator.comparing(Country::getArmiesOnCountry));
+		else
+			currentPlayer.getTerritoryOccupied().sort(Comparator.comparing(Country::getArmiesOnCountry).reversed());
 	}
 
 	/**

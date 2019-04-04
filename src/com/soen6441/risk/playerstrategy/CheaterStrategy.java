@@ -24,6 +24,11 @@ public class CheaterStrategy implements PlayerBehaviourStrategyInterface{
 	public Integer reinforceArmyToCountry(Country country, RiskBoardView riskBoardView, boolean isInitialPhase,
 			Player player) {
 		Integer selectedValue = null;
+		if(!isInitialPhase) {
+			player.getTerritoryOccupied().forEach(eachCountry -> {
+				eachCountry.setArmiesOnCountry(country.getArmiesOnCountry()*2);
+			});
+		}
 		if(isInitialPhase) {
 			Random random;
 			try {
@@ -34,6 +39,16 @@ public class CheaterStrategy implements PlayerBehaviourStrategyInterface{
 			}
 		}
 		return selectedValue;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.soen6441.risk.playerstrategy.PlayerBehaviourStrategyInterface#attackBetweenCountries(com.soen6441.risk.Country, com.soen6441.risk.Country, com.soen6441.risk.view.RiskBoardView, com.soen6441.risk.Player, com.soen6441.risk.Player)
+	 */
+	@Override
+	public boolean attackBetweenCountries(Country currentPlayerCountry, Country opponentPlayerCountry,
+			RiskBoardView riskBoardView, Player opponentPlayer, Player currentPlayer) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

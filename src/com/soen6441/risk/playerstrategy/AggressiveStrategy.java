@@ -37,4 +37,14 @@ public class AggressiveStrategy implements PlayerBehaviourStrategyInterface{
 		return selectedValue;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.soen6441.risk.playerstrategy.PlayerBehaviourStrategyInterface#attackBetweenCountries(com.soen6441.risk.Country, com.soen6441.risk.Country, com.soen6441.risk.view.RiskBoardView, com.soen6441.risk.Player, com.soen6441.risk.Player)
+	 */
+	@Override
+	public boolean attackBetweenCountries(Country currentPlayerCountry, Country opponentPlayerCountry,
+			RiskBoardView riskBoardView, Player opponentPlayer, Player currentPlayer) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

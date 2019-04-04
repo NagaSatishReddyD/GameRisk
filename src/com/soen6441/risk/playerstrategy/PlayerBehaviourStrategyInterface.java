@@ -11,4 +11,6 @@ import com.soen6441.risk.view.RiskBoardView;
 public interface PlayerBehaviourStrategyInterface {
 
 	Integer reinforceArmyToCountry(Country country, RiskBoardView riskBoardView, boolean isInitialPhase, Player player);
+	boolean attackBetweenCountries(Country currentPlayerCountry, Country opponentPlayerCountry,
+			RiskBoardView riskBoardView, Player opponentPlayer, Player currentPlayer);
 }

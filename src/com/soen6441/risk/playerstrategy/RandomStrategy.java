@@ -24,16 +24,24 @@ public class RandomStrategy implements PlayerBehaviourStrategyInterface{
 	public Integer reinforceArmyToCountry(Country country, RiskBoardView riskBoardView, boolean isInitialPhase,
 			Player player) {
 		Integer selectedValue = null;
-		if(isInitialPhase) {
-			Random random;
-			try {
-				random = SecureRandom.getInstanceStrong();
-				selectedValue = random.nextInt(player.getArmyCountAvailable()+1);
-			} catch (NoSuchAlgorithmException e) {
-				e.printStackTrace();
-			}
+		Random random;
+		try {
+			random = SecureRandom.getInstanceStrong();
+			selectedValue = random.nextInt(player.getArmyCountAvailable()+1);
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
 		}
 		return selectedValue;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.soen6441.risk.playerstrategy.PlayerBehaviourStrategyInterface#attackBetweenCountries(com.soen6441.risk.Country, com.soen6441.risk.Country, com.soen6441.risk.view.RiskBoardView, com.soen6441.risk.Player, com.soen6441.risk.Player)
+	 */
+	@Override
+	public boolean attackBetweenCountries(Country currentPlayerCountry, Country opponentPlayerCountry,
+			RiskBoardView riskBoardView, Player opponentPlayer, Player currentPlayer) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }
