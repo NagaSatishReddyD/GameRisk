@@ -594,6 +594,8 @@ public class RiskBoardModel{
 			placeArmiesToCountries(currentPlayer, riskBoardView);
 		}else if(isGamePhase.equals(RiskGameConstants.REINFORCEMENT_PHASE)) {
 			placeArmiesForBenevolentStrategy(currentPlayer, riskBoardView);
+		}else if(isGamePhase.equalsIgnoreCase(RiskGameConstants.ATTACK_PHASE)) {
+			isGamePhase = RiskGameConstants.FORTIFICATION_PHASE;
 		}
 	}
 
@@ -628,7 +630,6 @@ public class RiskBoardModel{
 				}
 			}
 		}
-//		currentPlayer.attackBetweenCountries(currentPlayerCountry, opponentPlayerCountry, riskBoardView, opponentPlayer)
 		isGamePhase = RiskGameConstants.FORTIFICATION_PHASE;
 	}
 

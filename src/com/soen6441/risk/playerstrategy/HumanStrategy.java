@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.soen6441.risk.playerstrategy;
 
 import java.util.Objects;
