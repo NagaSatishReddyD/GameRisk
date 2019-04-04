@@ -37,7 +37,7 @@ public class RiskBoardController{
 	public void intializeBoardGame(int playerCount, String fileName, String[] behaviors) {
 		this.fileName = fileName;
 		this.model.loadRequiredData(System.getProperty("user.dir")+RiskGameConstants.RESOURCES_FOLDER+fileName+RiskGameConstants.MAP_FILE_EXTENSION, true);
-		this.model.assignCountriesToPlayers(playerCount);
+		this.model.assignCountriesToPlayers(playerCount, behaviors);
 		addActionListenersToComponents();
 		this.model.updateTheBoardScreenData(this.view);
 	}

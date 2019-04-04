@@ -1,9 +1,11 @@
 package com.soen6441.risk;
 
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 import javax.swing.JOptionPane;
 
@@ -15,11 +17,12 @@ import com.soen6441.risk.view.RiskBoardView;
  *
  */
 public class Player {
-	
+
 	String playerName;
 	List<Country> territoryOccupied;
 	int armyCountAvailable;
 	List<Card> playerCards;
+	String playerStrategy;
 
 	public Player(String playerName, int initalArmiesAssigned) {
 		this.playerName = playerName;
@@ -27,15 +30,25 @@ public class Player {
 		this.territoryOccupied = new ArrayList<>();
 		playerCards = new ArrayList<>();
 	}
-	
+
+	public String getPlayerStrategy() {
+		return playerStrategy;
+	}
+
+	public void setPlayerStrategy(String playerStrategy) {
+		this.playerStrategy = playerStrategy;
+	}
+
+
+
 	public void incrementArmy(int number) {
 		armyCountAvailable += number;
 	}
-	
+
 	public void decrementArmy(int number) {
 		armyCountAvailable -= number;
 	}
-	
+
 	public int getArmyCountAvailable() {
 		return armyCountAvailable;
 	}
@@ -59,7 +72,7 @@ public class Player {
 	public void setTerritoryOccupied(List<Country> territoryOccupied) {
 		this.territoryOccupied = territoryOccupied;
 	}
-	
+
 	/**
 	 * addTerritory adds the country to the player which no other player had yet
 	 * @param player, player object {@link Player}
@@ -68,7 +81,7 @@ public class Player {
 	public void addTerritory(Country country) {
 		this.getTerritoryOccupied().add(country);
 	}
-		
+
 	public void addCardToPlayer(Card card) {
 		this.playerCards.add(card);
 	}
@@ -87,12 +100,23 @@ public class Player {
 	 * @param country, {@link Country} to which the armies to be placed.
 	 */
 	public void reinforceArmyToCountry(Country country, RiskBoardView riskBoardView) {
-		Object [] possibilities = new Object [this.getArmyCountAvailable()];
-		for(int index = 0; index < this.getArmyCountAvailable(); index++) {
-			possibilities[index] = index+1;
+		Integer selectedValue = null;
+		if(this.getPlayerStrategy().equals(RiskGameConstants.HUMAN)) {
+			Object [] possibilities = new Object [this.getArmyCountAvailable()];
+			for(int index = 0; index < this.getArmyCountAvailable(); index++) {
+				possibilities[index] = index+1;
+			}
+			selectedValue = (Integer)JOptionPane.showInputDialog(riskBoardView.getBoardFrame(),"Please enter armies to be added", "Armies To Add",
+					JOptionPane.INFORMATION_MESSAGE, null,possibilities, possibilities[0]);
+		}else {
+				Random random;
+				try {
+					random = SecureRandom.getInstanceStrong();
+					selectedValue = random.nextInt(this.getArmyCountAvailable()+1);
+				} catch (NoSuchAlgorithmException e) {
+					e.printStackTrace();
+				}
 		}
-		Integer selectedValue = (Integer)JOptionPane.showInputDialog(riskBoardView.getBoardFrame(),"Please enter armies to be added", "Armies To Add",
-				JOptionPane.INFORMATION_MESSAGE, null,possibilities, possibilities[0]);
 		if(Objects.nonNull(selectedValue)) {
 			country.incrementArmiesOnCountry(selectedValue);
 			this.decrementArmy(selectedValue);
@@ -195,7 +219,7 @@ public class Player {
 		}
 		return isOcuppiedTerritory;
 	}
-	
+
 	/**
 	 * isOpponentPlayerOutOfGame method checks whether the opponent player is done with the game if so
 	 * all opponent player cards will be given to attacked player.
@@ -207,7 +231,7 @@ public class Player {
 			opponentPlayer.resetCards();
 		}
 	}
-	
+
 	/**
 	 * printDicesValues method prints the dice rolled result on the console.
 	 * @param currentPlayerDice, array of the dices values
@@ -219,7 +243,7 @@ public class Player {
 		}
 		System.out.println();
 	}
-	
+
 	/**
 	 * getNumberOfDicesPlayerWantsToThrow method is used to get the number of armies an player wants to use in the attack phase
 	 * @param isAttacker, whether dices is throwning by attacker or defender, if true attacker else defender
@@ -272,7 +296,7 @@ public class Player {
 			}
 		}
 	}
-	
+
 	/**
 	 * isCountriesOwnedByPlayers method is used to check whether the two countries are owned by the same player or not.
 	 * @param country, one of the country from the {@link RiskBoardView#getCountryComboBox()}

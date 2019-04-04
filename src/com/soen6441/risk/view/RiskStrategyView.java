@@ -1,9 +1,11 @@
 package com.soen6441.risk.view;
 
-import javax.swing.JFrame;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+
+import com.soen6441.risk.RiskGameConstants;
 
 /**
  * RiskStrategyView class contains components for users to choose each player behavior
@@ -40,7 +42,8 @@ public class RiskStrategyView extends JFrame{
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		strategyFrame.getContentPane().setLayout(null);
 		
-		String[] behavior = {"Human", "Cheater", "Random", "Aggressive", "Benevolent"};
+		String[] behavior = {RiskGameConstants.HUMAN, RiskGameConstants.AGGRESSIVE, RiskGameConstants.BENEVOLENT, 
+				RiskGameConstants.RANDOM, RiskGameConstants.CHEATER};
 		loadGameButton = new JButton("Load Game");
 		loadGameButton.setBounds(152, 181, 117, 29);
 		strategyFrame.getContentPane().add(loadGameButton);
@@ -69,27 +72,27 @@ public class RiskStrategyView extends JFrame{
 		player6Label.setBounds(24, 146, 61, 16);
 		strategyFrame.getContentPane().add(player6Label);
 		
-		player1StrategyCombo = new JComboBox<String>(behavior);
+		player1StrategyCombo = new JComboBox<>(behavior);
 		player1StrategyCombo.setBounds(152, 2, 117, 27);
 		strategyFrame.getContentPane().add(player1StrategyCombo);
 		
-		player2StrategyCombo = new JComboBox<String>(behavior);
+		player2StrategyCombo = new JComboBox<>(behavior);
 		player2StrategyCombo.setBounds(152, 30, 117, 27);
 		strategyFrame.getContentPane().add(player2StrategyCombo);
 		
-		player3StrategyCombo = new JComboBox<String>(behavior);
+		player3StrategyCombo = new JComboBox<>(behavior);
 		player3StrategyCombo.setBounds(152, 58, 117, 27);
 		strategyFrame.getContentPane().add(player3StrategyCombo);
 		
-		player4StrategyCombo = new JComboBox<String>(behavior);
+		player4StrategyCombo = new JComboBox<>(behavior);
 		player4StrategyCombo.setBounds(152, 86, 117, 27);
 		strategyFrame.getContentPane().add(player4StrategyCombo);
 		
-		player5StrategyCombo = new JComboBox<String>(behavior);
+		player5StrategyCombo = new JComboBox<>(behavior);
 		player5StrategyCombo.setBounds(152, 114, 117, 27);
 		strategyFrame.getContentPane().add(player5StrategyCombo);
 		
-		player6StrategyCombo = new JComboBox<String>(behavior);
+		player6StrategyCombo = new JComboBox<>(behavior);
 		player6StrategyCombo.setBounds(152, 142, 117, 27);
 		strategyFrame.getContentPane().add(player6StrategyCombo);
 	}

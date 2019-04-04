@@ -21,4 +21,11 @@ public class RiskGameConstants {
 	public static final String NO_CONTINENTS_OWNED = "No continent owned";
 	public static final String RESOURCES_FOLDER = "/resources/";
 	public static final String USER_DIR = "user.dir";
+	
+	//strategy constants
+	public static final String HUMAN = "Human";
+	public static final String CHEATER = "Cheater";
+	public static final String RANDOM = "Random";
+	public static final String AGGRESSIVE = "Aggressive";
+	public static final String BENEVOLENT = "Benevolent";
 }

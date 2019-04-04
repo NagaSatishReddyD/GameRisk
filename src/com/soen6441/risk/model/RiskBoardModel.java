@@ -440,11 +440,10 @@ public class RiskBoardModel{
 
 	/**
 	 * assignCountriesToPlayers method is used to assign the countries to the players randomly
+	 * @param behaviors, players behaviours 
 	 * @param playersCount, count of the players how many players are playing the game
 	 */
-	public void assignCountriesToPlayers(int playersCount) {
-		if(Objects.nonNull(playersData))
-			return;
+	public void assignCountriesToPlayers(int playersCount, String[] behaviors) {
 		Random random;
 		try {
 			random = SecureRandom.getInstanceStrong();
@@ -452,28 +451,29 @@ public class RiskBoardModel{
 			if(Objects.isNull(playersData)) {
 				playersData = new ArrayList<>();
 				playersMap = new HashMap<>();
-			}
-			while(index<playersCount) {
-				String playerName = "Player "+ ++index;
-				int initalArmiesAssigned = 5 * (10 - playersCount);
-				Player player =  new Player(playerName, initalArmiesAssigned);
-				playersData.add(player);
-				playersMap.put(playerName, player);
-			}
-			List<Integer> assignedCountriesList= new ArrayList<>();
-			for(int i = 0; i< countriesList.size();i++) {
-				assignedCountriesList.add(i);
-			}
-			for(index = 0; !assignedCountriesList.isEmpty();index++) {
-				int countryIndex = random.nextInt(assignedCountriesList.size());
-				Player player = playersData.get(index % playersCount);
-				Country country = countriesList.get(assignedCountriesList.get(countryIndex));
-				country.setPlayerName(player.getPlayerName());
-				player.addTerritory(country);
-				assignedCountriesList.remove(countryIndex);
-			}
-			for(int i = 0; i < playersData.size();i++) {
-				playersData.get(i).setArmyCountAvailable(playersData.get(i).getArmyCountAvailable() - playersData.get(i).getTerritoryOccupied().size());
+				while(index<playersCount) {
+					String playerName = "Player "+ ++index;
+					int initalArmiesAssigned = 5 * (10 - playersCount);
+					Player player =  new Player(playerName, initalArmiesAssigned);
+					player.setPlayerStrategy(behaviors[index-1]);
+					playersData.add(player);
+					playersMap.put(playerName, player);
+				}
+				List<Integer> assignedCountriesList= new ArrayList<>();
+				for(int i = 0; i< countriesList.size();i++) {
+					assignedCountriesList.add(i);
+				}
+				for(index = 0; !assignedCountriesList.isEmpty();index++) {
+					int countryIndex = random.nextInt(assignedCountriesList.size());
+					Player player = playersData.get(index % playersCount);
+					Country country = countriesList.get(assignedCountriesList.get(countryIndex));
+					country.setPlayerName(player.getPlayerName());
+					player.addTerritory(country);
+					assignedCountriesList.remove(countryIndex);
+				}
+				for(int i = 0; i < playersData.size();i++) {
+					playersData.get(i).setArmyCountAvailable(playersData.get(i).getArmyCountAvailable() - playersData.get(i).getTerritoryOccupied().size());
+				}
 			}
 		} catch (NoSuchAlgorithmException e) {
 			showErrorMessage("Problem while assigning players. Please restart the game\n"+e.getMessage(), true);
@@ -506,6 +506,54 @@ public class RiskBoardModel{
 		riskBoardView.getCardsCountLabel().setText(String.valueOf(currentPlayer.getPlayerCards().size()));
 		updateCountriesComboBox(currentPlayer, riskBoardView);
 		updateCardsTextArea(currentPlayer, riskBoardView);
+		createOrUpdateImage(riskBoardView);
+		playerStrategyActions(currentPlayer, riskBoardView);
+	}
+
+	/**
+	 * playerStrategyActions method checks the player strategy and takes appropriate actions.
+	 * @param riskBoardView 
+	 * @param currentPlayer, currentPlayer object
+	 */
+	private void playerStrategyActions(Player currentPlayer, RiskBoardView riskBoardView) {
+		if(currentPlayer.getPlayerStrategy().equals(RiskGameConstants.AGGRESSIVE)) {
+			checkTheAggressiveStrategy(currentPlayer, riskBoardView);
+		}else if(currentPlayer.getPlayerStrategy().equals(RiskGameConstants.BENEVOLENT)) {
+			
+		}else if(currentPlayer.getPlayerStrategy().equals(RiskGameConstants.RANDOM)) {
+			
+		}else if(currentPlayer.getPlayerStrategy().equals(RiskGameConstants.CHEATER)) {
+			
+		}
+	}
+
+	/**
+	 * checkTheAggressiveStrategy method implements the aggressive strategy.
+	 * @param riskBoardView 
+	 * @param currentPlayer, current player object references
+	 */
+	private void checkTheAggressiveStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
+		if(isInitialPhase) {
+			placeArmiesToCountries(currentPlayer, riskBoardView);
+		}
+	}
+
+	/**
+	 * placeArmiesToCountries method places the armies on to the countries randomly in the initial phase.
+	 * @param currentPlayer
+	 * @param riskBoardView 
+	 * 
+	 */
+	private void placeArmiesToCountries(Player currentPlayer, RiskBoardView riskBoardView) {
+		Random random;
+		try {
+			random = SecureRandom.getInstanceStrong();
+			while(currentPlayer.getArmyCountAvailable() != 0)
+				currentPlayer.reinforceArmyToCountry(currentPlayer.getTerritoryOccupied().get(random.nextInt(currentPlayer.getTerritoryOccupied().size())), riskBoardView);
+			nextPlayer(riskBoardView);
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
 		createOrUpdateImage(riskBoardView);
 	}
 
@@ -739,7 +787,9 @@ public class RiskBoardModel{
 		if(isInitialPhase) {
 			currentPlayerIndex++;
 			currentPlayerIndex = currentPlayerIndex%playersData.size();
-			JOptionPane.showMessageDialog(view.getBoardFrame(), "Next Player Turn");
+			Player player = playersData.get(currentPlayerIndex);
+			if(player.getPlayerStrategy().equals(RiskGameConstants.HUMAN))
+				JOptionPane.showMessageDialog(view.getBoardFrame(), "Next Player Turn");
 			isGamePhase = RiskGameConstants.REINFORCEMENT_PHASE;
 			updateTheBoardScreenData(view);
 		}else {
@@ -1049,7 +1099,7 @@ public class RiskBoardModel{
 	public List<Card> getCardsList() {
 		return cardsList;
 	}
-	
+
 	/**
 	 * Set the phase of the game
 	 * @param isGamePhase, the variable contains the current phase
