@@ -8,6 +8,7 @@ import java.security.SecureRandom;
 import java.util.Random;
 
 import com.soen6441.risk.Country;
+import com.soen6441.risk.Dice;
 import com.soen6441.risk.Player;
 import com.soen6441.risk.view.RiskBoardView;
 
@@ -32,7 +33,7 @@ public class AggressiveStrategy implements PlayerBehaviourStrategyInterface{
 				e.printStackTrace();
 			}
 		}else {
-				selectedValue = player.getArmyCountAvailable();
+			selectedValue = player.getArmyCountAvailable();
 		}
 		return selectedValue;
 	}
@@ -43,8 +44,44 @@ public class AggressiveStrategy implements PlayerBehaviourStrategyInterface{
 	@Override
 	public boolean attackBetweenCountries(Country currentPlayerCountry, Country opponentPlayerCountry,
 			RiskBoardView riskBoardView, Player opponentPlayer, Player currentPlayer) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean isOcuppiedTerritory = false;
+		int currentPlayerAttackingArmies;
+		int opponentDefendingArmies;
+		do {
+			opponentDefendingArmies = opponentPlayerCountry.getArmiesOnCountry();
+			currentPlayerAttackingArmies = currentPlayerCountry.getArmiesOnCountry() - 1;
+			int currentPlayerDicesToRoll = currentPlayerAttackingArmies > 3 ? 3: currentPlayerAttackingArmies;
+			int opponentPlayerDicesToRoll = opponentDefendingArmies > 2 ? 2:opponentDefendingArmies;
+			Integer[] currentPlayerDice = new Dice().diceRoll(currentPlayerDicesToRoll);
+			System.out.print("Current Player Dices: ");
+			opponentPlayer.printDicesValues(currentPlayerDice);
+			Integer[] opponentPlayerDice = new Dice().diceRoll(opponentPlayerDicesToRoll);
+			System.out.print("Opponent Player Dices: ");
+			opponentPlayer.printDicesValues(opponentPlayerDice);
+			if(currentPlayerDice[0] > opponentPlayerDice[0])
+				opponentDefendingArmies--;
+			else
+				currentPlayerAttackingArmies--;
+			if(opponentPlayerDice.length > 1 && currentPlayerDice.length > 1) {
+				if(currentPlayerDice[1] > opponentPlayerDice[1])
+					opponentDefendingArmies--;
+				else
+					currentPlayerAttackingArmies--;
+			}
+		}while(currentPlayerAttackingArmies != 0 && opponentDefendingArmies!=0);
+
+		if(currentPlayerAttackingArmies > 0) {
+			opponentPlayer.getTerritoryOccupied().remove(opponentPlayerCountry);
+			currentPlayer.getTerritoryOccupied().add(opponentPlayerCountry);
+			opponentPlayerCountry.setPlayerName(currentPlayer.getPlayerName());
+			opponentPlayerCountry.setArmiesOnCountry(1);
+			currentPlayerCountry.incrementArmiesOnCountry(currentPlayerAttackingArmies - 1);
+			isOcuppiedTerritory = true;
+			currentPlayer.isOpponentPlayerOutOfGame(currentPlayer, opponentPlayer);
+		}else if(currentPlayerAttackingArmies == 0 ){
+			opponentPlayerCountry.setArmiesOnCountry(opponentDefendingArmies);
+		}
+		return isOcuppiedTerritory;
 	}
 
 }

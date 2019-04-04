@@ -617,9 +617,37 @@ public class RiskBoardModel{
 	 * @param riskBoardView
 	 */
 	private void attackForAggressiveStrategy(RiskBoardView riskBoardView) {
-
+		Player currentPlayer = playersData.get(currentPlayerIndex);
+		if(!currentPlayer.getTerritoryOccupied().isEmpty()) {
+			sortTerritoryBasedOnArmies(currentPlayer, false);
+			Country currentPlayerCountry = currentPlayer.getTerritoryOccupied().get(0);
+			for(Country opponentPlayerCountry : currentPlayerCountry.getAdjacentCountries()) {
+				if(!currentPlayerCountry.getPlayerName().equals(opponentPlayerCountry.getPlayerName())) {
+					currentPlayer.attackBetweenCountries(currentPlayerCountry, opponentPlayerCountry, 
+							riskBoardView, playersMap.get(opponentPlayerCountry.getPlayerName()));
+				}
+			}
+		}
+//		currentPlayer.attackBetweenCountries(currentPlayerCountry, opponentPlayerCountry, riskBoardView, opponentPlayer)
+		isGamePhase = RiskGameConstants.FORTIFICATION_PHASE;
 	}
 
+	/**
+	 * attackBetweenCountries method is to attack between to players territories which are adjacent
+	 * @param riskBoardView, RiskBoardView object used to update the components of the screen
+	 */
+	public void attackBetweenCountries(RiskBoardView riskBoardView) {
+		Player currentPlayer = playersData.get(currentPlayerIndex);
+		Country currentPlayerCountry = countriesMap.get(riskBoardView.getCountryComboBox().getSelectedItem().toString());
+		Country opponentPlayerCountry = countriesMap.get(riskBoardView.getAdjacentCountryComboBox().getSelectedItem().toString());
+		Player opponentPlayer = playersMap.get(opponentPlayerCountry.getPlayerName());
+		boolean isWon = currentPlayer.attackBetweenCountries(currentPlayerCountry, opponentPlayerCountry, riskBoardView, opponentPlayer);
+		if(!isOcuppiedTerritory)
+			isOcuppiedTerritory = isWon;
+		isGamePhase = RiskGameConstants.ATTACK_PHASE;
+		updateTheBoardScreenData(riskBoardView);
+		isPlayerWonTheGame();
+	}
 	/**
 	 * @param currentPlayer
 	 * @param riskBoardView
@@ -642,6 +670,20 @@ public class RiskBoardModel{
 			currentPlayer.reinforceArmyToCountry(currentPlayer.getTerritoryOccupied().get(0), riskBoardView, isInitialPhase);
 		}
 		isGamePhase = RiskGameConstants.ATTACK_PHASE;
+	}
+	
+	/**
+	 * updateArmiesInCountries method is used to update the armies in the contries by using a dialog
+	 * @param riskBoardView, RiskBoardView object used to update the components of the screen
+	 */
+	public void updateArmiesInCountries(RiskBoardView riskBoardView) {
+		Player currentPlayer = playersData.get(currentPlayerIndex);
+		Country country = countriesMap.get(riskBoardView.getCountryComboBox().getSelectedItem().toString());
+		currentPlayer.reinforceArmyToCountry(country, riskBoardView, isInitialPhase);
+		createOrUpdateImage(riskBoardView);
+		if(currentPlayer.getArmyCountAvailable() == 0) {
+			nextPlayer(riskBoardView);
+		}
 	}
 
 	/**
@@ -824,20 +866,6 @@ public class RiskBoardModel{
 	}
 
 	/**
-	 * updateArmiesInCountries method is used to update the armies in the contries by using a dialog
-	 * @param riskBoardView, RiskBoardView object used to update the components of the screen
-	 */
-	public void updateArmiesInCountries(RiskBoardView riskBoardView) {
-		Player currentPlayer = playersData.get(currentPlayerIndex);
-		Country country = countriesMap.get(riskBoardView.getCountryComboBox().getSelectedItem().toString());
-		currentPlayer.reinforceArmyToCountry(country, riskBoardView, isInitialPhase);
-		createOrUpdateImage(riskBoardView);
-		if(currentPlayer.getArmyCountAvailable() == 0) {
-			nextPlayer(riskBoardView);
-		}
-	}
-
-	/**
 	 * setTheBonusArmiesToPlayer method for find the inital Armies setup for the player.
 	 * @param riskBoardView, RiskBoardView object used to update the components of the screen
 	 * @param currentPlayer, current player object
@@ -956,23 +984,6 @@ public class RiskBoardModel{
 	public void endFortificationPhase(RiskBoardView view) {
 		isInitialPhase = true;
 		nextPlayer(view);
-	}
-
-	/**
-	 * attackBetweenCountries method is to attack between to players territories which are adjacent
-	 * @param riskBoardView, RiskBoardView object used to update the components of the screen
-	 */
-	public void attackBetweenCountries(RiskBoardView riskBoardView) {
-		Player currentPlayer = playersData.get(currentPlayerIndex);
-		Country currentPlayerCountry = countriesMap.get(riskBoardView.getCountryComboBox().getSelectedItem().toString());
-		Country opponentPlayerCountry = countriesMap.get(riskBoardView.getAdjacentCountryComboBox().getSelectedItem().toString());
-		Player opponentPlayer = playersMap.get(opponentPlayerCountry.getPlayerName());
-		boolean isWon = currentPlayer.attackBetweenCountries(currentPlayerCountry, opponentPlayerCountry, riskBoardView, opponentPlayer);
-		if(!isOcuppiedTerritory)
-			isOcuppiedTerritory = isWon;
-		isGamePhase = RiskGameConstants.ATTACK_PHASE;
-		updateTheBoardScreenData(riskBoardView);
-		isPlayerWonTheGame();
 	}
 
 	/**

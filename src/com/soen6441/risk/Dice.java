@@ -19,13 +19,19 @@ public class Dice {
 	 * @return int array, with the values of dice.
 	 * @throws NoSuchAlgorithmException , exception while creating the random number
 	 */
-	public Integer[] diceRoll(int numberOfDice) throws NoSuchAlgorithmException {
-		Random random = SecureRandom.getInstanceStrong();
+	public Integer[] diceRoll(int numberOfDice) {
+		Random random;
 		Integer[] diceArray = new Integer[numberOfDice];
-		for(int i = 0; i < numberOfDice;i++) {
-			diceArray[i] = random.nextInt(5)+1;
+		try {
+			random = SecureRandom.getInstanceStrong();
+			for(int i = 0; i < numberOfDice;i++) {
+				diceArray[i] = random.nextInt(5)+1;
+			}
+			Arrays.sort(diceArray, Collections.reverseOrder());
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		Arrays.sort(diceArray, Collections.reverseOrder());
 		return diceArray;
 	}
 

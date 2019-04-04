@@ -3,7 +3,6 @@
  */
 package com.soen6441.risk.playerstrategy;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
 
 import javax.swing.JOptionPane;
@@ -71,27 +70,23 @@ public class HumanStrategy implements PlayerBehaviourStrategyInterface{
 			currentPlayerCountry.decreaseArmiesOnCountry(currentPlayerAttackingArmies);
 			opponentPlayerCountry.decreaseArmiesOnCountry(opponentDefendingArmies);
 			do {
-				try {
-					currentPlayerDicesToRoll = opponentPlayer.getNumberOfDicesPlayerWantsToThrow(currentPlayerAttackingArmies, riskBoardView, currentPlayerDicesToRoll, true);
-					opponentPlayerDicesToRoll = opponentPlayer.getNumberOfDicesPlayerWantsToThrow(opponentDefendingArmies, riskBoardView, opponentPlayerDicesToRoll, false);
-					Integer[] currentPlayerDice = new Dice().diceRoll(currentPlayerDicesToRoll);
-					System.out.print("Current Player Dices: ");
-					opponentPlayer.printDicesValues(currentPlayerDice);
-					Integer[] opponentPlayerDice = new Dice().diceRoll(opponentPlayerDicesToRoll);
-					System.out.print("Opponent Player Dices: ");
-					opponentPlayer.printDicesValues(opponentPlayerDice);
-					if(currentPlayerDice[0] > opponentPlayerDice[0])
+				currentPlayerDicesToRoll = opponentPlayer.getNumberOfDicesPlayerWantsToThrow(currentPlayerAttackingArmies, riskBoardView, currentPlayerDicesToRoll, true);
+				opponentPlayerDicesToRoll = opponentPlayer.getNumberOfDicesPlayerWantsToThrow(opponentDefendingArmies, riskBoardView, opponentPlayerDicesToRoll, false);
+				Integer[] currentPlayerDice = new Dice().diceRoll(currentPlayerDicesToRoll);
+				System.out.print("Current Player Dices: ");
+				opponentPlayer.printDicesValues(currentPlayerDice);
+				Integer[] opponentPlayerDice = new Dice().diceRoll(opponentPlayerDicesToRoll);
+				System.out.print("Opponent Player Dices: ");
+				opponentPlayer.printDicesValues(opponentPlayerDice);
+				if(currentPlayerDice[0] > opponentPlayerDice[0])
+					opponentDefendingArmies--;
+				else
+					currentPlayerAttackingArmies--;
+				if(opponentPlayerDice.length > 1 && currentPlayerDice.length > 1) {
+					if(currentPlayerDice[1] > opponentPlayerDice[1])
 						opponentDefendingArmies--;
 					else
 						currentPlayerAttackingArmies--;
-					if(opponentPlayerDice.length > 1 && currentPlayerDice.length > 1) {
-						if(currentPlayerDice[1] > opponentPlayerDice[1])
-							opponentDefendingArmies--;
-						else
-							currentPlayerAttackingArmies--;
-					}
-				} catch (NoSuchAlgorithmException e) {
-					System.out.println(e.getMessage());
 				}
 			} while (currentPlayerAttackingArmies != 0 && opponentDefendingArmies != 0);
 			if(currentPlayerAttackingArmies > 0) {
