@@ -14,6 +14,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -535,7 +536,31 @@ public class RiskBoardModel{
 	private void checkTheAggressiveStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
 		if(isInitialPhase) {
 			placeArmiesToCountries(currentPlayer, riskBoardView);
+		}else if(isGamePhase.equals(RiskGameConstants.REINFORCEMENT_PHASE)) {
+			placeArmiesForAggressiveStrategy(currentPlayer, riskBoardView);
+			updateTheBoardScreenData(riskBoardView);
 		}
+	}
+
+	/**
+	 * @param currentPlayer
+	 * @param riskBoardView
+	 */
+	private void placeArmiesForAggressiveStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
+		if(!currentPlayer.getTerritoryOccupied().isEmpty()) {
+			sortTerritoryBasedOnArmies(currentPlayer);
+			currentPlayer.reinforceArmyToCountry(currentPlayer.getTerritoryOccupied().get(0), riskBoardView, isInitialPhase);
+		}
+		isGamePhase = RiskGameConstants.ATTACK_PHASE;
+	}
+
+	/**
+	 * sortTerritoryBasedOnArmies methods sorts the territories based on the armies on the country.
+	 * @param currentPlayer
+	 * @return
+	 */
+	private void sortTerritoryBasedOnArmies(Player currentPlayer) {
+		currentPlayer.getTerritoryOccupied().sort(Comparator.comparing(Country::getArmiesOnCountry).reversed());
 	}
 
 	/**
@@ -549,12 +574,11 @@ public class RiskBoardModel{
 		try {
 			random = SecureRandom.getInstanceStrong();
 			while(currentPlayer.getArmyCountAvailable() != 0)
-				currentPlayer.reinforceArmyToCountry(currentPlayer.getTerritoryOccupied().get(random.nextInt(currentPlayer.getTerritoryOccupied().size())), riskBoardView);
+				currentPlayer.reinforceArmyToCountry(currentPlayer.getTerritoryOccupied().get(random.nextInt(currentPlayer.getTerritoryOccupied().size())), riskBoardView, isInitialPhase);
 			nextPlayer(riskBoardView);
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
-		createOrUpdateImage(riskBoardView);
 	}
 
 	/**
@@ -712,7 +736,7 @@ public class RiskBoardModel{
 	public void updateArmiesInCountries(RiskBoardView riskBoardView) {
 		Player currentPlayer = playersData.get(currentPlayerIndex);
 		Country country = countriesMap.get(riskBoardView.getCountryComboBox().getSelectedItem().toString());
-		currentPlayer.reinforceArmyToCountry(country, riskBoardView);
+		currentPlayer.reinforceArmyToCountry(country, riskBoardView, isInitialPhase);
 		createOrUpdateImage(riskBoardView);
 		if(currentPlayer.getArmyCountAvailable() == 0) {
 			nextPlayer(riskBoardView);

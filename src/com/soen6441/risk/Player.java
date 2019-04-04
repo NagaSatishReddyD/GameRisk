@@ -96,10 +96,11 @@ public class Player {
 
 	/**
 	 * reinforceArmyToCountry method places the armies which are not placed on the country.
+	 * @param isInitialPhase 
 	 * @param riskBoardView, RiskBoardView object used to update the components of the screen
 	 * @param country, {@link Country} to which the armies to be placed.
 	 */
-	public void reinforceArmyToCountry(Country country, RiskBoardView riskBoardView) {
+	public void reinforceArmyToCountry(Country country, RiskBoardView riskBoardView, boolean isInitialPhase) {
 		Integer selectedValue = null;
 		if(this.getPlayerStrategy().equals(RiskGameConstants.HUMAN)) {
 			Object [] possibilities = new Object [this.getArmyCountAvailable()];
@@ -109,6 +110,7 @@ public class Player {
 			selectedValue = (Integer)JOptionPane.showInputDialog(riskBoardView.getBoardFrame(),"Please enter armies to be added", "Armies To Add",
 					JOptionPane.INFORMATION_MESSAGE, null,possibilities, possibilities[0]);
 		}else {
+			if(isInitialPhase) {
 				Random random;
 				try {
 					random = SecureRandom.getInstanceStrong();
@@ -116,6 +118,11 @@ public class Player {
 				} catch (NoSuchAlgorithmException e) {
 					e.printStackTrace();
 				}
+			}else {
+				if(this.playerStrategy.equals(RiskGameConstants.AGGRESSIVE)) {
+					selectedValue = this.getArmyCountAvailable();
+				}
+			}
 		}
 		if(Objects.nonNull(selectedValue)) {
 			country.incrementArmiesOnCountry(selectedValue);
