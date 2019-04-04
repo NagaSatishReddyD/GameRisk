@@ -3,6 +3,10 @@
  */
 package com.soen6441.risk.playerstrategy;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.Random;
+
 import com.soen6441.risk.Country;
 import com.soen6441.risk.Player;
 import com.soen6441.risk.view.RiskBoardView;
@@ -19,8 +23,17 @@ public class CheaterStrategy implements PlayerBehaviourStrategyInterface{
 	@Override
 	public Integer reinforceArmyToCountry(Country country, RiskBoardView riskBoardView, boolean isInitialPhase,
 			Player player) {
-		// TODO Auto-generated method stub
-		return null;
+		Integer selectedValue = null;
+		if(isInitialPhase) {
+			Random random;
+			try {
+				random = SecureRandom.getInstanceStrong();
+				selectedValue = random.nextInt(player.getArmyCountAvailable()+1);
+			} catch (NoSuchAlgorithmException e) {
+				e.printStackTrace();
+			}
+		}
+		return selectedValue;
 	}
 
 }
