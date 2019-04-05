@@ -455,6 +455,12 @@ public class RiskBoardModel{
 		try {
 			random = SecureRandom.getInstanceStrong();
 			int index = 0;
+			if(Objects.nonNull(playersData)) {
+				while(index<playersCount) {
+					playersData.get(index).setPlayerStrategy(getStrategyOfPlayer(behaviors[index]));
+					index++;
+				}
+			}
 			if(Objects.isNull(playersData)) {
 				playersData = new ArrayList<>();
 				playersMap = new HashMap<>();
@@ -1247,7 +1253,11 @@ public class RiskBoardModel{
 		if(Objects.nonNull(mapFileName)) {
 			File saveFile = new File(System.getProperty("user.dir")+RiskGameConstants.RESOURCES_FOLDER+"/Save/"+"save_"+mapFileName+RiskGameConstants.MAP_FILE_EXTENSION);
 			try {
+				if(!saveFile.exists()) {
+					saveFile.createNewFile();
+				}
 				FileWriter writer = new FileWriter(saveFile);
+				
 				savePlayersData(writer, view);
 				writer.close();
 			} catch (IOException e) {
