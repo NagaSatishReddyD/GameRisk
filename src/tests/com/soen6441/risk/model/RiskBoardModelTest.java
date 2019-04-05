@@ -51,8 +51,10 @@ public class RiskBoardModelTest {
 		playersData.add(new Player("Player 3", 2));
 		playersData.add(new Player("Player 4", 2));
 		int playersCount = 4;
+		String[] behavior = {RiskGameConstants.HUMAN, RiskGameConstants.AGGRESSIVE, RiskGameConstants.BENEVOLENT, 
+				RiskGameConstants.RANDOM, RiskGameConstants.CHEATER};
 		riskBoardModel.loadRequiredData(System.getProperty("user.dir") + "/resources/World.map", true);
-		riskBoardModel.assignCountriesToPlayers(playersCount);
+		riskBoardModel.assignCountriesToPlayers(playersCount, behavior);
 		playersData.get(0).getPlayerCards().add(new Card("Country A", "Infantry"));
 		playersData.get(0).getPlayerCards().add(new Card("Country B", "Infantry"));
 		playersData.get(0).getPlayerCards().add(new Card("Country C", "Cavalry"));

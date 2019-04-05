@@ -19,6 +19,7 @@ public class RiskGameView extends JFrame {
 	private JFrame gameStartframe;
 	private JButton startGameButton;
 	private JButton loadMapButton;
+	private JButton tournamentButton;
 
 	/**
 	 * This constructor creates a new frame which contains the components of two buttons
@@ -38,15 +39,27 @@ public class RiskGameView extends JFrame {
 		gameStartframe.setSize(500, 200);
 		gameStartframe.getContentPane().setLayout(null);
 		
-		startGameButton = new JButton("Start Button");
+		startGameButton = new JButton("Single Mode");
 		startGameButton.setSize(97, 21);
 		startGameButton.setLocation(189, 27);
 		
 		gameStartframe.getContentPane().add(startGameButton);
 		
 		loadMapButton = new JButton("Add Map");
-		loadMapButton.setBounds(189, 58, 97, 21);
+		loadMapButton.setBounds(189, 101, 97, 21);
 		gameStartframe.getContentPane().add(loadMapButton);
+		
+		tournamentButton = new JButton("Tournament Mode");
+		tournamentButton.setBounds(150, 60, 175, 29);
+		gameStartframe.getContentPane().add(tournamentButton);
+	}
+
+	/**
+	 * Returns the tournamentButton object set on this frame
+	 * @return the tournamentButton object of this frame
+	 */
+	public JButton getTournamentButton() {
+		return tournamentButton;
 	}
 
 	/**

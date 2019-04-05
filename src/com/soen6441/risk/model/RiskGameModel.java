@@ -2,9 +2,11 @@ package com.soen6441.risk.model;
 
 import com.soen6441.risk.controller.RiskAddMapController;
 import com.soen6441.risk.controller.RiskPlayerController;
+import com.soen6441.risk.controller.RiskTournamentController;
 import com.soen6441.risk.view.RiskAddMapView;
 import com.soen6441.risk.view.RiskGameView;
 import com.soen6441.risk.view.RiskPlayerView;
+import com.soen6441.risk.view.RiskTournamentView;
 
 /**
  * <b>RiskGameModel</b>
@@ -38,5 +40,13 @@ public class RiskGameModel {
 		RiskAddMapController riskAddMapController = new RiskAddMapController(riskAddMapModel, riskAddMapView);
 		riskAddMapController.addMap(view);
 		
+	}
+	
+	public void showTournamentFrame(RiskGameView view) {
+		view.getGameStartframe().setVisible(false);
+		RiskTournamentModel riskTournamentModel = new RiskTournamentModel();
+		RiskTournamentView riskTournamentView = new RiskTournamentView();
+		RiskTournamentController riskTournamentController = new RiskTournamentController(riskTournamentModel, riskTournamentView);
+		riskTournamentController.runTournament();
 	}
 }
