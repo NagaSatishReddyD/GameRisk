@@ -47,8 +47,13 @@ public class CheaterStrategy implements PlayerBehaviourStrategyInterface{
 	@Override
 	public boolean attackBetweenCountries(Country currentPlayerCountry, Country opponentPlayerCountry,
 			RiskBoardView riskBoardView, Player opponentPlayer, Player currentPlayer) {
-		// TODO Auto-generated method stub
-		return false;
+		opponentPlayer.getTerritoryOccupied().remove(opponentPlayerCountry);
+		currentPlayer.getTerritoryOccupied().add(opponentPlayerCountry);
+		opponentPlayerCountry.setPlayerName(currentPlayer.getPlayerName());
+		opponentPlayerCountry.setArmiesOnCountry(1);
+		currentPlayerCountry.incrementArmiesOnCountry(currentPlayerCountry.getArmiesOnCountry() - 1);
+		currentPlayer.isOpponentPlayerOutOfGame(currentPlayer, opponentPlayer);
+		return true;
 	}
 
 }

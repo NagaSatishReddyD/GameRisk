@@ -578,6 +578,8 @@ public class RiskBoardModel{
 	private void implementCheaterStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
 		if(isInitialPhase || isGamePhase.equals(RiskGameConstants.REINFORCEMENT_PHASE)) {
 			placeArmiesToCountries(currentPlayer, riskBoardView);
+		}else if(isGamePhase.equalsIgnoreCase(RiskGameConstants.ATTACK_PHASE)) {
+			attackForCheaterStrategy(riskBoardView);
 		}
 	}
 
@@ -588,6 +590,8 @@ public class RiskBoardModel{
 	private void implementRandomBehaviour(Player currentPlayer, RiskBoardView riskBoardView) {
 		if(isInitialPhase || isGamePhase.equals(RiskGameConstants.REINFORCEMENT_PHASE)) {
 			placeArmiesToCountries(currentPlayer, riskBoardView);
+		}else if(isGamePhase.equalsIgnoreCase(RiskGameConstants.ATTACK_PHASE)) {
+			attackForRandomStrategy(riskBoardView);
 		}
 	}
 
@@ -624,6 +628,49 @@ public class RiskBoardModel{
 	/**
 	 * @param riskBoardView
 	 */
+	private void attackForCheaterStrategy(RiskBoardView riskBoardView) {
+		Player currentPlayer = playersData.get(currentPlayerIndex);
+		List<String> currentCountriesNamesList = currentPlayer.getTerritoryOccupied().stream().map(Country::getCountryName).collect(Collectors.toList());
+		for(String countryName :currentCountriesNamesList) {
+			Country currentPlayerCountry = countriesMap.get(countryName);
+			List<Country> adjacentCountryList = currentPlayerCountry.getAdjacentCountries();
+			for(Country opponentPlayerCountry : adjacentCountryList) {
+				if(!currentPlayer.getPlayerName().equals(opponentPlayerCountry.getPlayerName())) {
+					boolean isWon = currentPlayer.attackBetweenCountries(currentPlayerCountry, opponentPlayerCountry, riskBoardView, playersMap.get(opponentPlayerCountry.getPlayerName()));
+					if(!isOcuppiedTerritory)
+						isOcuppiedTerritory = isWon;
+				}
+			}
+		}
+	}
+
+	/**
+	 * @param riskBoardView
+	 */
+	private void attackForRandomStrategy(RiskBoardView riskBoardView) {
+		Player currentPlayer = playersData.get(currentPlayerIndex);
+		try {
+			Random random = SecureRandom.getInstanceStrong();
+			int numberOfAttacks = random.nextInt(5);
+			for(int index = 0; index < numberOfAttacks; index++) {
+				Country currentPlayerCountry = currentPlayer.getTerritoryOccupied().get(random.nextInt(currentPlayer.getTerritoryOccupied().size()));
+				Country opponentPlayerCountry = currentPlayerCountry.getAdjacentCountries().get(random.nextInt(currentPlayerCountry.getAdjacentCountries().size()));
+				Player opponentPlayer = playersMap.get(opponentPlayerCountry.getPlayerName());
+				if(!currentPlayer.getPlayerName().equals(opponentPlayer.getPlayerName())) {
+					boolean isWon = currentPlayer.attackBetweenCountries(currentPlayerCountry, opponentPlayerCountry, riskBoardView, opponentPlayer);
+					if(!isOcuppiedTerritory)
+						isOcuppiedTerritory = isWon;
+				}
+			}
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * @param riskBoardView
+	 */
 	private void attackForAggressiveStrategy(RiskBoardView riskBoardView) {
 		Player currentPlayer = playersData.get(currentPlayerIndex);
 		if(!currentPlayer.getTerritoryOccupied().isEmpty()) {
@@ -631,8 +678,10 @@ public class RiskBoardModel{
 			Country currentPlayerCountry = currentPlayer.getTerritoryOccupied().get(0);
 			for(Country opponentPlayerCountry : currentPlayerCountry.getAdjacentCountries()) {
 				if(!currentPlayerCountry.getPlayerName().equals(opponentPlayerCountry.getPlayerName())) {
-					currentPlayer.attackBetweenCountries(currentPlayerCountry, opponentPlayerCountry, 
+					boolean isWon = currentPlayer.attackBetweenCountries(currentPlayerCountry, opponentPlayerCountry, 
 							riskBoardView, playersMap.get(opponentPlayerCountry.getPlayerName()));
+					if(!isOcuppiedTerritory)
+						isOcuppiedTerritory = isWon;
 				}
 			}
 		}
@@ -678,7 +727,7 @@ public class RiskBoardModel{
 		}
 		isGamePhase = RiskGameConstants.ATTACK_PHASE;
 	}
-	
+
 	/**
 	 * updateArmiesInCountries method is used to update the armies in the contries by using a dialog
 	 * @param riskBoardView, RiskBoardView object used to update the components of the screen
@@ -718,7 +767,8 @@ public class RiskBoardModel{
 			random = SecureRandom.getInstanceStrong();
 			while(currentPlayer.getArmyCountAvailable() != 0)
 				currentPlayer.reinforceArmyToCountry(currentPlayer.getTerritoryOccupied().get(random.nextInt(currentPlayer.getTerritoryOccupied().size())), riskBoardView, isInitialPhase);
-			nextPlayer(riskBoardView);
+			if(isInitialPhase)
+				nextPlayer(riskBoardView);
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
