@@ -1,6 +1,5 @@
 package com.soen6441.risk.controller;
 
-import com.soen6441.risk.model.RiskStrategyModel;
 import com.soen6441.risk.model.RiskTournamentModel;
 import com.soen6441.risk.view.RiskStrategyView;
 import com.soen6441.risk.view.RiskTournamentView;

@@ -1,12 +1,11 @@
 package com.soen6441.risk.view;
 
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 import com.soen6441.risk.RiskGameConstants;
-
-import javax.swing.JComboBox;
-import javax.swing.JButton;
 
 /**
  * RiskTournamentView class contains components for user to choose the input for tournament mode

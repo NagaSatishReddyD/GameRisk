@@ -642,6 +642,7 @@ public class RiskBoardModel{
 				}
 			}
 		}
+		getCard(riskBoardView);
 	}
 
 	/**
@@ -666,6 +667,7 @@ public class RiskBoardModel{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		getCard(riskBoardView);
 	}
 
 	/**
@@ -685,7 +687,7 @@ public class RiskBoardModel{
 				}
 			}
 		}
-		isGamePhase = RiskGameConstants.FORTIFICATION_PHASE;
+		getCard(riskBoardView);
 	}
 
 	/**
@@ -1049,8 +1051,9 @@ public class RiskBoardModel{
 	 * @param riskBoardView,instance of {@link RiskBoardView} object
 	 */
 	private void getCard(RiskBoardView riskBoardView) {
-		if(isOcuppiedTerritory) {
-			int selectedCardNumber = -1;
+		int selectedCardNumber = -1;
+		Player player = playersData.get(currentPlayerIndex);
+		if(isOcuppiedTerritory && player.getPlayerStrategy() instanceof HumanStrategy) {
 			do {
 				Object [] possibilities = new Object [cardsList.size()];
 				for(int index = 0; index < possibilities.length; index++) {
@@ -1060,14 +1063,25 @@ public class RiskBoardModel{
 					selectedCardNumber = (Integer)JOptionPane.showInputDialog(riskBoardView.getBoardFrame(),"You have won the a card. Please take your card",
 							"Cards Selection",JOptionPane.INFORMATION_MESSAGE, null,possibilities, possibilities[0]);
 				}
-				if(selectedCardNumber > 0) {
-					Card selectedCard = cardsList.get(selectedCardNumber);
-					cardsList.remove(selectedCardNumber);
-					playersData.get(currentPlayerIndex).addCardToPlayer(selectedCard);
-				}
 			}while(selectedCardNumber == 0);
-			isOcuppiedTerritory = false;
 		}
+		if(isOcuppiedTerritory && !(player.getPlayerStrategy() instanceof HumanStrategy)) {
+			Random random;
+			try {
+				random = SecureRandom.getInstanceStrong();
+				selectedCardNumber = random.nextInt(cardsList.size());
+			} catch (NoSuchAlgorithmException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		if(selectedCardNumber > 0) {
+			Card selectedCard = cardsList.get(selectedCardNumber);
+			cardsList.remove(selectedCardNumber);
+			playersData.get(currentPlayerIndex).addCardToPlayer(selectedCard);
+		}
+		isOcuppiedTerritory = false;
+		isGamePhase = RiskGameConstants.FORTIFICATION_PHASE;
 	}
 
 	/**
@@ -1307,7 +1321,7 @@ public class RiskBoardModel{
 					saveFile.createNewFile();
 				}
 				FileWriter writer = new FileWriter(saveFile);
-				
+
 				savePlayersData(writer, view);
 				writer.close();
 			} catch (IOException e) {
