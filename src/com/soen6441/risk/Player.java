@@ -177,24 +177,7 @@ public class Player {
 	 * @param riskBoardview, RiskBoardView object used to update the components of the screen
 	 */
 	public void moveArmiesBetweenCountries(Country country, Country adjacentCountry, RiskBoardView riskBoardview) {
-		if(country.getArmiesOnCountry() == 0){
-			JOptionPane.showMessageDialog(riskBoardview.getBoardFrame(), "No armies on selected country to move");
-		}else if(!isCountriesOwnedByPlayers(country, adjacentCountry)) {
-			JOptionPane.showMessageDialog(riskBoardview.getBoardFrame(), "Selected Adjacent Country is owned by another player");
-		}else {
-			Object [] possibilities = new Object [country.getArmiesOnCountry() - 1];
-			for(int index = 0; index < possibilities.length; index++) {
-				possibilities[index] = index+1;
-			}
-			Integer selectedValue = (Integer)JOptionPane.showInputDialog(riskBoardview.getBoardFrame(),"Please enter armies to be added", "Armies To Add",
-					JOptionPane.INFORMATION_MESSAGE, null,possibilities, possibilities[0]);
-
-			if(Objects.nonNull(selectedValue)) {
-				country.decreaseArmiesOnCountry(selectedValue);
-				adjacentCountry.incrementArmiesOnCountry(selectedValue);
-				riskBoardview.getArmiesCountAvailableLabel().setText(String.valueOf(this.getArmyCountAvailable()));
-			}
-		}
+		this.playerStrategy.foriticateArmies(country, adjacentCountry, riskBoardview, this);
 	}
 
 	/**

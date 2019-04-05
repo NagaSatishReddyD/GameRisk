@@ -580,6 +580,8 @@ public class RiskBoardModel{
 			placeArmiesToCountries(currentPlayer, riskBoardView);
 		}else if(isGamePhase.equalsIgnoreCase(RiskGameConstants.ATTACK_PHASE)) {
 			attackForCheaterStrategy(riskBoardView);
+		}else if(isGamePhase.equals(RiskGameConstants.FORTIFICATION_PHASE)) {
+//			fortificationCheaterStrategy(riskBoardView);
 		}
 	}
 

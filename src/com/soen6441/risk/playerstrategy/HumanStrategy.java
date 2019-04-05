@@ -116,4 +116,30 @@ public class HumanStrategy implements PlayerBehaviourStrategyInterface{
 		return isOcuppiedTerritory;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.soen6441.risk.playerstrategy.PlayerBehaviourStrategyInterface#foriticateArmies(com.soen6441.risk.Country, com.soen6441.risk.Country, com.soen6441.risk.view.RiskBoardView)
+	 */
+	@Override
+	public void foriticateArmies(Country country, Country adjacentCountry, RiskBoardView riskBoardview,Player player) {
+		if(country.getArmiesOnCountry() == 0){
+			JOptionPane.showMessageDialog(riskBoardview.getBoardFrame(), "No armies on selected country to move");
+		}else if(!player.isCountriesOwnedByPlayers(country, adjacentCountry)) {
+			JOptionPane.showMessageDialog(riskBoardview.getBoardFrame(), "Selected Adjacent Country is owned by another player");
+		}else {
+			Object [] possibilities = new Object [country.getArmiesOnCountry() - 1];
+			for(int index = 0; index < possibilities.length; index++) {
+				possibilities[index] = index+1;
+			}
+			Integer selectedValue = (Integer)JOptionPane.showInputDialog(riskBoardview.getBoardFrame(),"Please enter armies to be added", "Armies To Add",
+					JOptionPane.INFORMATION_MESSAGE, null,possibilities, possibilities[0]);
+
+			if(Objects.nonNull(selectedValue)) {
+				country.decreaseArmiesOnCountry(selectedValue);
+				adjacentCountry.incrementArmiesOnCountry(selectedValue);
+				riskBoardview.getArmiesCountAvailableLabel().setText(String.valueOf(player.getArmyCountAvailable()));
+			}
+		}
+	
+	}
+
 }
