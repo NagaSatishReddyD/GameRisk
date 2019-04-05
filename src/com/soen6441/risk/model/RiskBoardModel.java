@@ -581,9 +581,10 @@ public class RiskBoardModel{
 		}else if(isGamePhase.equalsIgnoreCase(RiskGameConstants.ATTACK_PHASE)) {
 			attackForCheaterStrategy(riskBoardView);
 		}else if(isGamePhase.equals(RiskGameConstants.FORTIFICATION_PHASE)) {
-//			fortificationCheaterStrategy(riskBoardView);
+			fortificationCheaterStrategy(riskBoardView);
 		}
 	}
+
 
 	/**
 	 * @param currentPlayer
@@ -594,7 +595,55 @@ public class RiskBoardModel{
 			placeArmiesToCountries(currentPlayer, riskBoardView);
 		}else if(isGamePhase.equalsIgnoreCase(RiskGameConstants.ATTACK_PHASE)) {
 			attackForRandomStrategy(riskBoardView);
+		}else if(isGamePhase.equals(RiskGameConstants.FORTIFICATION_PHASE)) {
+			fortificationRandomStrategy(riskBoardView);
 		}
+	}
+
+
+	/**
+	 * @param riskBoardView
+	 */
+	private void fortificationRandomStrategy(RiskBoardView riskBoardView) {
+		Player currentPlayer = playersData.get(currentPlayerIndex);
+		Random random;
+		try {
+			random = SecureRandom.getInstanceStrong();
+			int numberOfFortification = random.nextInt(5);
+			for(int index = 0; index < numberOfFortification; index++) {
+				Country currentCountry = currentPlayer.getTerritoryOccupied().get(random.nextInt(currentPlayer.getTerritoryOccupied().size()));
+				Country adjacentCountry = currentCountry.getAdjacentCountries().get(random.nextInt(currentCountry.getAdjacentCountries().size()));
+				currentPlayer.moveArmiesBetweenCountries(currentCountry, adjacentCountry, riskBoardView);
+			}
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		isGamePhase = RiskGameConstants.REINFORCEMENT_PHASE;
+	}
+	
+	/**
+	 * @param riskBoardView
+	 */
+	private void attackForRandomStrategy(RiskBoardView riskBoardView) {
+		Player currentPlayer = playersData.get(currentPlayerIndex);
+		try {
+			Random random = SecureRandom.getInstanceStrong();
+			int numberOfAttacks = random.nextInt(5);
+			for(int index = 0; index < numberOfAttacks; index++) {
+				Country currentPlayerCountry = currentPlayer.getTerritoryOccupied().get(random.nextInt(currentPlayer.getTerritoryOccupied().size()));
+				Country opponentPlayerCountry = currentPlayerCountry.getAdjacentCountries().get(random.nextInt(currentPlayerCountry.getAdjacentCountries().size()));
+				Player opponentPlayer = playersMap.get(opponentPlayerCountry.getPlayerName());
+				if(!currentPlayer.getPlayerName().equals(opponentPlayer.getPlayerName())) {
+					boolean isWon = currentPlayer.attackBetweenCountries(currentPlayerCountry, opponentPlayerCountry, riskBoardView, opponentPlayer);
+					if(!isOcuppiedTerritory)
+						isOcuppiedTerritory = isWon;
+				}
+			}
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		getCard(riskBoardView);
 	}
 
 	/**
@@ -626,6 +675,17 @@ public class RiskBoardModel{
 			attackForAggressiveStrategy(riskBoardView);
 		}
 	}
+	
+	/**
+	 * @param riskBoardView
+	 */
+	private void fortificationCheaterStrategy(RiskBoardView riskBoardView) {
+		Player player = playersData.get(currentPlayerIndex);
+		for(Country currentCountry: player.getTerritoryOccupied()) {
+			player.moveArmiesBetweenCountries(currentCountry, null, riskBoardView);
+		}
+		isGamePhase = RiskGameConstants.REINFORCEMENT_PHASE;
+	}
 
 	/**
 	 * @param riskBoardView
@@ -643,31 +703,6 @@ public class RiskBoardModel{
 						isOcuppiedTerritory = isWon;
 				}
 			}
-		}
-		getCard(riskBoardView);
-	}
-
-	/**
-	 * @param riskBoardView
-	 */
-	private void attackForRandomStrategy(RiskBoardView riskBoardView) {
-		Player currentPlayer = playersData.get(currentPlayerIndex);
-		try {
-			Random random = SecureRandom.getInstanceStrong();
-			int numberOfAttacks = random.nextInt(5);
-			for(int index = 0; index < numberOfAttacks; index++) {
-				Country currentPlayerCountry = currentPlayer.getTerritoryOccupied().get(random.nextInt(currentPlayer.getTerritoryOccupied().size()));
-				Country opponentPlayerCountry = currentPlayerCountry.getAdjacentCountries().get(random.nextInt(currentPlayerCountry.getAdjacentCountries().size()));
-				Player opponentPlayer = playersMap.get(opponentPlayerCountry.getPlayerName());
-				if(!currentPlayer.getPlayerName().equals(opponentPlayer.getPlayerName())) {
-					boolean isWon = currentPlayer.attackBetweenCountries(currentPlayerCountry, opponentPlayerCountry, riskBoardView, opponentPlayer);
-					if(!isOcuppiedTerritory)
-						isOcuppiedTerritory = isWon;
-				}
-			}
-		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 		getCard(riskBoardView);
 	}

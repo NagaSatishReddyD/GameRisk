@@ -64,12 +64,10 @@ public class CheaterStrategy implements PlayerBehaviourStrategyInterface{
 	 * @see com.soen6441.risk.playerstrategy.PlayerBehaviourStrategyInterface#foriticateArmies(com.soen6441.risk.Country, com.soen6441.risk.Country, com.soen6441.risk.view.RiskBoardView, com.soen6441.risk.Player)
 	 */
 	@Override
-	public void foriticateArmies(Country country, Country adjacentCountry, RiskBoardView riskBoardview, Player player) {
-		for(Country currentCountry: player.getTerritoryOccupied()) {
-			 Map<String, Country> adjacentCountriesData = currentCountry.getAdjacentCountries().stream().map(data -> data).collect(Collectors.toMap(Country::getPlayerName, Function.identity()));
-			 if(checkForFortification(adjacentCountriesData, currentCountry)) {
-				 currentCountry.setArmiesOnCountry(currentCountry.getArmiesOnCountry()*2);
-			 }
+	public void foriticateArmies(Country currentCountry, Country adjacentCountry, RiskBoardView riskBoardview, Player player) {
+		Map<String, Country> adjacentCountriesData = currentCountry.getAdjacentCountries().stream().map(data -> data).collect(Collectors.toMap(Country::getPlayerName, Function.identity()));
+		if(checkForFortification(adjacentCountriesData, currentCountry)) {
+			currentCountry.setArmiesOnCountry(currentCountry.getArmiesOnCountry()*2);
 		}
 	}
 

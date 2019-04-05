@@ -48,4 +48,13 @@ public class BenevolentStrategy implements PlayerBehaviourStrategyInterface{
 		return false;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.soen6441.risk.playerstrategy.PlayerBehaviourStrategyInterface#foriticateArmies(com.soen6441.risk.Country, com.soen6441.risk.Country, com.soen6441.risk.view.RiskBoardView, com.soen6441.risk.Player)
+	 */
+	@Override
+	public void foriticateArmies(Country country, Country adjacentCountry, RiskBoardView riskBoardview, Player player) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
