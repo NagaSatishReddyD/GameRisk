@@ -579,9 +579,9 @@ public class RiskBoardModel{
 		if(isInitialPhase || isGamePhase.equals(RiskGameConstants.REINFORCEMENT_PHASE)) {
 			placeArmiesToCountries(currentPlayer, riskBoardView);
 		}else if(isGamePhase.equalsIgnoreCase(RiskGameConstants.ATTACK_PHASE)) {
-			attackForCheaterStrategy(riskBoardView);
+			attackForCheaterStrategy(currentPlayer,riskBoardView);
 		}else if(isGamePhase.equals(RiskGameConstants.FORTIFICATION_PHASE)) {
-			fortificationCheaterStrategy(riskBoardView);
+			fortificationCheaterStrategy(currentPlayer,riskBoardView);
 		}
 	}
 
@@ -594,18 +594,18 @@ public class RiskBoardModel{
 		if(isInitialPhase || isGamePhase.equals(RiskGameConstants.REINFORCEMENT_PHASE)) {
 			placeArmiesToCountries(currentPlayer, riskBoardView);
 		}else if(isGamePhase.equalsIgnoreCase(RiskGameConstants.ATTACK_PHASE)) {
-			attackForRandomStrategy(riskBoardView);
+			attackForRandomStrategy(currentPlayer,riskBoardView);
 		}else if(isGamePhase.equals(RiskGameConstants.FORTIFICATION_PHASE)) {
-			fortificationRandomStrategy(riskBoardView);
+			fortificationRandomStrategy(currentPlayer,riskBoardView);
 		}
 	}
 
 
 	/**
+	 * @param currentPlayer 
 	 * @param riskBoardView
 	 */
-	private void fortificationRandomStrategy(RiskBoardView riskBoardView) {
-		Player currentPlayer = playersData.get(currentPlayerIndex);
+	private void fortificationRandomStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
 		Random random;
 		try {
 			random = SecureRandom.getInstanceStrong();
@@ -622,10 +622,10 @@ public class RiskBoardModel{
 	}
 	
 	/**
+	 * @param currentPlayer2 
 	 * @param riskBoardView
 	 */
-	private void attackForRandomStrategy(RiskBoardView riskBoardView) {
-		Player currentPlayer = playersData.get(currentPlayerIndex);
+	private void attackForRandomStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
 		try {
 			Random random = SecureRandom.getInstanceStrong();
 			int numberOfAttacks = random.nextInt(5);
@@ -657,9 +657,42 @@ public class RiskBoardModel{
 			placeArmiesForBenevolentStrategy(currentPlayer, riskBoardView);
 		}else if(isGamePhase.equalsIgnoreCase(RiskGameConstants.ATTACK_PHASE)) {
 			isGamePhase = RiskGameConstants.FORTIFICATION_PHASE;
+		}else if(isGamePhase.equals(RiskGameConstants.FORTIFICATION_PHASE)) {
+			fortificationBenevolentStrategy(currentPlayer,riskBoardView);
 		}
 	}
 
+	/**
+	 * @param currentPlayer 
+	 * @param riskBoardView
+	 */
+	private void fortificationBenevolentStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
+		Map<Integer, List<Country>> armiesCountriesList = currentPlayer.getTerritoryOccupied().stream().map(data -> data).collect(Collectors.groupingBy(Country::getArmiesOnCountry));
+		List<Country> countriesWithLowArmies = new ArrayList<>();
+		int armiesCount = Integer.MAX_VALUE;
+		for(Entry<Integer, List<Country>>armiesCountry : armiesCountriesList.entrySet()) {
+			if(armiesCount > armiesCountry.getKey()) {
+				countriesWithLowArmies = armiesCountry.getValue();
+				armiesCount = armiesCountry.getKey();
+			}
+		}
+		for (Country country : countriesWithLowArmies) {
+			currentPlayer.moveArmiesBetweenCountries(country, null, riskBoardView);
+		}
+		isGamePhase = RiskGameConstants.REINFORCEMENT_PHASE;
+	}
+
+	/**
+	 * @param currentPlayer
+	 * @param riskBoardView
+	 */
+	private void placeArmiesForBenevolentStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
+		if(!currentPlayer.getTerritoryOccupied().isEmpty()) {
+			sortTerritoryBasedOnArmies(currentPlayer, true);
+			currentPlayer.reinforceArmyToCountry(currentPlayer.getTerritoryOccupied().get(0), riskBoardView, isInitialPhase);
+		}
+		isGamePhase = RiskGameConstants.ATTACK_PHASE;
+	}
 
 	/**
 	 * implementTheAggressiveStrategy method implements the aggressive strategy.
@@ -677,21 +710,21 @@ public class RiskBoardModel{
 	}
 	
 	/**
+	 * @param currentPlayer 
 	 * @param riskBoardView
 	 */
-	private void fortificationCheaterStrategy(RiskBoardView riskBoardView) {
-		Player player = playersData.get(currentPlayerIndex);
-		for(Country currentCountry: player.getTerritoryOccupied()) {
-			player.moveArmiesBetweenCountries(currentCountry, null, riskBoardView);
+	private void fortificationCheaterStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
+		for(Country currentCountry: currentPlayer.getTerritoryOccupied()) {
+			currentPlayer.moveArmiesBetweenCountries(currentCountry, null, riskBoardView);
 		}
 		isGamePhase = RiskGameConstants.REINFORCEMENT_PHASE;
 	}
 
 	/**
+	 * @param currentPlayer 
 	 * @param riskBoardView
 	 */
-	private void attackForCheaterStrategy(RiskBoardView riskBoardView) {
-		Player currentPlayer = playersData.get(currentPlayerIndex);
+	private void attackForCheaterStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
 		List<String> currentCountriesNamesList = currentPlayer.getTerritoryOccupied().stream().map(Country::getCountryName).collect(Collectors.toList());
 		for(String countryName :currentCountriesNamesList) {
 			Country currentPlayerCountry = countriesMap.get(countryName);
@@ -743,18 +776,6 @@ public class RiskBoardModel{
 		updateTheBoardScreenData(riskBoardView);
 		isPlayerWonTheGame();
 	}
-	/**
-	 * @param currentPlayer
-	 * @param riskBoardView
-	 */
-	private void placeArmiesForBenevolentStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
-		if(!currentPlayer.getTerritoryOccupied().isEmpty()) {
-			sortTerritoryBasedOnArmies(currentPlayer, true);
-			currentPlayer.reinforceArmyToCountry(currentPlayer.getTerritoryOccupied().get(0), riskBoardView, isInitialPhase);
-		}
-		isGamePhase = RiskGameConstants.ATTACK_PHASE;
-	}
-
 	/**
 	 * @param currentPlayer
 	 * @param riskBoardView

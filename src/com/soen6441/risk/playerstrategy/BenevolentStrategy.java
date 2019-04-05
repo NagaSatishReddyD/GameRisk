@@ -53,8 +53,18 @@ public class BenevolentStrategy implements PlayerBehaviourStrategyInterface{
 	 */
 	@Override
 	public void foriticateArmies(Country country, Country adjacentCountry, RiskBoardView riskBoardview, Player player) {
-		// TODO Auto-generated method stub
-		
+		for(Country adjacent : country.getAdjacentCountries()) {
+			if(adjacent.getPlayerName().equals(country.getPlayerName()) && adjacent.getArmiesOnCountry() > country.getArmiesOnCountry()) {
+				int extraArmies = adjacent.getArmiesOnCountry() - country.getArmiesOnCountry();
+				if(extraArmies % 2 ==0 ) {
+					adjacent.decreaseArmiesOnCountry(extraArmies / 2);
+					country.incrementArmiesOnCountry(extraArmies / 2);
+				}else {
+					adjacent.decreaseArmiesOnCountry((extraArmies-1) / 2);
+					country.incrementArmiesOnCountry((extraArmies-1) / 2);
+				}
+			}
+		}
 	}
 
 }
