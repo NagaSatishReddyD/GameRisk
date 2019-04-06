@@ -35,7 +35,6 @@ public class HumanStrategy implements PlayerBehaviourStrategyInterface{
 	@Override
 	public boolean attackBetweenCountries(Country currentPlayerCountry, Country opponentPlayerCountry,
 			RiskBoardView riskBoardView, Player opponentPlayer, Player currentPlayer) {
-		System.out.println(currentPlayerCountry.getPlayerName()+" "+currentPlayerCountry.getCountryName()+" attacking "+ opponentPlayerCountry.getPlayerName()+" "+opponentPlayerCountry.getCountryName());
 		boolean isOcuppiedTerritory = false;
 		Object [] possibilities = new Object [currentPlayerCountry.getArmiesOnCountry()];
 		possibilities[0] = RiskGameConstants.ALL_OUT;
@@ -68,6 +67,8 @@ public class HumanStrategy implements PlayerBehaviourStrategyInterface{
 			currentPlayerCountry.decreaseArmiesOnCountry(currentPlayerAttackingArmies);
 			opponentPlayerCountry.decreaseArmiesOnCountry(opponentDefendingArmies);
 			do {
+				System.out.println(currentPlayerCountry.getPlayerName()+" "+currentPlayerCountry.getCountryName()+"("+currentPlayerAttackingArmies+")"+
+						" attacking "+ opponentPlayerCountry.getPlayerName()+" "+opponentPlayerCountry.getCountryName()+"("+opponentDefendingArmies+")");
 				currentPlayerDicesToRoll = opponentPlayer.getNumberOfDicesPlayerWantsToThrow(currentPlayerAttackingArmies, riskBoardView, currentPlayerDicesToRoll, true);
 				opponentPlayerDicesToRoll = opponentPlayer.getNumberOfDicesPlayerWantsToThrow(opponentDefendingArmies, riskBoardView, opponentPlayerDicesToRoll, false);
 				Integer[] currentPlayerDice = new Dice().diceRoll(currentPlayerDicesToRoll);

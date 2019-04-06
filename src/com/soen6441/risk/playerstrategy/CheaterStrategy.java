@@ -5,11 +5,8 @@ package com.soen6441.risk.playerstrategy;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.List;
 import java.util.Random;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import com.soen6441.risk.Country;
 import com.soen6441.risk.Player;
@@ -67,21 +64,20 @@ public class CheaterStrategy implements PlayerBehaviourStrategyInterface{
 	 */
 	@Override
 	public void foriticateArmies(Country currentCountry, Country adjacentCountry, RiskBoardView riskBoardview, Player player) {
-		Map<String, Country> adjacentCountriesData = currentCountry.getAdjacentCountries().stream().map(data -> data).collect(Collectors.toMap(Country::getPlayerName, Function.identity()));
-		if(checkForFortification(adjacentCountriesData, currentCountry)) {
+		if(checkForFortification(currentCountry.getAdjacentCountries(), currentCountry)) {
 			System.out.println(currentCountry.getPlayerName()+" "+currentCountry.getCountryName()+" dobuled to "+(currentCountry.getArmiesOnCountry()*2));
 			currentCountry.setArmiesOnCountry(currentCountry.getArmiesOnCountry()*2);
 		}
 	}
 
 	/**
-	 * @param data
+	 * @param adjacentCountries
 	 * @param currentCountry 
 	 * @return
 	 */
-	private boolean checkForFortification(Map<String, Country> data, Country currentCountry) {
-		for(Entry<String, Country> country : data.entrySet()) {
-			if(!country.getKey().equals(currentCountry.getPlayerName())) {
+	private boolean checkForFortification(List<Country> adjacentCountries, Country currentCountry) {
+		for(Country country : adjacentCountries) {
+			if(!country.getPlayerName().equals(currentCountry.getPlayerName())) {
 				return true;
 			}
 		}

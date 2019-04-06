@@ -57,11 +57,11 @@ public class BenevolentStrategy implements PlayerBehaviourStrategyInterface{
 			if(adjacent.getPlayerName().equals(currentPlayerCountry.getPlayerName()) && adjacent.getArmiesOnCountry() > currentPlayerCountry.getArmiesOnCountry()) {
 				int extraArmies = adjacent.getArmiesOnCountry() - currentPlayerCountry.getArmiesOnCountry();
 				if(extraArmies % 2 ==0 ) {
-					System.out.println(currentPlayerCountry.getPlayerName()+" "+currentPlayerCountry.getCountryName()+" moved to "+(extraArmies / 2)+" armies to "+ adjacentCountry.getPlayerName()+" "+adjacentCountry.getCountryName());
+					System.out.println(currentPlayerCountry.getPlayerName()+" "+currentPlayerCountry.getCountryName()+" moved to "+(extraArmies / 2)+" armies to "+ adjacent.getPlayerName()+" "+adjacent.getCountryName());
 					adjacent.decreaseArmiesOnCountry(extraArmies / 2);
 					currentPlayerCountry.incrementArmiesOnCountry(extraArmies / 2);
 				}else {
-					System.out.println(currentPlayerCountry.getPlayerName()+" "+currentPlayerCountry.getCountryName()+" moved to "+((extraArmies-1) / 2)+" armies to "+ adjacentCountry.getPlayerName()+" "+adjacentCountry.getCountryName());
+					System.out.println(currentPlayerCountry.getPlayerName()+" "+currentPlayerCountry.getCountryName()+" moved to "+((extraArmies-1) / 2)+" armies to "+ adjacent.getPlayerName()+" "+adjacent.getCountryName());
 					adjacent.decreaseArmiesOnCountry((extraArmies-1) / 2);
 					currentPlayerCountry.incrementArmiesOnCountry((extraArmies-1) / 2);
 				}

@@ -78,6 +78,8 @@ public class RandomStrategy implements PlayerBehaviourStrategyInterface{
 				do {
 					currentPlayerDicesToRoll = currentPlayerAttackingArmies > 3 ?random.nextInt(3)+1: random.nextInt(currentPlayerAttackingArmies)+1;
 					opponentPlayerDicesToRoll = opponentDefendingArmies> 2 ?random.nextInt(2)+1: random.nextInt(opponentDefendingArmies)+1;
+					System.out.println(currentPlayerCountry.getPlayerName()+" "+currentPlayerCountry.getCountryName()+"("+currentPlayerAttackingArmies+")"+
+							" attacking "+ opponentPlayerCountry.getPlayerName()+" "+opponentPlayerCountry.getCountryName()+"("+opponentDefendingArmies+")");
 					Integer[] currentPlayerDice = new Dice().diceRoll(currentPlayerDicesToRoll);
 					System.out.print("Current Player Dices: ");
 					opponentPlayer.printDicesValues(currentPlayerDice);

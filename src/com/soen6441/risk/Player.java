@@ -109,7 +109,7 @@ public class Player {
 	public void reinforceArmyToCountry(Country country, RiskBoardView riskBoardView, boolean isInitialPhase) {
 		Integer selectedValue = this.playerStrategy.reinforceArmyToCountry(country, riskBoardView, isInitialPhase, this);
 		if(Objects.nonNull(selectedValue)) {
-			System.out.println(this.playerName+" "+this.playerStrategyName+" places "+ selectedValue+" on "+country.getCountryName());
+			System.out.println(this.playerName+" "+this.playerStrategyName+" places "+ selectedValue+" on "+country.getCountryName()+" from "+this.armyCountAvailable);
 			country.incrementArmiesOnCountry(selectedValue);
 			this.decrementArmy(selectedValue);
 			riskBoardView.getArmiesCountAvailableLabel().setText(String.valueOf(this.getArmyCountAvailable()));
@@ -127,7 +127,9 @@ public class Player {
 	 */
 	public boolean attackBetweenCountries(Country currentPlayerCountry, Country opponentPlayerCountry,
 			RiskBoardView riskBoardView, Player opponentPlayer) {
-		return this.playerStrategy.attackBetweenCountries(currentPlayerCountry, opponentPlayerCountry, riskBoardView, opponentPlayer, this);
+		if(currentPlayerCountry.getArmiesOnCountry() > 1)
+			return this.playerStrategy.attackBetweenCountries(currentPlayerCountry, opponentPlayerCountry, riskBoardView, opponentPlayer, this);
+		return false;
 	}
 
 	/**

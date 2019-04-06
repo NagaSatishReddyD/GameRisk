@@ -45,12 +45,11 @@ public class AggressiveStrategy implements PlayerBehaviourStrategyInterface{
 	public boolean attackBetweenCountries(Country currentPlayerCountry, Country opponentPlayerCountry,
 			RiskBoardView riskBoardView, Player opponentPlayer, Player currentPlayer) {
 		boolean isOcuppiedTerritory = false;
-		int currentPlayerAttackingArmies;
-		int opponentDefendingArmies;
-		System.out.println(currentPlayerCountry.getPlayerName()+" "+currentPlayerCountry.getCountryName()+" attacking "+ opponentPlayerCountry.getPlayerName()+" "+opponentPlayerCountry.getCountryName());
+		int currentPlayerAttackingArmies= currentPlayerCountry.getArmiesOnCountry() - 1;
+		int opponentDefendingArmies = opponentPlayerCountry.getArmiesOnCountry();
 		do {
-			opponentDefendingArmies = opponentPlayerCountry.getArmiesOnCountry();
-			currentPlayerAttackingArmies = currentPlayerCountry.getArmiesOnCountry() - 1;
+			System.out.println(currentPlayerCountry.getPlayerName()+" "+currentPlayerCountry.getCountryName()+"("+currentPlayerAttackingArmies+")"+
+					" attacking "+ opponentPlayerCountry.getPlayerName()+" "+opponentPlayerCountry.getCountryName()+"("+opponentDefendingArmies+")");
 			int currentPlayerDicesToRoll = currentPlayerAttackingArmies > 3 ? 3: currentPlayerAttackingArmies;
 			int opponentPlayerDicesToRoll = opponentDefendingArmies > 2 ? 2:opponentDefendingArmies;
 			Integer[] currentPlayerDice = new Dice().diceRoll(currentPlayerDicesToRoll);

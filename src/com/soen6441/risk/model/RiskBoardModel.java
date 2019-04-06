@@ -455,21 +455,15 @@ public class RiskBoardModel{
 		try {
 			random = SecureRandom.getInstanceStrong();
 			int index = 0;
-			if(Objects.nonNull(playersData)) {
-				while(index<playersCount) {
-					playersData.get(index).setPlayerStrategy(getStrategyOfPlayer(behaviors[index]));
-					playersData.get(index).setPlayerStrategyName(behaviors[index]);
-					index++;
-				}
-			}
 			if(Objects.isNull(playersData)) {
 				playersData = new ArrayList<>();
 				playersMap = new HashMap<>();
 				while(index<playersCount) {
-					String playerName = "Player "+ ++index;
+					String playerName = "Player "+ (index+1);
 					int initalArmiesAssigned = 5 * (10 - playersCount);
 					Player player =  new Player(playerName, initalArmiesAssigned);
-					player.setPlayerStrategy(getStrategyOfPlayer(behaviors[index-1]));
+					player.setPlayerStrategy(getStrategyOfPlayer(behaviors[index]));
+					player.setPlayerStrategyName(behaviors[index++]);
 					playersData.add(player);
 					playersMap.put(playerName, player);
 				}
@@ -547,9 +541,11 @@ public class RiskBoardModel{
 		riskBoardView.getCurrentPlayerTurnLabel().setText(currentPlayer.getPlayerName()+" Turn !!");
 		riskBoardView.getArmiesCountAvailableLabel().setText(String.valueOf(currentPlayer.getArmyCountAvailable()));
 		riskBoardView.getCardsCountLabel().setText(String.valueOf(currentPlayer.getPlayerCards().size()));
-		updateCountriesComboBox(currentPlayer, riskBoardView);
-		updateCardsTextArea(currentPlayer, riskBoardView);
-		createOrUpdateImage(riskBoardView);
+		if(currentPlayer.getPlayerStrategy() instanceof HumanStrategy) {
+			updateCountriesComboBox(currentPlayer, riskBoardView);
+			updateCardsTextArea(currentPlayer, riskBoardView);
+			createOrUpdateImage(riskBoardView);
+		}
 		if(!(currentPlayer.getPlayerStrategy() instanceof HumanStrategy))
 			playerStrategyActions(currentPlayer, riskBoardView);
 	}
@@ -577,8 +573,11 @@ public class RiskBoardModel{
 	 * @param riskBoardView
 	 */
 	private void implementCheaterStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
-		if(isInitialPhase || isGamePhase.equals(RiskGameConstants.REINFORCEMENT_PHASE)) {
+		if(isInitialPhase) {
 			placeArmiesToCountries(currentPlayer, riskBoardView);
+		}else if(isGamePhase.equals(RiskGameConstants.REINFORCEMENT_PHASE)) {
+			placeArmiesCheaterStrategy(currentPlayer, riskBoardView);
+			isGamePhase = RiskGameConstants.ATTACK_PHASE;
 		}else if(isGamePhase.equalsIgnoreCase(RiskGameConstants.ATTACK_PHASE)) {
 			attackForCheaterStrategy(currentPlayer,riskBoardView);
 		}else if(isGamePhase.equals(RiskGameConstants.FORTIFICATION_PHASE)) {
@@ -591,10 +590,23 @@ public class RiskBoardModel{
 	 * @param currentPlayer
 	 * @param riskBoardView
 	 */
+	private void placeArmiesCheaterStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
+		currentPlayer.getTerritoryOccupied().stream().forEach(country ->{
+			currentPlayer.reinforceArmyToCountry(country, riskBoardView, isInitialPhase);
+		});
+	}
+
+	/**
+	 * @param currentPlayer
+	 * @param riskBoardView
+	 */
 	private void implementRandomBehaviour(Player currentPlayer, RiskBoardView riskBoardView) {
-		if(isInitialPhase || isGamePhase.equals(RiskGameConstants.REINFORCEMENT_PHASE)) {
+		if(isInitialPhase) {
 			placeArmiesToCountries(currentPlayer, riskBoardView);
-		}else if(isGamePhase.equalsIgnoreCase(RiskGameConstants.ATTACK_PHASE)) {
+		}else if(isGamePhase.equals(RiskGameConstants.REINFORCEMENT_PHASE)) {
+			placeArmiesToCountries(currentPlayer, riskBoardView);
+			isGamePhase = RiskGameConstants.ATTACK_PHASE;
+		} else if(isGamePhase.equalsIgnoreCase(RiskGameConstants.ATTACK_PHASE)) {
 			attackForRandomStrategy(currentPlayer,riskBoardView);
 		}else if(isGamePhase.equals(RiskGameConstants.FORTIFICATION_PHASE)) {
 			fortificationRandomStrategy(currentPlayer,riskBoardView);
@@ -620,8 +632,10 @@ public class RiskBoardModel{
 			e.printStackTrace();
 		}
 		isGamePhase = RiskGameConstants.REINFORCEMENT_PHASE;
+		currentPlayerIndex++;
+		currentPlayerIndex = currentPlayerIndex%playersData.size();
 	}
-	
+
 	/**
 	 * @param currentPlayer2 
 	 * @param riskBoardView
@@ -680,6 +694,8 @@ public class RiskBoardModel{
 			currentPlayer.moveArmiesBetweenCountries(country, null, riskBoardView);
 		}
 		isGamePhase = RiskGameConstants.REINFORCEMENT_PHASE;
+		currentPlayerIndex++;
+		currentPlayerIndex = currentPlayerIndex%playersData.size();
 	}
 
 	/**
@@ -710,7 +726,7 @@ public class RiskBoardModel{
 			fortificationAggressiveStrategy(currentPlayer, riskBoardView);
 		}
 	}
-	
+
 	/**
 	 * @param currentPlayer
 	 * @param riskBoardView
@@ -723,7 +739,9 @@ public class RiskBoardModel{
 				currentPlayer.moveArmiesBetweenCountries(highestArmiesCountry, adjacentCountry, riskBoardView);
 			}
 		}
-		isGamePhase = RiskGameConstants.FORTIFICATION_PHASE;
+		isGamePhase = RiskGameConstants.REINFORCEMENT_PHASE;
+		currentPlayerIndex++;
+		currentPlayerIndex = currentPlayerIndex%playersData.size();
 	}
 
 	/**
@@ -735,6 +753,8 @@ public class RiskBoardModel{
 			currentPlayer.moveArmiesBetweenCountries(currentCountry, null, riskBoardView);
 		}
 		isGamePhase = RiskGameConstants.REINFORCEMENT_PHASE;
+		currentPlayerIndex++;
+		currentPlayerIndex = currentPlayerIndex%playersData.size();
 	}
 
 	/**
@@ -880,12 +900,15 @@ public class RiskBoardModel{
 		int bonusAmies = 0;
 		String message;
 		while(checkExchangeSet(player)) {
+			int selectedValue = -1;
 			if(player.getPlayerCards().size() >= 5) {
 				message = "You have to exchange cards. It is mandatory.";
+				selectedValue = 0;
 			}else {
 				message = "Do you want to exchnage cards?";
 			}
-			int selectedValue = JOptionPane.showConfirmDialog(riskBoardView.getBoardFrame(), message, "Cards Exchange", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
+			if(player.getPlayerStrategy() instanceof HumanStrategy)
+				selectedValue = JOptionPane.showConfirmDialog(riskBoardView.getBoardFrame(), message, "Cards Exchange", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
 
 			if(selectedValue == 0) {
 				bonusAmies += getExchangeCardsArmies(player);
