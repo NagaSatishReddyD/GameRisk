@@ -140,6 +140,7 @@ public class Player {
 	 */
 	public void isOpponentPlayerOutOfGame(Player currentPlayer, Player opponentPlayer) {
 		if(opponentPlayer.getTerritoryOccupied().isEmpty()) {
+			System.out.println(opponentPlayer.getPlayerName()+" "+opponentPlayer.getPlayerStrategyName()+" out of game");
 			currentPlayer.getPlayerCards().addAll(opponentPlayer.getPlayerCards());
 			opponentPlayer.resetCards();
 		}

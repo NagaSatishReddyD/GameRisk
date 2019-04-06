@@ -25,19 +25,12 @@ public class CheaterStrategy implements PlayerBehaviourStrategyInterface{
 	public Integer reinforceArmyToCountry(Country country, RiskBoardView riskBoardView, boolean isInitialPhase,
 			Player player) {
 		Integer selectedValue = null;
-		if(!isInitialPhase) {
-			player.getTerritoryOccupied().forEach(eachCountry -> {
-				eachCountry.setArmiesOnCountry(eachCountry.getArmiesOnCountry()*2);
-			});
-		}
-		if(isInitialPhase) {
-			Random random;
-			try {
-				random = SecureRandom.getInstanceStrong();
-				selectedValue = random.nextInt(player.getArmyCountAvailable()+1);
-			} catch (NoSuchAlgorithmException e) {
-				e.printStackTrace();
-			}
+		Random random;
+		try {
+			random = SecureRandom.getInstanceStrong();
+			selectedValue = random.nextInt(player.getArmyCountAvailable()+1);
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
 		}
 		return selectedValue;
 	}
