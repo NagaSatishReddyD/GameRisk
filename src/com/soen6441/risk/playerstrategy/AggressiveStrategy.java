@@ -89,8 +89,11 @@ public class AggressiveStrategy implements PlayerBehaviourStrategyInterface{
 	 */
 	@Override
 	public void foriticateArmies(Country country, Country adjacentCountry, RiskBoardView riskBoardview, Player player) {
-		// TODO Auto-generated method stub
-		
+		if(adjacentCountry.getArmiesOnCountry()>1 && adjacentCountry.getPlayerName().equals(country.getPlayerName())) {
+			 int armiesAdjacentCountry = adjacentCountry.getArmiesOnCountry();
+			 adjacentCountry.setArmiesOnCountry(1);
+			 country.incrementArmiesOnCountry(armiesAdjacentCountry - 1);
+		}
 	}
 
 }

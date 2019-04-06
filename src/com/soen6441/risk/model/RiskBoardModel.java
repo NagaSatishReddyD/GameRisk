@@ -560,7 +560,7 @@ public class RiskBoardModel{
 	 */
 	private void playerStrategyActions(Player currentPlayer, RiskBoardView riskBoardView) {
 		if(currentPlayer.getPlayerStrategy() instanceof AggressiveStrategy) {
-			implementTheAggressiveStrategy(currentPlayer, riskBoardView);
+			implementAggressiveStrategy(currentPlayer, riskBoardView);
 		}else if(currentPlayer.getPlayerStrategy() instanceof BenevolentStrategy) {
 			implementBenevolentStrategy(currentPlayer, riskBoardView);
 		}else if(currentPlayer.getPlayerStrategy() instanceof RandomStrategy) {
@@ -699,16 +699,33 @@ public class RiskBoardModel{
 	 * @param riskBoardView 
 	 * @param currentPlayer, current player object references
 	 */
-	private void implementTheAggressiveStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
+	private void implementAggressiveStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
 		if(isInitialPhase) {
 			placeArmiesToCountries(currentPlayer, riskBoardView);
 		}else if(isGamePhase.equals(RiskGameConstants.REINFORCEMENT_PHASE)) {
 			placeArmiesForAggressiveStrategy(currentPlayer, riskBoardView);
 		}else if(isGamePhase.equals(RiskGameConstants.ATTACK_PHASE)) {
 			attackForAggressiveStrategy(riskBoardView);
+		}else if(isGamePhase.equals(RiskGameConstants.FORTIFICATION_PHASE)) {
+			fortificationAggressiveStrategy(currentPlayer, riskBoardView);
 		}
 	}
 	
+	/**
+	 * @param currentPlayer
+	 * @param riskBoardView
+	 */
+	private void fortificationAggressiveStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
+		sortTerritoryBasedOnArmies(currentPlayer, false);
+		if(!currentPlayer.getTerritoryOccupied().isEmpty()) {
+			Country highestArmiesCountry = currentPlayer.getTerritoryOccupied().get(0);
+			for(Country adjacentCountry:highestArmiesCountry.getAdjacentCountries()) {
+				currentPlayer.moveArmiesBetweenCountries(highestArmiesCountry, adjacentCountry, riskBoardView);
+			}
+		}
+		isGamePhase = RiskGameConstants.FORTIFICATION_PHASE;
+	}
+
 	/**
 	 * @param currentPlayer 
 	 * @param riskBoardView
