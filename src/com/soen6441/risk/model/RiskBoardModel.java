@@ -528,20 +528,20 @@ public class RiskBoardModel{
 			setTheBonusArmiesToPlayer(currentPlayer, riskBoardView);
 			isInitialPhase = false;
 		}
-		updatePlayersInfo(playersData, riskBoardView);
-		if(isGamePhase.equals(RiskGameConstants.REINFORCEMENT_PHASE)) {
-			riskBoardView.getPhaseInfo().setText(RiskGameConstants.REINFORCEMENT_PHASE_INFO);
-		}else if(isGamePhase.equals(RiskGameConstants.ATTACK_PHASE)) {
-			riskBoardView.getPhaseInfo().setText(RiskGameConstants.ATTACK_PHASE_INFO);
-		}else if(isGamePhase.equals(RiskGameConstants.FORTIFICATION_PHASE)) {
-			riskBoardView.getPhaseInfo().setText(RiskGameConstants.FORTIFICATION_PHASE_INFO);
-		}
-		riskBoardView.getCurrentPhase().setText(isGamePhase + " phase");
-		enableDisableButtons(isGamePhase, riskBoardView);
-		riskBoardView.getCurrentPlayerTurnLabel().setText(currentPlayer.getPlayerName()+" Turn !!");
-		riskBoardView.getArmiesCountAvailableLabel().setText(String.valueOf(currentPlayer.getArmyCountAvailable()));
-		riskBoardView.getCardsCountLabel().setText(String.valueOf(currentPlayer.getPlayerCards().size()));
 		if(currentPlayer.getPlayerStrategy() instanceof HumanStrategy) {
+			updatePlayersInfo(playersData, riskBoardView);
+			if(isGamePhase.equals(RiskGameConstants.REINFORCEMENT_PHASE)) {
+				riskBoardView.getPhaseInfo().setText(RiskGameConstants.REINFORCEMENT_PHASE_INFO);
+			}else if(isGamePhase.equals(RiskGameConstants.ATTACK_PHASE)) {
+				riskBoardView.getPhaseInfo().setText(RiskGameConstants.ATTACK_PHASE_INFO);
+			}else if(isGamePhase.equals(RiskGameConstants.FORTIFICATION_PHASE)) {
+				riskBoardView.getPhaseInfo().setText(RiskGameConstants.FORTIFICATION_PHASE_INFO);
+			}
+			riskBoardView.getCurrentPhase().setText(isGamePhase + " phase");
+			enableDisableButtons(isGamePhase, riskBoardView);
+			riskBoardView.getCurrentPlayerTurnLabel().setText(currentPlayer.getPlayerName()+" Turn !!");
+			riskBoardView.getArmiesCountAvailableLabel().setText(String.valueOf(currentPlayer.getArmyCountAvailable()));
+			riskBoardView.getCardsCountLabel().setText(String.valueOf(currentPlayer.getPlayerCards().size()));
 			updateCountriesComboBox(currentPlayer, riskBoardView);
 			updateCardsTextArea(currentPlayer, riskBoardView);
 			createOrUpdateImage(riskBoardView);
@@ -571,6 +571,7 @@ public class RiskBoardModel{
 			currentPlayerIndex++;
 			currentPlayerIndex = currentPlayerIndex%playersData.size();
 		}
+		isPlayerWonTheGame();
 		updateTheBoardScreenData(riskBoardView);
 	}
 
@@ -664,7 +665,6 @@ public class RiskBoardModel{
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
-		isPlayerWonTheGame();
 		getCard(riskBoardView);
 	}
 
@@ -743,9 +743,7 @@ public class RiskBoardModel{
 		sortTerritoryBasedOnArmies(currentPlayer, false);
 		if(!currentPlayer.getTerritoryOccupied().isEmpty()) {
 			Country highestArmiesCountry = currentPlayer.getTerritoryOccupied().get(0);
-			for(Country adjacentCountry:highestArmiesCountry.getAdjacentCountries()) {
-				currentPlayer.moveArmiesBetweenCountries(highestArmiesCountry, adjacentCountry, riskBoardView);
-			}
+			currentPlayer.moveArmiesBetweenCountries(highestArmiesCountry, null, riskBoardView);
 		}
 		isGamePhase = RiskGameConstants.REINFORCEMENT_PHASE;
 		currentPlayerIndex++;
@@ -782,7 +780,6 @@ public class RiskBoardModel{
 				}
 			}
 		}
-		isPlayerWonTheGame();
 		getCard(riskBoardView);
 	}
 
@@ -803,7 +800,6 @@ public class RiskBoardModel{
 				}
 			}
 		}
-		isPlayerWonTheGame();
 		getCard(riskBoardView);
 	}
 
