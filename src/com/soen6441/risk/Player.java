@@ -126,7 +126,7 @@ public class Player {
 	 * @param opponentPlayer, {@link Player} object of the opponent player.
 	 */
 	public void isOpponentPlayerOutOfGame(Player currentPlayer, Player opponentPlayer) {
-		if(!opponentPlayer.getTerritoryOccupied().isEmpty()) {
+		if(opponentPlayer.getTerritoryOccupied().isEmpty()) {
 			currentPlayer.getPlayerCards().addAll(opponentPlayer.getPlayerCards());
 			opponentPlayer.resetCards();
 		}

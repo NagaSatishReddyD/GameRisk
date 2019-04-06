@@ -30,7 +30,7 @@ public class CheaterStrategy implements PlayerBehaviourStrategyInterface{
 		Integer selectedValue = null;
 		if(!isInitialPhase) {
 			player.getTerritoryOccupied().forEach(eachCountry -> {
-				eachCountry.setArmiesOnCountry(country.getArmiesOnCountry()*2);
+				eachCountry.setArmiesOnCountry(eachCountry.getArmiesOnCountry()*2);
 			});
 		}
 		if(isInitialPhase) {

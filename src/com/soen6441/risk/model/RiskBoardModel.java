@@ -497,7 +497,7 @@ public class RiskBoardModel{
 	 * @param string
 	 * @return
 	 */
-	private PlayerBehaviourStrategyInterface getStrategyOfPlayer(String playerStrategy) {
+	public PlayerBehaviourStrategyInterface getStrategyOfPlayer(String playerStrategy) {
 		PlayerBehaviourStrategyInterface playerBehaviourStrategy;
 		switch (playerStrategy) {
 		case RiskGameConstants.HUMAN:
@@ -713,7 +713,7 @@ public class RiskBoardModel{
 	 * @param currentPlayer 
 	 * @param riskBoardView
 	 */
-	private void fortificationCheaterStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
+	public void fortificationCheaterStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
 		for(Country currentCountry: currentPlayer.getTerritoryOccupied()) {
 			currentPlayer.moveArmiesBetweenCountries(currentCountry, null, riskBoardView);
 		}
@@ -1146,7 +1146,7 @@ public class RiskBoardModel{
 	 * isPlayerWonTheGame method checks whether the player won the game or not.
 	 * if player own the game it announces and stop the game
 	 */
-	private void isPlayerWonTheGame() {
+	public void isPlayerWonTheGame() {
 		Player currentPlayer = playersData.get(currentPlayerIndex);
 		if(currentPlayer.getTerritoryOccupied().size() == countriesList.size()) {
 			showErrorMessage(currentPlayer.getPlayerName()+" WON THE GAME", true);

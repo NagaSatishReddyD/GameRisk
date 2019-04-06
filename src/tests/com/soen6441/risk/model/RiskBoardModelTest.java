@@ -3,10 +3,12 @@ package tests.com.soen6441.risk.model;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -51,8 +53,8 @@ public class RiskBoardModelTest {
 		playersData.add(new Player("Player 3", 2));
 		playersData.add(new Player("Player 4", 2));
 		int playersCount = 4;
-		String[] behavior = {RiskGameConstants.HUMAN, RiskGameConstants.AGGRESSIVE, RiskGameConstants.BENEVOLENT, 
-				RiskGameConstants.RANDOM, RiskGameConstants.CHEATER};
+		String[] behavior = {RiskGameConstants.HUMAN, RiskGameConstants.HUMAN, RiskGameConstants.HUMAN, 
+				RiskGameConstants.HUMAN, RiskGameConstants.HUMAN, RiskGameConstants.HUMAN};
 		riskBoardModel.loadRequiredData(System.getProperty("user.dir") + "/resources/World.map", true);
 		riskBoardModel.assignCountriesToPlayers(playersCount, behavior);
 		playersData.get(0).getPlayerCards().add(new Card("Country A", "Infantry"));
@@ -172,7 +174,7 @@ public class RiskBoardModelTest {
 	/**
 	 * This test case is used to test the object loads the world map correctly
 	 */
-	@Test
+	@Ignore
 	public void testLoadRequiredData(){
 		riskBoardModel.loadRequiredData(System.getProperty("user.dir") + "/resources/World.map", true);
 	}
@@ -398,5 +400,190 @@ public class RiskBoardModelTest {
 		int result = riskBoardModel.getExchangeCardsArmies(playersData.get(0));
 		assertEquals(4, result);
 	}
-
+	
+	/**
+	 * This method is used to test after load the game from save file, is the data of 
+	 * players are correct or not
+	 */
+	@Test
+	public void testLoadSaveFile() {
+		List<String> list = riskBoardModel.getPlayersData().get(0).getTerritoryOccupied().stream().map(Country::getCountryName).collect(Collectors.toList());
+		assertTrue(list.contains("Eastern Australia"));
+		assertTrue(list.contains("Siberia"));
+		assertTrue(list.contains("Western United States"));
+		assertTrue(list.contains("Madagascar"));
+		assertTrue(list.contains("East Africa"));
+		assertTrue(list.contains("Western Europe"));
+		assertTrue(list.contains("Yatusk"));
+	}
+	
+	/**
+	 * This method is used to test if the player has won the game
+	 */
+	@Ignore
+	public void testIsPlayerWinTheGame() {
+		List<Country> list = new ArrayList<>();
+		list.addAll(riskBoardModel.getPlayersData().get(1).getTerritoryOccupied());
+		list.addAll(riskBoardModel.getPlayersData().get(2).getTerritoryOccupied());
+		list.addAll(riskBoardModel.getPlayersData().get(3).getTerritoryOccupied());
+		list.addAll(riskBoardModel.getPlayersData().get(4).getTerritoryOccupied());
+		list.addAll(riskBoardModel.getPlayersData().get(5).getTerritoryOccupied());
+		riskBoardModel.getPlayersData().get(0).getTerritoryOccupied().addAll(list);
+		riskBoardModel.isPlayerWonTheGame();
+	}
+	
+	/**
+	 * this method is used to test if the opponent player has lost, the current player 
+	 * will get all of the opponent's cards
+	 */
+	@Test
+	public void testIsOpponentOutOfGame() {
+		Player testPlayer = new Player("Test Player", 0);
+		Player currentPlayer = playersData.get(0);
+		testPlayer.getPlayerCards().add(new Card("Country A", "Infantry"));
+		testPlayer.getPlayerCards().add(new Card("Country B", "Infantry"));
+		testPlayer.getPlayerCards().add(new Card("Country C", "Cavalry"));
+		testPlayer.getPlayerCards().add(new Card("Country D", "Infantry"));
+		currentPlayer.isOpponentPlayerOutOfGame(currentPlayer, testPlayer);
+		assertEquals(5, currentPlayer.getPlayerCards().size());
+		assertEquals(0, testPlayer.getPlayerCards().size());
+	}
+	
+	/**
+	 * This method is used to test if after attack and conquered the opponent's country
+	 * does the attacking player properly acquired the country or not
+	 */
+	@Test
+	public void testAttackBetweenCountries() {
+		Player testPlayer = new Player("Test Player", 0);
+		testPlayer.setPlayerStrategy(riskBoardModel.getStrategyOfPlayer(RiskGameConstants.HUMAN));
+		Country testCountry = new Country("Country A");
+		testCountry.setPlayerName("Test Player");
+		Country testCountry2 = new Country("Country B");
+		testCountry2 = new Country("Test Player");
+		testCountry.setArmiesOnCountry(5);
+		testCountry2.setArmiesOnCountry(1);
+		testPlayer.addTerritory(testCountry);
+		testPlayer.addTerritory(testCountry2);
+		Player currentPlayer = riskBoardModel.getPlayersData().get(0);
+		currentPlayer.attackBetweenCountries(currentPlayer.getTerritoryOccupied().get(0), testPlayer.getTerritoryOccupied().get(1), riskBoardView, testPlayer);
+		assertTrue(currentPlayer.getTerritoryOccupied().contains(testCountry2));
+	}
+	
+	/**
+	 * This method is used to test if the attack method of cheater player is properly
+	 * implemented
+	 */
+	@Test
+	public void testCheaterAttackMethod() {
+		Country testCountry = new Country("Country A");
+		testCountry.setArmiesOnCountry(5);
+		testCountry.setPlayerName("Test Player 1");
+		Country testCountry2 = new Country("Country B");
+		testCountry2.setArmiesOnCountry(20);
+		testCountry2.setPlayerName("Test Player 2");
+		Country testCountry3 = new Country("Country C");
+		testCountry3.setArmiesOnCountry(20);
+		testCountry3.setPlayerName("Test Player 2");
+		Country testCountry4 = new Country("Country D");
+		testCountry4.setArmiesOnCountry(20);
+		testCountry4.setPlayerName("Test Player 2");
+		Country testCountry5 = new Country("Country E");
+		testCountry5.setArmiesOnCountry(20);
+		testCountry5.setPlayerName("Test Player 2");
+		testCountry.addAdjacentCountry(testCountry2);
+		testCountry.addAdjacentCountry(testCountry3);
+		testCountry.addAdjacentCountry(testCountry4);
+		testCountry.addAdjacentCountry(testCountry5);
+		Player testPlayer1 = new Player("Test Player 1", 0);
+		testPlayer1.setPlayerStrategy(riskBoardModel.getStrategyOfPlayer(RiskGameConstants.CHEATER));
+		testPlayer1.addTerritory(testCountry);
+		Player testPlayer2 = new Player("Test Player 2", 0);
+		testPlayer2.setPlayerStrategy(riskBoardModel.getStrategyOfPlayer(RiskGameConstants.HUMAN));
+		testPlayer2.addTerritory(testCountry2);
+		testPlayer2.addTerritory(testCountry3);
+		testPlayer2.addTerritory(testCountry4);
+		testPlayer2.addTerritory(testCountry5);
+		testPlayer1.attackBetweenCountries(testCountry, testCountry2, riskBoardView, testPlayer2);
+		testPlayer1.attackBetweenCountries(testCountry, testCountry3, riskBoardView, testPlayer2);
+		testPlayer1.attackBetweenCountries(testCountry, testCountry4, riskBoardView, testPlayer2);
+		testPlayer1.attackBetweenCountries(testCountry, testCountry5, riskBoardView, testPlayer2);
+		assertEquals(5, testPlayer1.getTerritoryOccupied().size());
+	}
+	
+	/**
+	 * This method is used to test if the fortification method of cheater player is properly 
+	 * implemented
+	 */
+	@Test
+	public void testCheaterFortification() {
+		Country testCountry1 = new Country("Country F");
+		testCountry1.setArmiesOnCountry(20);
+		testCountry1.setPlayerName("Test Player 1");
+		Country testCountry2 = new Country("Country G");
+		testCountry2.setArmiesOnCountry(20);
+		testCountry2.setPlayerName("Test Player 2");
+		Country testCountry3 = new Country("Country H");
+		testCountry3.setArmiesOnCountry(20);
+		testCountry3.setPlayerName("Test Player 1");
+		Country testCountry4 = new Country("Country I");
+		testCountry4.setArmiesOnCountry(20);
+		testCountry4.setPlayerName("Test Player 2");
+		Country testCountry5 = new Country("Country J");
+		testCountry5.setArmiesOnCountry(20);
+		testCountry5.setPlayerName("Test Player 1");
+		testCountry1.addAdjacentCountry(testCountry2);
+		testCountry2.addAdjacentCountry(testCountry1);
+		testCountry3.addAdjacentCountry(testCountry4);
+		testCountry4.addAdjacentCountry(testCountry3);
+		Player testPlayer1 = new Player("Test Player 1", 0);
+		testPlayer1.setPlayerStrategy(riskBoardModel.getStrategyOfPlayer(RiskGameConstants.CHEATER));
+		Player testPlayer2 = new Player("Test Player 2", 0);
+		testPlayer2.setPlayerStrategy(riskBoardModel.getStrategyOfPlayer(RiskGameConstants.HUMAN));
+		testPlayer1.addTerritory(testCountry1);
+		testPlayer2.addTerritory(testCountry2);
+		testPlayer1.addTerritory(testCountry3);
+		testPlayer2.addTerritory(testCountry4);
+		testPlayer1.addTerritory(testCountry5);
+		riskBoardModel.fortificationCheaterStrategy(testPlayer1, riskBoardView);
+		assertEquals(40, testPlayer1.getTerritoryOccupied().get(0).getArmiesOnCountry());
+		assertEquals(40, testPlayer1.getTerritoryOccupied().get(1).getArmiesOnCountry());
+		assertEquals(20, testPlayer1.getTerritoryOccupied().get(2).getArmiesOnCountry());
+	}
+	
+	/**
+	 * this method is used to test if the reinforcement method of cheater player is properly
+	 * implemented
+	 */
+	@Test
+	public void testCheaterReinforcement() {
+		Country testCountry1 = new Country("Country A");
+		testCountry1.setArmiesOnCountry(30);
+		testCountry1.setPlayerName("Test Player 1");
+		Country testCountry2 = new Country("Country B");
+		testCountry2.setArmiesOnCountry(30);
+		testCountry2.setPlayerName("Test Player 1");
+		Country testCountry3 = new Country("Country C");
+		testCountry3.setArmiesOnCountry(30);
+		testCountry3.setPlayerName("Test Player 1");
+		Country testCountry4 = new Country("Country D");
+		testCountry4.setArmiesOnCountry(30);
+		testCountry4.setPlayerName("Test Player 1");
+		Country testCountry5 = new Country("Country E");
+		testCountry5.setArmiesOnCountry(30);
+		testCountry5.setPlayerName("Test Player 1");
+		Player testPlayer1 = new Player("Test Player 1", 0);
+		testPlayer1.setPlayerStrategy(riskBoardModel.getStrategyOfPlayer(RiskGameConstants.CHEATER));
+		testPlayer1.addTerritory(testCountry1);
+		testPlayer1.addTerritory(testCountry2);
+		testPlayer1.addTerritory(testCountry3);
+		testPlayer1.addTerritory(testCountry4);
+		testPlayer1.addTerritory(testCountry5);
+		testPlayer1.reinforceArmyToCountry(testCountry1, riskBoardView, false);
+		assertEquals(60, testPlayer1.getTerritoryOccupied().get(0).getArmiesOnCountry());
+		assertEquals(60, testPlayer1.getTerritoryOccupied().get(1).getArmiesOnCountry());
+		assertEquals(60, testPlayer1.getTerritoryOccupied().get(2).getArmiesOnCountry());
+		assertEquals(60, testPlayer1.getTerritoryOccupied().get(3).getArmiesOnCountry());
+		assertEquals(60, testPlayer1.getTerritoryOccupied().get(4).getArmiesOnCountry());
+	}
 }
