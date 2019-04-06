@@ -21,6 +21,7 @@ public class Player {
 	int armyCountAvailable;
 	List<Card> playerCards;
 	PlayerBehaviourStrategyInterface playerStrategy;
+	String playerStrategyName;
 
 	public Player(String playerName, int initalArmiesAssigned) {
 		this.playerName = playerName;
@@ -28,6 +29,15 @@ public class Player {
 		this.territoryOccupied = new ArrayList<>();
 		playerCards = new ArrayList<>();
 	}
+
+	public String getPlayerStrategyName() {
+		return playerStrategyName;
+	}
+
+	public void setPlayerStrategyName(String playerStrategyName) {
+		this.playerStrategyName = playerStrategyName;
+	}
+
 
 	public void setPlayerStrategy(PlayerBehaviourStrategyInterface playerStrategy) {
 		this.playerStrategy = playerStrategy;
@@ -99,6 +109,7 @@ public class Player {
 	public void reinforceArmyToCountry(Country country, RiskBoardView riskBoardView, boolean isInitialPhase) {
 		Integer selectedValue = this.playerStrategy.reinforceArmyToCountry(country, riskBoardView, isInitialPhase, this);
 		if(Objects.nonNull(selectedValue)) {
+			System.out.println(this.playerName+" "+this.playerStrategyName+" places "+ selectedValue+" on "+country.getCountryName());
 			country.incrementArmiesOnCountry(selectedValue);
 			this.decrementArmy(selectedValue);
 			riskBoardView.getArmiesCountAvailableLabel().setText(String.valueOf(this.getArmyCountAvailable()));

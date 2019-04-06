@@ -47,6 +47,7 @@ public class AggressiveStrategy implements PlayerBehaviourStrategyInterface{
 		boolean isOcuppiedTerritory = false;
 		int currentPlayerAttackingArmies;
 		int opponentDefendingArmies;
+		System.out.println(currentPlayerCountry.getPlayerName()+" "+currentPlayerCountry.getCountryName()+" attacking "+ opponentPlayerCountry.getPlayerName()+" "+opponentPlayerCountry.getCountryName());
 		do {
 			opponentDefendingArmies = opponentPlayerCountry.getArmiesOnCountry();
 			currentPlayerAttackingArmies = currentPlayerCountry.getArmiesOnCountry() - 1;
@@ -71,6 +72,7 @@ public class AggressiveStrategy implements PlayerBehaviourStrategyInterface{
 		}while(currentPlayerAttackingArmies != 0 && opponentDefendingArmies!=0);
 
 		if(currentPlayerAttackingArmies > 0) {
+			System.out.println(currentPlayerCountry.getPlayerName()+" "+currentPlayerCountry.getCountryName()+" conquered "+ opponentPlayerCountry.getPlayerName()+" "+opponentPlayerCountry.getCountryName());
 			opponentPlayer.getTerritoryOccupied().remove(opponentPlayerCountry);
 			currentPlayer.getTerritoryOccupied().add(opponentPlayerCountry);
 			opponentPlayerCountry.setPlayerName(currentPlayer.getPlayerName());
@@ -80,6 +82,7 @@ public class AggressiveStrategy implements PlayerBehaviourStrategyInterface{
 			currentPlayer.isOpponentPlayerOutOfGame(currentPlayer, opponentPlayer);
 		}else if(currentPlayerAttackingArmies == 0 ){
 			opponentPlayerCountry.setArmiesOnCountry(opponentDefendingArmies);
+			System.out.println(currentPlayerCountry.getPlayerName()+" "+currentPlayerCountry.getCountryName()+" lost to "+ opponentPlayerCountry.getPlayerName()+" "+opponentPlayerCountry.getCountryName());
 		}
 		return isOcuppiedTerritory;
 	}
@@ -88,12 +91,12 @@ public class AggressiveStrategy implements PlayerBehaviourStrategyInterface{
 	 * @see com.soen6441.risk.playerstrategy.PlayerBehaviourStrategyInterface#foriticateArmies(com.soen6441.risk.Country, com.soen6441.risk.Country, com.soen6441.risk.view.RiskBoardView, com.soen6441.risk.Player)
 	 */
 	@Override
-	public void foriticateArmies(Country country, Country adjacentCountry, RiskBoardView riskBoardview, Player player) {
-		if(adjacentCountry.getArmiesOnCountry()>1 && adjacentCountry.getPlayerName().equals(country.getPlayerName())) {
+	public void foriticateArmies(Country currentPlayerCountry, Country adjacentCountry, RiskBoardView riskBoardview, Player player) {
+		if(adjacentCountry.getArmiesOnCountry()>1 && adjacentCountry.getPlayerName().equals(currentPlayerCountry.getPlayerName())) {
 			 int armiesAdjacentCountry = adjacentCountry.getArmiesOnCountry();
+			 System.out.println(currentPlayerCountry.getPlayerName()+" "+currentPlayerCountry.getCountryName()+" moved to "+(armiesAdjacentCountry-1)+" armies to "+ adjacentCountry.getPlayerName()+" "+adjacentCountry.getCountryName());
 			 adjacentCountry.setArmiesOnCountry(1);
-			 country.incrementArmiesOnCountry(armiesAdjacentCountry - 1);
+			 currentPlayerCountry.incrementArmiesOnCountry(armiesAdjacentCountry - 1);
 		}
 	}
-
 }

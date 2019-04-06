@@ -52,16 +52,18 @@ public class BenevolentStrategy implements PlayerBehaviourStrategyInterface{
 	 * @see com.soen6441.risk.playerstrategy.PlayerBehaviourStrategyInterface#foriticateArmies(com.soen6441.risk.Country, com.soen6441.risk.Country, com.soen6441.risk.view.RiskBoardView, com.soen6441.risk.Player)
 	 */
 	@Override
-	public void foriticateArmies(Country country, Country adjacentCountry, RiskBoardView riskBoardview, Player player) {
-		for(Country adjacent : country.getAdjacentCountries()) {
-			if(adjacent.getPlayerName().equals(country.getPlayerName()) && adjacent.getArmiesOnCountry() > country.getArmiesOnCountry()) {
-				int extraArmies = adjacent.getArmiesOnCountry() - country.getArmiesOnCountry();
+	public void foriticateArmies(Country currentPlayerCountry, Country adjacentCountry, RiskBoardView riskBoardview, Player player) {
+		for(Country adjacent : currentPlayerCountry.getAdjacentCountries()) {
+			if(adjacent.getPlayerName().equals(currentPlayerCountry.getPlayerName()) && adjacent.getArmiesOnCountry() > currentPlayerCountry.getArmiesOnCountry()) {
+				int extraArmies = adjacent.getArmiesOnCountry() - currentPlayerCountry.getArmiesOnCountry();
 				if(extraArmies % 2 ==0 ) {
+					System.out.println(currentPlayerCountry.getPlayerName()+" "+currentPlayerCountry.getCountryName()+" moved to "+(extraArmies / 2)+" armies to "+ adjacentCountry.getPlayerName()+" "+adjacentCountry.getCountryName());
 					adjacent.decreaseArmiesOnCountry(extraArmies / 2);
-					country.incrementArmiesOnCountry(extraArmies / 2);
+					currentPlayerCountry.incrementArmiesOnCountry(extraArmies / 2);
 				}else {
+					System.out.println(currentPlayerCountry.getPlayerName()+" "+currentPlayerCountry.getCountryName()+" moved to "+((extraArmies-1) / 2)+" armies to "+ adjacentCountry.getPlayerName()+" "+adjacentCountry.getCountryName());
 					adjacent.decreaseArmiesOnCountry((extraArmies-1) / 2);
-					country.incrementArmiesOnCountry((extraArmies-1) / 2);
+					currentPlayerCountry.incrementArmiesOnCountry((extraArmies-1) / 2);
 				}
 			}
 		}

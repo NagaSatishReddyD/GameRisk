@@ -458,6 +458,7 @@ public class RiskBoardModel{
 			if(Objects.nonNull(playersData)) {
 				while(index<playersCount) {
 					playersData.get(index).setPlayerStrategy(getStrategyOfPlayer(behaviors[index]));
+					playersData.get(index).setPlayerStrategyName(behaviors[index]);
 					index++;
 				}
 			}
@@ -640,7 +641,6 @@ public class RiskBoardModel{
 				}
 			}
 		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		getCard(riskBoardView);
@@ -1154,6 +1154,7 @@ public class RiskBoardModel{
 			Card selectedCard = cardsList.get(selectedCardNumber);
 			cardsList.remove(selectedCardNumber);
 			playersData.get(currentPlayerIndex).addCardToPlayer(selectedCard);
+			System.out.println(player.getPlayerName()+" got card "+ selectedCard.getArmyType()+" "+selectedCard.getTerritoryName());
 		}
 		isOcuppiedTerritory = false;
 		isGamePhase = RiskGameConstants.FORTIFICATION_PHASE;

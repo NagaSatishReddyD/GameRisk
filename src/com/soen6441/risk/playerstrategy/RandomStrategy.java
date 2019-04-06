@@ -44,6 +44,7 @@ public class RandomStrategy implements PlayerBehaviourStrategyInterface{
 	public boolean attackBetweenCountries(Country currentPlayerCountry, Country opponentPlayerCountry,
 			RiskBoardView riskBoardView, Player opponentPlayer, Player currentPlayer) {
 		boolean isOcuppiedTerritory = false;
+		System.out.println(currentPlayerCountry.getPlayerName()+" "+currentPlayerCountry.getCountryName()+" attacking "+ opponentPlayerCountry.getPlayerName()+" "+opponentPlayerCountry.getCountryName());
 		Random random;
 		try {
 			random = SecureRandom.getInstanceStrong();
@@ -102,6 +103,7 @@ public class RandomStrategy implements PlayerBehaviourStrategyInterface{
 							possibilitiesArmies[index] = index+1;
 						}
 						armiesOnCountry = possibilitiesArmies[random.nextInt(possibilitiesArmies.length)];
+						System.out.println(currentPlayerCountry.getPlayerName()+" "+currentPlayerCountry.getCountryName()+" conquered "+ opponentPlayerCountry.getPlayerName()+" "+opponentPlayerCountry.getCountryName());
 						if(Objects.nonNull(armiesOnCountry)) {
 							opponentPlayer.getTerritoryOccupied().remove(opponentPlayerCountry);
 							currentPlayer.getTerritoryOccupied().add(opponentPlayerCountry);
@@ -114,6 +116,7 @@ public class RandomStrategy implements PlayerBehaviourStrategyInterface{
 					}while(Objects.isNull(armiesOnCountry));
 				}else if(currentPlayerAttackingArmies == 0 ){
 					opponentPlayerCountry.setArmiesOnCountry(opponentDefendingArmies);
+					System.out.println(currentPlayerCountry.getPlayerName()+" "+currentPlayerCountry.getCountryName()+" lost to "+ opponentPlayerCountry.getPlayerName()+" "+opponentPlayerCountry.getCountryName());
 				}
 			}
 		} catch (NoSuchAlgorithmException e) {
@@ -127,12 +130,13 @@ public class RandomStrategy implements PlayerBehaviourStrategyInterface{
 	 * @see com.soen6441.risk.playerstrategy.PlayerBehaviourStrategyInterface#foriticateArmies(com.soen6441.risk.Country, com.soen6441.risk.Country, com.soen6441.risk.view.RiskBoardView, com.soen6441.risk.Player)
 	 */
 	@Override
-	public void foriticateArmies(Country country, Country adjacentCountry, RiskBoardView riskBoardview, Player player) {
-		if(adjacentCountry.getPlayerName().equals(country.getPlayerName())) {
+	public void foriticateArmies(Country currentPlayerCountry, Country adjacentCountry, RiskBoardView riskBoardview, Player player) {
+		if(currentPlayerCountry.getArmiesOnCountry()> 1 && adjacentCountry.getPlayerName().equals(currentPlayerCountry.getPlayerName())) {
 				try {
 					Random random = SecureRandom.getInstanceStrong();
-					int armiesToMove = random.nextInt(country.getArmiesOnCountry());
-					country.decreaseArmiesOnCountry(armiesToMove);
+					int armiesToMove = random.nextInt(currentPlayerCountry.getArmiesOnCountry());
+					System.out.println(currentPlayerCountry.getPlayerName()+" "+currentPlayerCountry.getCountryName()+" moved to "+(armiesToMove)+" armies to "+ adjacentCountry.getPlayerName()+" "+adjacentCountry.getCountryName());
+					currentPlayerCountry.decreaseArmiesOnCountry(armiesToMove);
 					adjacentCountry.incrementArmiesOnCountry(armiesToMove);
 				} catch (NoSuchAlgorithmException e) {
 					// TODO Auto-generated catch block

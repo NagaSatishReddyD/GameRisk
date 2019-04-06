@@ -35,6 +35,7 @@ public class HumanStrategy implements PlayerBehaviourStrategyInterface{
 	@Override
 	public boolean attackBetweenCountries(Country currentPlayerCountry, Country opponentPlayerCountry,
 			RiskBoardView riskBoardView, Player opponentPlayer, Player currentPlayer) {
+		System.out.println(currentPlayerCountry.getPlayerName()+" "+currentPlayerCountry.getCountryName()+" attacking "+ opponentPlayerCountry.getPlayerName()+" "+opponentPlayerCountry.getCountryName());
 		boolean isOcuppiedTerritory = false;
 		Object [] possibilities = new Object [currentPlayerCountry.getArmiesOnCountry()];
 		possibilities[0] = RiskGameConstants.ALL_OUT;
@@ -88,6 +89,7 @@ public class HumanStrategy implements PlayerBehaviourStrategyInterface{
 			} while (currentPlayerAttackingArmies != 0 && opponentDefendingArmies != 0);
 			if(currentPlayerAttackingArmies > 0) {
 				Integer armiesOnCountry;
+				System.out.println(currentPlayerCountry.getPlayerName()+" "+currentPlayerCountry.getCountryName()+" conquered "+ opponentPlayerCountry.getPlayerName()+" "+opponentPlayerCountry.getCountryName());
 				JOptionPane.showMessageDialog(riskBoardView.getBoardFrame(), currentPlayer.getPlayerName()+" WON ");
 				do {
 					possibilities = new Object [currentPlayerAttackingArmies];
@@ -109,6 +111,7 @@ public class HumanStrategy implements PlayerBehaviourStrategyInterface{
 			}else if(currentPlayerAttackingArmies == 0 ){
 				opponentPlayerCountry.setArmiesOnCountry(opponentDefendingArmies);
 				JOptionPane.showMessageDialog(riskBoardView.getBoardFrame(), opponentPlayerCountry.getPlayerName()+" WON ");
+				System.out.println(currentPlayerCountry.getPlayerName()+" "+currentPlayerCountry.getCountryName()+" lost to "+ opponentPlayerCountry.getPlayerName()+" "+opponentPlayerCountry.getCountryName());
 			}
 		}else {
 			JOptionPane.showMessageDialog(riskBoardView.getBoardFrame(), "You don't have enough armies to attack");
@@ -120,13 +123,13 @@ public class HumanStrategy implements PlayerBehaviourStrategyInterface{
 	 * @see com.soen6441.risk.playerstrategy.PlayerBehaviourStrategyInterface#foriticateArmies(com.soen6441.risk.Country, com.soen6441.risk.Country, com.soen6441.risk.view.RiskBoardView)
 	 */
 	@Override
-	public void foriticateArmies(Country country, Country adjacentCountry, RiskBoardView riskBoardview,Player player) {
-		if(country.getArmiesOnCountry() == 0){
+	public void foriticateArmies(Country currentPlayerCountry, Country adjacentCountry, RiskBoardView riskBoardview,Player player) {
+		if(currentPlayerCountry.getArmiesOnCountry() == 0){
 			JOptionPane.showMessageDialog(riskBoardview.getBoardFrame(), "No armies on selected country to move");
-		}else if(!player.isCountriesOwnedByPlayers(country, adjacentCountry)) {
+		}else if(!player.isCountriesOwnedByPlayers(currentPlayerCountry, adjacentCountry)) {
 			JOptionPane.showMessageDialog(riskBoardview.getBoardFrame(), "Selected Adjacent Country is owned by another player");
 		}else {
-			Object [] possibilities = new Object [country.getArmiesOnCountry() - 1];
+			Object [] possibilities = new Object [currentPlayerCountry.getArmiesOnCountry() - 1];
 			for(int index = 0; index < possibilities.length; index++) {
 				possibilities[index] = index+1;
 			}
@@ -134,7 +137,8 @@ public class HumanStrategy implements PlayerBehaviourStrategyInterface{
 					JOptionPane.INFORMATION_MESSAGE, null,possibilities, possibilities[0]);
 
 			if(Objects.nonNull(selectedValue)) {
-				country.decreaseArmiesOnCountry(selectedValue);
+				System.out.println(currentPlayerCountry.getPlayerName()+" "+currentPlayerCountry.getCountryName()+" moved to "+(selectedValue)+" armies to "+ adjacentCountry.getPlayerName()+" "+adjacentCountry.getCountryName());
+				currentPlayerCountry.decreaseArmiesOnCountry(selectedValue);
 				adjacentCountry.incrementArmiesOnCountry(selectedValue);
 				riskBoardview.getArmiesCountAvailableLabel().setText(String.valueOf(player.getArmyCountAvailable()));
 			}

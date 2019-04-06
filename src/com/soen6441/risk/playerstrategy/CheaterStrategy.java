@@ -51,11 +51,13 @@ public class CheaterStrategy implements PlayerBehaviourStrategyInterface{
 	@Override
 	public boolean attackBetweenCountries(Country currentPlayerCountry, Country opponentPlayerCountry,
 			RiskBoardView riskBoardView, Player opponentPlayer, Player currentPlayer) {
+		System.out.println(currentPlayerCountry.getPlayerName()+" "+currentPlayerCountry.getCountryName()+" attacking "+ opponentPlayerCountry.getPlayerName()+" "+opponentPlayerCountry.getCountryName());
 		opponentPlayer.getTerritoryOccupied().remove(opponentPlayerCountry);
 		currentPlayer.getTerritoryOccupied().add(opponentPlayerCountry);
 		opponentPlayerCountry.setPlayerName(currentPlayer.getPlayerName());
 		opponentPlayerCountry.setArmiesOnCountry(1);
 		currentPlayerCountry.incrementArmiesOnCountry(currentPlayerCountry.getArmiesOnCountry() - 1);
+		System.out.println(currentPlayerCountry.getPlayerName()+" "+currentPlayerCountry.getCountryName()+" conquered "+ opponentPlayerCountry.getPlayerName()+" "+opponentPlayerCountry.getCountryName());
 		currentPlayer.isOpponentPlayerOutOfGame(currentPlayer, opponentPlayer);
 		return true;
 	}
@@ -67,6 +69,7 @@ public class CheaterStrategy implements PlayerBehaviourStrategyInterface{
 	public void foriticateArmies(Country currentCountry, Country adjacentCountry, RiskBoardView riskBoardview, Player player) {
 		Map<String, Country> adjacentCountriesData = currentCountry.getAdjacentCountries().stream().map(data -> data).collect(Collectors.toMap(Country::getPlayerName, Function.identity()));
 		if(checkForFortification(adjacentCountriesData, currentCountry)) {
+			System.out.println(currentCountry.getPlayerName()+" "+currentCountry.getCountryName()+" dobuled to "+(currentCountry.getArmiesOnCountry()*2));
 			currentCountry.setArmiesOnCountry(currentCountry.getArmiesOnCountry()*2);
 		}
 	}
