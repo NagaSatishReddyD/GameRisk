@@ -63,6 +63,9 @@ public class RiskBoardModel{
 	int cardExchangeCount = 0;
 	private boolean isGameResume = false;
 	private String isGamePhase = RiskGameConstants.REINFORCEMENT_PHASE;
+	private int numberOfTurns;
+	private List<String> winnerResult;
+	private String tournamentMode = null;
 
 	/**
 	 * loadRequiredData method is used to inital load the riskBoardView screen data
@@ -546,8 +549,18 @@ public class RiskBoardModel{
 			updateCardsTextArea(currentPlayer, riskBoardView);
 			createOrUpdateImage(riskBoardView);
 		}
+		if (Objects.nonNull(tournamentMode) && !isInitialPhase && 
+				isGamePhase.equalsIgnoreCase(RiskGameConstants.REINFORCEMENT_PHASE) && currentPlayerIndex == 0) {
+			if(numberOfTurns == 0) {
+				return;
+			}
+			System.out.println(numberOfTurns);
+			numberOfTurns--;
+		}
+		
 		if(!(currentPlayer.getPlayerStrategy() instanceof HumanStrategy))
 			playerStrategyActions(currentPlayer, riskBoardView);
+
 	}
 
 	/**
@@ -556,6 +569,9 @@ public class RiskBoardModel{
 	 * @param currentPlayer, currentPlayer object
 	 */
 	private void playerStrategyActions(Player currentPlayer, RiskBoardView riskBoardView) {
+		if(Objects.nonNull(this.tournamentMode) && this.numberOfTurns == 0 || anyPlayerOwn()) {
+			return;
+		}
 		if(!currentPlayer.getTerritoryOccupied().isEmpty()) {
 			if(currentPlayer.getPlayerStrategy() instanceof AggressiveStrategy) {
 				implementAggressiveStrategy(currentPlayer, riskBoardView);
@@ -573,6 +589,17 @@ public class RiskBoardModel{
 		}
 		isPlayerWonTheGame();
 		updateTheBoardScreenData(riskBoardView);
+	}
+
+	/**
+	 * @return
+	 */
+	private boolean anyPlayerOwn() {
+		List<String> playerNamesList = playersData.stream().filter(data -> !data.getTerritoryOccupied().isEmpty()).map(data->data.getPlayerName()).collect(Collectors.toList());
+		if(playerNamesList.size() == 1) {
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -1175,7 +1202,6 @@ public class RiskBoardModel{
 				random = SecureRandom.getInstanceStrong();
 				selectedCardNumber = random.nextInt(cardsList.size());
 			} catch (NoSuchAlgorithmException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -1195,7 +1221,15 @@ public class RiskBoardModel{
 	 */
 	public void isPlayerWonTheGame() {
 		Player currentPlayer = playersData.get(currentPlayerIndex);
-		if(currentPlayer.getTerritoryOccupied().size() == countriesList.size()) {
+		if(Objects.nonNull(this.tournamentMode)) {
+			this.winnerResult = new ArrayList<>();
+			countriesList.stream().forEach(country -> {
+				Player player = playersMap.get(country.getPlayerName());
+				String data = player.getPlayerName()+"("+player.getPlayerStrategyName()+")";
+				if(!this.winnerResult.contains(data))
+					this.winnerResult.add(data);
+			});
+		}else if(currentPlayer.getTerritoryOccupied().size() == countriesList.size()) {
 			showErrorMessage(currentPlayer.getPlayerName()+" WON THE GAME", true);
 		}
 	}
@@ -1432,7 +1466,6 @@ public class RiskBoardModel{
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-
 		}
 	}
 
@@ -1479,5 +1512,27 @@ public class RiskBoardModel{
 		else if(riskBoardView.getEndFortificationBtn().isVisible())
 			return RiskGameConstants.FORTIFICATION_PHASE;
 		return null;
+	}
+
+	/**
+	 * @param numberOfTurns
+	 */
+	public void setNumberOfTurn(int numberOfTurns) {
+		this.numberOfTurns = numberOfTurns;
+	}
+
+	/**
+	 * @return 
+	 * 
+	 */
+	public List<String> getPlayersWinningResult() {
+		return this.winnerResult;
+	}
+
+	/**
+	 * @param tournamentMode
+	 */
+	public void setGameMode(String tournamentMode) {
+		this.tournamentMode = tournamentMode;
 	}
 }

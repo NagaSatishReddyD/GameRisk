@@ -28,4 +28,5 @@ public class RiskGameConstants {
 	public static final String RANDOM = "Random";
 	public static final String AGGRESSIVE = "Aggressive";
 	public static final String BENEVOLENT = "Benevolent";
+	public static final String TOURNAMENT_MODE = "Tournamnet";
 }
