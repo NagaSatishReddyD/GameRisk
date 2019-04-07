@@ -598,7 +598,7 @@ public class RiskBoardModel{
 	 * @param currentPlayer
 	 * @param riskBoardView
 	 */
-	private void placeArmiesCheaterStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
+	public void placeArmiesCheaterStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
 		currentPlayer.getTerritoryOccupied().stream().forEach(country ->{
 			country.setArmiesOnCountry(country.getArmiesOnCountry()*2);
 		});
@@ -823,7 +823,7 @@ public class RiskBoardModel{
 	 * @param currentPlayer
 	 * @param riskBoardView
 	 */
-	private void placeArmiesForAggressiveStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
+	public void placeArmiesForAggressiveStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
 		if(!currentPlayer.getTerritoryOccupied().isEmpty()) {
 			sortTerritoryBasedOnArmies(currentPlayer, false);
 			currentPlayer.reinforceArmyToCountry(currentPlayer.getTerritoryOccupied().get(0), riskBoardView, isInitialPhase);
@@ -851,7 +851,7 @@ public class RiskBoardModel{
 	 * @param isAscendingOrder 
 	 * @return
 	 */
-	private void sortTerritoryBasedOnArmies(Player currentPlayer, boolean isAscendingOrder) {
+	public void sortTerritoryBasedOnArmies(Player currentPlayer, boolean isAscendingOrder) {
 		if(isAscendingOrder)
 			currentPlayer.getTerritoryOccupied().sort(Comparator.comparing(Country::getArmiesOnCountry));
 		else

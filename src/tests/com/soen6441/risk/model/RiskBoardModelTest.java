@@ -56,6 +56,12 @@ public class RiskBoardModelTest {
 				RiskGameConstants.HUMAN, RiskGameConstants.HUMAN, RiskGameConstants.HUMAN};
 		riskBoardModel.loadRequiredData(System.getProperty("user.dir") + "/resources/World.map", true);
 		riskBoardModel.assignCountriesToPlayers(playersCount, behavior);
+		riskBoardModel.getPlayersData().get(0).setPlayerStrategy(riskBoardModel.getStrategyOfPlayer(RiskGameConstants.HUMAN));
+		riskBoardModel.getPlayersData().get(1).setPlayerStrategy(riskBoardModel.getStrategyOfPlayer(RiskGameConstants.HUMAN));
+		riskBoardModel.getPlayersData().get(2).setPlayerStrategy(riskBoardModel.getStrategyOfPlayer(RiskGameConstants.HUMAN));
+		riskBoardModel.getPlayersData().get(3).setPlayerStrategy(riskBoardModel.getStrategyOfPlayer(RiskGameConstants.HUMAN));
+		riskBoardModel.getPlayersData().get(4).setPlayerStrategy(riskBoardModel.getStrategyOfPlayer(RiskGameConstants.HUMAN));
+		riskBoardModel.getPlayersData().get(5).setPlayerStrategy(riskBoardModel.getStrategyOfPlayer(RiskGameConstants.HUMAN));
 		playersData.get(0).getPlayerCards().add(new Card("Country A", "Infantry"));
 		playersData.get(0).getPlayerCards().add(new Card("Country B", "Infantry"));
 		playersData.get(0).getPlayerCards().add(new Card("Country C", "Cavalry"));
@@ -402,10 +408,10 @@ public class RiskBoardModelTest {
 	
 	/**
 	 * This method is used to test after load the game from save file, is the data of 
-	 * players are correct or not
+	 * player 1 are correct or not
 	 */
 	@Test
-	public void testLoadSaveFile() {
+	public void testLoadSaveFileForPlayer1() {
 		List<String> list = riskBoardModel.getPlayersData().get(0).getTerritoryOccupied().stream().map(Country::getCountryName).collect(Collectors.toList());
 		assertTrue(list.contains("Eastern Australia"));
 		assertTrue(list.contains("Siberia"));
@@ -414,6 +420,86 @@ public class RiskBoardModelTest {
 		assertTrue(list.contains("East Africa"));
 		assertTrue(list.contains("Western Europe"));
 		assertTrue(list.contains("Yatusk"));
+	}
+	
+	/**
+	 * This method is used to test after load the game from save file, is the data of 
+	 * player 2 are correct or not
+	 */
+	@Test
+	public void testLoadSaveFilePlayer2() {
+		List<String> list = riskBoardModel.getPlayersData().get(1).getTerritoryOccupied().stream().map(Country::getCountryName).collect(Collectors.toList());
+		assertTrue(list.contains("Western Australia"));
+		assertTrue(list.contains("Ukraine"));
+		assertTrue(list.contains("India"));
+		assertTrue(list.contains("Ural"));
+		assertTrue(list.contains("Argentina"));
+		assertTrue(list.contains("Egypt"));
+		assertTrue(list.contains("Central America"));
+	}
+	
+	/**
+	 * This method is used to test after load the game from save file, is the data of 
+	 * player 3 are correct or not
+	 */
+	@Test
+	public void testLoadSaveFilePlayer3() {
+		List<String> list = riskBoardModel.getPlayersData().get(2).getTerritoryOccupied().stream().map(Country::getCountryName).collect(Collectors.toList());
+		assertTrue(list.contains("Venezuala"));
+		assertTrue(list.contains("Indonesia"));
+		assertTrue(list.contains("Siam"));
+		assertTrue(list.contains("Mongolia"));
+		assertTrue(list.contains("China"));
+		assertTrue(list.contains("Alberta"));
+		assertTrue(list.contains("Japan"));
+	}
+	
+	/**
+	 * This method is used to test after load the game from save file, is the data of 
+	 * player 4 are correct or not
+	 */
+	@Test
+	public void testLoadSaveFilePlayer4() {
+		List<String> list = riskBoardModel.getPlayersData().get(3).getTerritoryOccupied().stream().map(Country::getCountryName).collect(Collectors.toList());
+		assertTrue(list.contains("Northern Europe"));
+		assertTrue(list.contains("Northwest Territory"));
+		assertTrue(list.contains("Alaska"));
+		assertTrue(list.contains("Congo"));
+		assertTrue(list.contains("Brazil"));
+		assertTrue(list.contains("Quebec"));
+		assertTrue(list.contains("Southern Europe"));
+	}
+	
+	/**
+	 * This method is used to test after load the game from save file, is the data of 
+	 * player 5 are correct or not
+	 */
+	@Test
+	public void testLoadSaveFilePlayer5() {
+		List<String> list = riskBoardModel.getPlayersData().get(4).getTerritoryOccupied().stream().map(Country::getCountryName).collect(Collectors.toList());
+		assertTrue(list.contains("Scandinavia"));
+		assertTrue(list.contains("South Africa"));
+		assertTrue(list.contains("Peru"));
+		assertTrue(list.contains("Kamchatka"));
+		assertTrue(list.contains("Iceland"));
+		assertTrue(list.contains("Great Britain"));
+		assertTrue(list.contains("Middle East"));
+	}
+	
+	/**
+	 * This method is used to test after load the game from save file, is the data of 
+	 * player 6 are correct or not
+	 */
+	@Test
+	public void testLoadSaveFilePlayer6() {
+		List<String> list = riskBoardModel.getPlayersData().get(5).getTerritoryOccupied().stream().map(Country::getCountryName).collect(Collectors.toList());
+		assertTrue(list.contains("North Africa"));
+		assertTrue(list.contains("Irkutsk"));
+		assertTrue(list.contains("New Guinea"));
+		assertTrue(list.contains("Afghanistan"));
+		assertTrue(list.contains("Eastern United States"));
+		assertTrue(list.contains("Greenland"));
+		assertTrue(list.contains("Ontario"));
 	}
 	
 	/**
@@ -578,11 +664,152 @@ public class RiskBoardModelTest {
 		testPlayer1.addTerritory(testCountry3);
 		testPlayer1.addTerritory(testCountry4);
 		testPlayer1.addTerritory(testCountry5);
-		testPlayer1.reinforceArmyToCountry(testCountry1, riskBoardView, false);
+		riskBoardModel.placeArmiesCheaterStrategy(testPlayer1, riskBoardView);
 		assertEquals(60, testPlayer1.getTerritoryOccupied().get(0).getArmiesOnCountry());
 		assertEquals(60, testPlayer1.getTerritoryOccupied().get(1).getArmiesOnCountry());
 		assertEquals(60, testPlayer1.getTerritoryOccupied().get(2).getArmiesOnCountry());
 		assertEquals(60, testPlayer1.getTerritoryOccupied().get(3).getArmiesOnCountry());
 		assertEquals(60, testPlayer1.getTerritoryOccupied().get(4).getArmiesOnCountry());
+	}
+	
+	/**
+	 * This method is used to test if the reinforcement method of aggressive player is properly implemented
+	 */
+	@Test
+	public void testAggressiveReinforcement() {
+		Country testCountry1 = new Country("Country A");
+		testCountry1.setArmiesOnCountry(20);
+		testCountry1.setPlayerName("Test Player 1");
+		Country testCountry2 = new Country("Country B");
+		testCountry2.setArmiesOnCountry(35);
+		testCountry2.setPlayerName("Test Player 1");
+		Country testCountry3 = new Country("Country C");
+		testCountry3.setArmiesOnCountry(30);
+		testCountry3.setPlayerName("Test Player 1");
+		Country testCountry4 = new Country("Country D");
+		testCountry4.setArmiesOnCountry(10);
+		testCountry4.setPlayerName("Test Player 1");
+		Country testCountry5 = new Country("Country E");
+		testCountry5.setArmiesOnCountry(50);
+		testCountry5.setPlayerName("Test Player 1");
+		Player testPlayer1 = new Player("Test Player 1", 50);
+		testPlayer1.setPlayerStrategy(riskBoardModel.getStrategyOfPlayer(RiskGameConstants.AGGRESSIVE));
+		testPlayer1.addTerritory(testCountry1);
+		testPlayer1.addTerritory(testCountry2);
+		testPlayer1.addTerritory(testCountry3);
+		testPlayer1.addTerritory(testCountry4);
+		testPlayer1.addTerritory(testCountry5);
+		riskBoardModel.sortTerritoryBasedOnArmies(testPlayer1, false);
+		testPlayer1.reinforceArmyToCountry(testPlayer1.getTerritoryOccupied().get(0), riskBoardView, false);
+		assertEquals(100, testPlayer1.getTerritoryOccupied().get(0).getArmiesOnCountry());
+	}
+	
+	/**
+	 * This method is used to test if the fortification method of aggressive player is properly implemented
+	 */
+	@Test
+	public void testAggressiveFortification() {
+		Country testCountry1 = new Country("Country A");
+		testCountry1.setArmiesOnCountry(20);
+		testCountry1.setPlayerName("Test Player 1");
+		Country testCountry2 = new Country("Country B");
+		testCountry2.setArmiesOnCountry(20);
+		testCountry2.setPlayerName("Test Player 2");
+		Country testCountry3 = new Country("Country C");
+		testCountry3.setArmiesOnCountry(20);
+		testCountry3.setPlayerName("Test Player 1");
+		Country testCountry4 = new Country("Country D");
+		testCountry4.setArmiesOnCountry(20);
+		testCountry4.setPlayerName("Test Player 2");
+		Country testCountry5 = new Country("Country E");
+		testCountry5.setArmiesOnCountry(20);
+		testCountry5.setPlayerName("Test Player 1");
+		testCountry1.addAdjacentCountry(testCountry2);
+		testCountry1.addAdjacentCountry(testCountry3);
+		testCountry1.addAdjacentCountry(testCountry4);
+		testCountry1.addAdjacentCountry(testCountry5);
+		testCountry2.addAdjacentCountry(testCountry1);
+		testCountry3.addAdjacentCountry(testCountry1);
+		testCountry4.addAdjacentCountry(testCountry1);
+		testCountry5.addAdjacentCountry(testCountry1);
+		
+		Player testPlayer1 = new Player("Test Player 1", 0);
+		testPlayer1.setPlayerStrategy(riskBoardModel.getStrategyOfPlayer(RiskGameConstants.AGGRESSIVE));
+		Player testPlayer2 = new Player("Test Player 2", 0);
+		testPlayer2.setPlayerStrategy(riskBoardModel.getStrategyOfPlayer(RiskGameConstants.HUMAN));
+		testPlayer1.addTerritory(testCountry1);
+		testPlayer2.addTerritory(testCountry2);
+		testPlayer1.addTerritory(testCountry3);
+		testPlayer2.addTerritory(testCountry4);
+		testPlayer1.addTerritory(testCountry5);
+		testPlayer1.moveArmiesBetweenCountries(testCountry1, testCountry3, riskBoardView);
+		assertEquals(58, testPlayer1.getTerritoryOccupied().get(0).getArmiesOnCountry());
+	}
+	
+	/**
+	 * This method is used to test if the fortification method of benevolent player is properly implemented
+	 */
+	@Test
+	public void testBenevolentFortification() {
+		Country testCountry1 = new Country("Country A");
+		testCountry1.setArmiesOnCountry(20);
+		testCountry1.setPlayerName("Test Player 1");
+		Country testCountry2 = new Country("Country B");
+		testCountry2.setArmiesOnCountry(35);
+		testCountry2.setPlayerName("Test Player 1");
+		Country testCountry3 = new Country("Country C");
+		testCountry3.setArmiesOnCountry(5);
+		testCountry3.setPlayerName("Test Player 1");
+		Country testCountry4 = new Country("Country D");
+		testCountry4.setArmiesOnCountry(10);
+		testCountry4.setPlayerName("Test Player 1");
+		Country testCountry5 = new Country("Country E");
+		testCountry5.setArmiesOnCountry(50);
+		testCountry5.setPlayerName("Test Player 1");
+		Player testPlayer1 = new Player("Test Player 1", 50);
+		testPlayer1.setPlayerStrategy(riskBoardModel.getStrategyOfPlayer(RiskGameConstants.BENEVOLENT));
+		testPlayer1.addTerritory(testCountry1);
+		testPlayer1.addTerritory(testCountry2);
+		testPlayer1.addTerritory(testCountry3);
+		testPlayer1.addTerritory(testCountry4);
+		testPlayer1.addTerritory(testCountry5);
+		testCountry3.addAdjacentCountry(testCountry1);
+		testCountry3.addAdjacentCountry(testCountry2);
+		testCountry3.addAdjacentCountry(testCountry4);
+		testCountry3.addAdjacentCountry(testCountry5);
+		testPlayer1.moveArmiesBetweenCountries(testCountry3, null, riskBoardView);
+		assertEquals(36, testPlayer1.getTerritoryOccupied().get(2).getArmiesOnCountry());
+	}
+	
+	/**
+	 * This method is used to test if the reinforcement method of benevolent player is properly implemented
+	 */
+	@Test
+	public void testBenevolentReinforcement() {
+		Country testCountry1 = new Country("Country A");
+		testCountry1.setArmiesOnCountry(20);
+		testCountry1.setPlayerName("Test Player 1");
+		Country testCountry2 = new Country("Country B");
+		testCountry2.setArmiesOnCountry(35);
+		testCountry2.setPlayerName("Test Player 1");
+		Country testCountry3 = new Country("Country C");
+		testCountry3.setArmiesOnCountry(30);
+		testCountry3.setPlayerName("Test Player 1");
+		Country testCountry4 = new Country("Country D");
+		testCountry4.setArmiesOnCountry(10);
+		testCountry4.setPlayerName("Test Player 1");
+		Country testCountry5 = new Country("Country E");
+		testCountry5.setArmiesOnCountry(50);
+		testCountry5.setPlayerName("Test Player 1");
+		Player testPlayer1 = new Player("Test Player 1", 50);
+		testPlayer1.setPlayerStrategy(riskBoardModel.getStrategyOfPlayer(RiskGameConstants.BENEVOLENT));
+		testPlayer1.addTerritory(testCountry1);
+		testPlayer1.addTerritory(testCountry2);
+		testPlayer1.addTerritory(testCountry3);
+		testPlayer1.addTerritory(testCountry4);
+		testPlayer1.addTerritory(testCountry5);
+		riskBoardModel.sortTerritoryBasedOnArmies(testPlayer1, true);
+		testPlayer1.reinforceArmyToCountry(testPlayer1.getTerritoryOccupied().get(0), riskBoardView, false);
+		assertEquals(60, testPlayer1.getTerritoryOccupied().get(0).getArmiesOnCountry());
 	}
 }
