@@ -41,7 +41,7 @@ public class RiskTournamentModel {
 				riskBoardModel.setNumberOfTurn(numberOfTurns);
 				riskBoardModel.setGameMode(RiskGameConstants.TOURNAMENT_MODE);
 				RiskBoardController riskBoardController = new RiskBoardController(riskBoardModel, riskBoardView);
-				riskBoardController.intializeBoardGame(playersCount, mapFiles[gamesIndex], behaviours);
+				riskBoardController.intializeBoardGame(playersCount, mapFiles[mapCountIndex], behaviours);
 				getResult(riskBoardModel.getPlayersWinningResult(), mapFiles[mapCountIndex], tournamentResult);
 			}
 		}
@@ -53,7 +53,7 @@ public class RiskTournamentModel {
 			for(String result : resultList) {
 				resultString+= result+"  ";
 			}
-			System.out.print(resultMap.getKey()+" "+resultString);
+			System.out.println(resultMap.getKey()+" "+resultString);
 		}
 	}
 
