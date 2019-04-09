@@ -109,7 +109,7 @@ public class AggressiveStrategy implements PlayerBehaviourStrategyInterface{
 				isMoved = true;
 			}else {
 				for(Country adjacent: highestArmiesCountry.getAdjacentCountries()) {
-					if(otherPlayerAdjacent(adjacent)) {
+					if(!otherPlayerAdjacent(adjacent)) {
 						int armies = highestArmiesCountry.getArmiesOnCountry() - 1;
 						highestArmiesCountry.decreaseArmiesOnCountry(armies);
 						adjacent.incrementArmiesOnCountry(armies);
