@@ -33,6 +33,7 @@ public class RiskBoardController{
 	 * It triggers the respective methods in the {@link RiskBoardModel} class
 	 * @param playerCount, count of players playing the game
 	 * @param fileName, file from the countries data need to be loaded
+	 * @param behaviors, behaviors of players opted to play the game
 	 */
 	public void intializeBoardGame(int playerCount, String fileName, String[] behaviors) {
 		this.fileName = fileName;

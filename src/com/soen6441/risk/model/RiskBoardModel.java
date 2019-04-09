@@ -492,8 +492,13 @@ public class RiskBoardModel{
 	}
 
 	/**
-	 * @param string
-	 * @return
+	 * getStrategyOfPlayer method to get the strategy call object reference based on the strategy opted by the player
+	 * <b>{@link HumanStrategy} for Human</b> which needs Human interaction to make the decisions and play.
+	 * <b>{@linkplain AggressiveStrategy}</b> for aggressive players concentrates more on attacking and move amies to the strong country.
+	 * <b>{@link BenevolentStrategy}</b> for benevolent players concentrates more on moving armies to the weak territory.
+	 * <b>{@link RandomStrategy}</b> for random players works on the random attacks and random fortification and random reinforcment.
+	 * @param playerStrategy, playerStrategy selected by the player
+	 * @return instance of the a strategy which implements {@link PlayerBehaviourStrategyInterface}
 	 */
 	public PlayerBehaviourStrategyInterface getStrategyOfPlayer(String playerStrategy) {
 		PlayerBehaviourStrategyInterface playerBehaviourStrategy;
@@ -522,7 +527,6 @@ public class RiskBoardModel{
 
 	/**
 	 * updateTheBoardScreenData method is used to handle the actions done before the each turn for the player
-	 * @param phase, current phase of the player it can be {@link RiskGameConstants#REINFORCEMENT_PHASE}, {@link RiskGameConstants#ATTACK_PHASE}
 	 * @param riskBoardView, RiskBoardView object used to update the components of the screen
 	 */
 	public void updateTheBoardScreenData(RiskBoardView riskBoardView) {
@@ -565,7 +569,7 @@ public class RiskBoardModel{
 
 	/**
 	 * playerStrategyActions method checks the player strategy and takes appropriate actions.
-	 * @param riskBoardView 
+	 * @param riskBoardView, RiskBoardView object used to update the components of the screen 
 	 * @param currentPlayer, currentPlayer object
 	 */
 	private void playerStrategyActions(Player currentPlayer, RiskBoardView riskBoardView) {
@@ -595,7 +599,7 @@ public class RiskBoardModel{
 	 * @return
 	 */
 	private boolean anyPlayerOwn() {
-		List<String> playerNamesList = playersData.stream().filter(data -> !data.getTerritoryOccupied().isEmpty()).map(data->data.getPlayerName()).collect(Collectors.toList());
+		List<String> playerNamesList = playersData.stream().filter(data -> !data.getTerritoryOccupied().isEmpty()).map(Player::getPlayerName).collect(Collectors.toList());
 		if(playerNamesList.size() == 1) {
 			return true;
 		}
@@ -603,8 +607,8 @@ public class RiskBoardModel{
 	}
 
 	/**
-	 * @param currentPlayer
-	 * @param riskBoardView
+	 * @param currentPlayer, currentPlayer of the currentplayer.
+	 * @param riskBoardView, RiskBoardView object used to update the components of the screen
 	 */
 	private void implementCheaterStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
 		if(isInitialPhase) {
@@ -622,8 +626,8 @@ public class RiskBoardModel{
 
 
 	/**
-	 * @param currentPlayer
-	 * @param riskBoardView
+	 * @param currentPlayer, currentPlayer of the currentplayer.
+	 * @param riskBoardView, RiskBoardView object used to update the components of the screen
 	 */
 	public void placeArmiesCheaterStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
 		currentPlayer.getTerritoryOccupied().stream().forEach(country ->{
@@ -632,8 +636,8 @@ public class RiskBoardModel{
 	}
 
 	/**
-	 * @param currentPlayer
-	 * @param riskBoardView
+	 * @param currentPlayer, currentPlayer of the currentplayer.
+	 * @param riskBoardView, RiskBoardView object used to update the components of the screen
 	 */
 	private void implementRandomBehaviour(Player currentPlayer, RiskBoardView riskBoardView) {
 		if(isInitialPhase) {
@@ -650,8 +654,8 @@ public class RiskBoardModel{
 
 
 	/**
-	 * @param currentPlayer 
-	 * @param riskBoardView
+	 * @param currentPlayer, currentPlayer of the currentplayer. 
+	 * @param riskBoardView, RiskBoardView object used to update the components of the screen
 	 */
 	private void fortificationRandomStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
 		Random random;
@@ -672,8 +676,8 @@ public class RiskBoardModel{
 	}
 
 	/**
-	 * @param currentPlayer2 
-	 * @param riskBoardView
+	 * @param currentPlayer, currentPlayer of the currentplayer. 
+	 * @param riskBoardView, RiskBoardView object used to update the components of the screen
 	 */
 	private void attackForRandomStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
 		try {
@@ -696,8 +700,8 @@ public class RiskBoardModel{
 	}
 
 	/**
-	 * @param currentPlayer
-	 * @param riskBoardView
+	 * @param currentPlayer, currentPlayer of the currentplayer.
+	 * @param riskBoardView, RiskBoardView object used to update the components of the screen
 	 */
 	private void implementBenevolentStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
 		if(isInitialPhase) {
@@ -712,8 +716,8 @@ public class RiskBoardModel{
 	}
 
 	/**
-	 * @param currentPlayer 
-	 * @param riskBoardView
+	 * @param currentPlayer, currentPlayer of the currentplayer. 
+	 * @param riskBoardView, RiskBoardView object used to update the components of the screen
 	 */
 	private void fortificationBenevolentStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
 		Map<Integer, List<Country>> armiesCountriesList = currentPlayer.getTerritoryOccupied().stream().map(data -> data).collect(Collectors.groupingBy(Country::getArmiesOnCountry));
@@ -734,8 +738,8 @@ public class RiskBoardModel{
 	}
 
 	/**
-	 * @param currentPlayer
-	 * @param riskBoardView
+	 * @param currentPlayer, currentPlayer of the currentplayer.
+	 * @param riskBoardView, RiskBoardView object used to update the components of the screen
 	 */
 	private void placeArmiesForBenevolentStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
 		if(!currentPlayer.getTerritoryOccupied().isEmpty()) {
@@ -747,7 +751,7 @@ public class RiskBoardModel{
 
 	/**
 	 * implementTheAggressiveStrategy method implements the aggressive strategy.
-	 * @param riskBoardView 
+	 * @param riskBoardView, RiskBoardView object used to update the components of the screen 
 	 * @param currentPlayer, current player object references
 	 */
 	private void implementAggressiveStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
@@ -763,8 +767,8 @@ public class RiskBoardModel{
 	}
 
 	/**
-	 * @param currentPlayer
-	 * @param riskBoardView
+	 * @param currentPlayer, currentPlayer of the currentplayer.
+	 * @param riskBoardView, RiskBoardView object used to update the components of the screen
 	 */
 	private void fortificationAggressiveStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
 		sortTerritoryBasedOnArmies(currentPlayer, false);
@@ -778,8 +782,8 @@ public class RiskBoardModel{
 	}
 
 	/**
-	 * @param currentPlayer 
-	 * @param riskBoardView
+	 * @param currentPlayer, currentPlayer of the currentplayer. 
+	 * @param riskBoardView, RiskBoardView object used to update the components of the screen
 	 */
 	public void fortificationCheaterStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
 		for(Country currentCountry: currentPlayer.getTerritoryOccupied()) {
@@ -791,8 +795,8 @@ public class RiskBoardModel{
 	}
 
 	/**
-	 * @param currentPlayer 
-	 * @param riskBoardView
+	 * @param currentPlayer, currentPlayer of the currentplayer. 
+	 * @param riskBoardView, RiskBoardView object used to update the components of the screen
 	 */
 	private void attackForCheaterStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
 		List<String> currentCountriesNamesList = currentPlayer.getTerritoryOccupied().stream().map(Country::getCountryName).collect(Collectors.toList());
@@ -811,7 +815,7 @@ public class RiskBoardModel{
 	}
 
 	/**
-	 * @param riskBoardView
+	 * @param riskBoardView, RiskBoardView object used to update the components of the screen
 	 */
 	private void attackForAggressiveStrategy(RiskBoardView riskBoardView) {
 		Player currentPlayer = playersData.get(currentPlayerIndex);
@@ -847,8 +851,9 @@ public class RiskBoardModel{
 		isPlayerWonTheGame();
 	}
 	/**
-	 * @param currentPlayer
-	 * @param riskBoardView
+	 * placeArmiesForAggressiveStrategy method plays the armies for aggressive player
+	 * @param currentPlayer, currentPlayer of the currentplayer.
+	 * @param riskBoardView, RiskBoardView object used to update the components of the screen
 	 */
 	public void placeArmiesForAggressiveStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
 		if(!currentPlayer.getTerritoryOccupied().isEmpty()) {
@@ -874,9 +879,8 @@ public class RiskBoardModel{
 
 	/**
 	 * sortTerritoryBasedOnArmies methods sorts the territories based on the armies on the country.
-	 * @param currentPlayer
-	 * @param isAscendingOrder 
-	 * @return
+	 * @param currentPlayer, current playing player object
+	 * @param isAscendingOrder, true if the data need to be sorted in ascending order, false for descending order.
 	 */
 	public void sortTerritoryBasedOnArmies(Player currentPlayer, boolean isAscendingOrder) {
 		if(isAscendingOrder)
@@ -887,8 +891,8 @@ public class RiskBoardModel{
 
 	/**
 	 * placeArmiesToCountries method places the armies on to the countries randomly in the initial phase.
-	 * @param currentPlayer
-	 * @param riskBoardView 
+	 * @param currentPlayer, currentPlayer of the currentplayer.
+	 * @param riskBoardView, RiskBoardView object used to update the components of the screen 
 	 * 
 	 */
 	private void placeArmiesToCountries(Player currentPlayer, RiskBoardView riskBoardView) {
@@ -1448,10 +1452,11 @@ public class RiskBoardModel{
 	}
 
 	/**
-	 * @param view
-	 * @param mapFileName 
+	 * saveGameCurrentState method saves the current status of the game.
+	 * @param riskBoardView, instance of {@link RiskBoardView} object
+	 * @param mapFileName, mapfileName to be used to save the game.
 	 */
-	public void saveGameCurrentState(RiskBoardView view, String mapFileName) {
+	public void saveGameCurrentState(RiskBoardView riskBoardView, String mapFileName) {
 		JOptionPane.showMessageDialog(null, "Save is under development");
 		if(Objects.nonNull(mapFileName)) {
 			File saveFile = new File(System.getProperty("user.dir")+RiskGameConstants.RESOURCES_FOLDER+"/Save/"+"save_"+mapFileName+RiskGameConstants.MAP_FILE_EXTENSION);
@@ -1461,7 +1466,7 @@ public class RiskBoardModel{
 				}
 				FileWriter writer = new FileWriter(saveFile);
 
-				savePlayersData(writer, view);
+				savePlayersData(writer, riskBoardView);
 				writer.close();
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -1501,7 +1506,7 @@ public class RiskBoardModel{
 
 	/**
 	 * getCurrentPhase method gets the current phase of the player.
-	 * @param riskBoardView 
+	 * @param riskBoardView, RiskBoardView object used to update the components of the screen 
 	 * @return currentPhase.
 	 */
 	private String getCurrentPhase(RiskBoardView riskBoardView) {
@@ -1515,22 +1520,24 @@ public class RiskBoardModel{
 	}
 
 	/**
-	 * @param numberOfTurns
+	 * setNumberOfTurn method sets the number of turn to be used in the tournament mode.
+	 * @param numberOfTurns, number of turns to be played in the game.
 	 */
 	public void setNumberOfTurn(int numberOfTurns) {
 		this.numberOfTurns = numberOfTurns;
 	}
 
 	/**
-	 * @return 
-	 * 
+	 * getPlayersWinningResult method return the current players list in the game active playing who as some territories to move on.
+	 * @return list of players currently in the game.
 	 */
 	public List<String> getPlayersWinningResult() {
 		return this.winnerResult;
 	}
 
 	/**
-	 * @param tournamentMode
+	 * setGameMode method sets the tournamentMode options
+	 * @param tournamentMode, sets the if the mode is tournament.
 	 */
 	public void setGameMode(String tournamentMode) {
 		this.tournamentMode = tournamentMode;

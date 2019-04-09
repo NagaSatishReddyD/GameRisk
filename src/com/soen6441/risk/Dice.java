@@ -17,7 +17,6 @@ public class Dice {
 	 * Returns an integer array of values between 1 and 6 representing the outcome of rolling the dice.
 	 * @param numberOfDice, number of dice rolled by the player it should be between 1 to 3. 
 	 * @return int array, with the values of dice.
-	 * @throws NoSuchAlgorithmException , exception while creating the random number
 	 */
 	public Integer[] diceRoll(int numberOfDice) {
 		Random random;

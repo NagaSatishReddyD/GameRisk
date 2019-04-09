@@ -81,7 +81,6 @@ public class Player {
 
 	/**
 	 * addTerritory adds the country to the player which no other player had yet
-	 * @param player, player object {@link Player}
 	 * @param country, country occupied by player {@link Country}
 	 */
 	public void addTerritory(Country country) {
@@ -102,7 +101,7 @@ public class Player {
 
 	/**
 	 * reinforceArmyToCountry method places the armies which are not placed on the country.
-	 * @param isInitialPhase 
+	 * @param isInitialPhase, true if it is game start turn, else false for normal turns 
 	 * @param riskBoardView, RiskBoardView object used to update the components of the screen
 	 * @param country, {@link Country} to which the armies to be placed.
 	 */
@@ -135,7 +134,7 @@ public class Player {
 	/**
 	 * isOpponentPlayerOutOfGame method checks whether the opponent player is done with the game if so
 	 * all opponent player cards will be given to attacked player.
-	 * @param opponentPlayer2 
+	 * @param currentPlayer, current player object reference  
 	 * @param opponentPlayer, {@link Player} object of the opponent player.
 	 */
 	public void isOpponentPlayerOutOfGame(Player currentPlayer, Player opponentPlayer) {
