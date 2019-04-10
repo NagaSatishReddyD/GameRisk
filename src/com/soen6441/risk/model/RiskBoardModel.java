@@ -164,8 +164,9 @@ public class RiskBoardModel{
 	}
 
 	/**
-	 * @param line
-	 * @param player
+	 * This method is used to assign cards to each player when loading from the save file
+	 * @param line, the line that the reader is currently on
+	 * @param player, the player that the cards going to be assigned to
 	 */
 	private void assignCardsToPlayers(String line, Player player) {
 		for(String cardTerritoryName: line.split(",")) {
@@ -596,7 +597,9 @@ public class RiskBoardModel{
 	}
 
 	/**
-	 * @return
+	 * This method checks if there is 1 player remaining or not
+	 * @return true if 1 player remains
+	 * @return false if more than 1 player remain
 	 */
 	private boolean anyPlayerOwn() {
 		List<String> playerNamesList = playersData.stream().filter(data -> !data.getTerritoryOccupied().isEmpty()).map(Player::getPlayerName).collect(Collectors.toList());
@@ -607,7 +610,8 @@ public class RiskBoardModel{
 	}
 
 	/**
-	 * @param currentPlayer, currentPlayer of the currentplayer.
+	 * This method implements the appropriate action in each phase for cheater player
+	 * @param currentPlayer, currentPlayer of the current player.
 	 * @param riskBoardView, RiskBoardView object used to update the components of the screen
 	 */
 	private void implementCheaterStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
@@ -626,7 +630,8 @@ public class RiskBoardModel{
 
 
 	/**
-	 * @param currentPlayer, currentPlayer of the currentplayer.
+	 * This method is triggered for cheater player when current phase is reinforcement phase
+	 * @param currentPlayer, currentPlayer of the current player.
 	 * @param riskBoardView, RiskBoardView object used to update the components of the screen
 	 */
 	public void placeArmiesCheaterStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
@@ -636,7 +641,8 @@ public class RiskBoardModel{
 	}
 
 	/**
-	 * @param currentPlayer, currentPlayer of the currentplayer.
+	 * This method implements the appropriate action in each phase for random player
+	 * @param currentPlayer, currentPlayer of the current player.
 	 * @param riskBoardView, RiskBoardView object used to update the components of the screen
 	 */
 	private void implementRandomBehaviour(Player currentPlayer, RiskBoardView riskBoardView) {
@@ -654,7 +660,8 @@ public class RiskBoardModel{
 
 
 	/**
-	 * @param currentPlayer, currentPlayer of the currentplayer. 
+	 * This method is triggered for random player when current phase is fortification phase
+	 * @param currentPlayer, currentPlayer of the current player. 
 	 * @param riskBoardView, RiskBoardView object used to update the components of the screen
 	 */
 	private void fortificationRandomStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
@@ -676,7 +683,8 @@ public class RiskBoardModel{
 	}
 
 	/**
-	 * @param currentPlayer, currentPlayer of the currentplayer. 
+	 * This method is triggered for random player when the current phase is attack phase
+	 * @param currentPlayer, currentPlayer of the current player. 
 	 * @param riskBoardView, RiskBoardView object used to update the components of the screen
 	 */
 	private void attackForRandomStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
@@ -700,7 +708,8 @@ public class RiskBoardModel{
 	}
 
 	/**
-	 * @param currentPlayer, currentPlayer of the currentplayer.
+	 * This method implements the appropriate action in each phase for benevolent player
+	 * @param currentPlayer, currentPlayer of the current player.
 	 * @param riskBoardView, RiskBoardView object used to update the components of the screen
 	 */
 	private void implementBenevolentStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
@@ -716,7 +725,8 @@ public class RiskBoardModel{
 	}
 
 	/**
-	 * @param currentPlayer, currentPlayer of the currentplayer. 
+	 * This method is triggered for benevolent player when the current phase is fortification phase
+	 * @param currentPlayer, currentPlayer of the current player. 
 	 * @param riskBoardView, RiskBoardView object used to update the components of the screen
 	 */
 	private void fortificationBenevolentStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
@@ -738,7 +748,8 @@ public class RiskBoardModel{
 	}
 
 	/**
-	 * @param currentPlayer, currentPlayer of the currentplayer.
+	 * This method is triggered for benevolent player when the current phase is reinforcement phase
+	 * @param currentPlayer, currentPlayer of the current player.
 	 * @param riskBoardView, RiskBoardView object used to update the components of the screen
 	 */
 	private void placeArmiesForBenevolentStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
@@ -767,7 +778,8 @@ public class RiskBoardModel{
 	}
 
 	/**
-	 * @param currentPlayer, currentPlayer of the currentplayer.
+	 * This method is triggered for aggressive player when the current phase is fortification phase
+	 * @param currentPlayer, currentPlayer of the current player.
 	 * @param riskBoardView, RiskBoardView object used to update the components of the screen
 	 */
 	private void fortificationAggressiveStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
@@ -782,7 +794,8 @@ public class RiskBoardModel{
 	}
 
 	/**
-	 * @param currentPlayer, currentPlayer of the currentplayer. 
+	 * This method is triggered for cheater player when the current phase is fortification phase
+	 * @param currentPlayer, currentPlayer of the current player. 
 	 * @param riskBoardView, RiskBoardView object used to update the components of the screen
 	 */
 	public void fortificationCheaterStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
@@ -795,7 +808,8 @@ public class RiskBoardModel{
 	}
 
 	/**
-	 * @param currentPlayer, currentPlayer of the currentplayer. 
+	 * This method is triggered for cheater player when the current phase is attack phase
+	 * @param currentPlayer, currentPlayer of the current player. 
 	 * @param riskBoardView, RiskBoardView object used to update the components of the screen
 	 */
 	private void attackForCheaterStrategy(Player currentPlayer, RiskBoardView riskBoardView) {
@@ -815,6 +829,7 @@ public class RiskBoardModel{
 	}
 
 	/**
+	 * This method is triggered for aggressive player when the current phase is attack phase
 	 * @param riskBoardView, RiskBoardView object used to update the components of the screen
 	 */
 	private void attackForAggressiveStrategy(RiskBoardView riskBoardView) {

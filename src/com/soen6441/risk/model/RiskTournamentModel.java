@@ -58,10 +58,10 @@ public class RiskTournamentModel {
 	}
 
 	/**
-	 * @param playersWinningResult
-	 * @param mapFiles 
-	 * @param tournamentResult 
-	 * @return
+	 * This method is used to get the result of each game
+	 * @param playersWinningResult, list that contains the specific player that win each game
+	 * @param mapFiles, the map that is being played
+	 * @param tournamentResult, the list that contains the result of all games
 	 */
 	private void getResult(List<String> playersWinningResult, String mapFiles, Map<String, List<String>> tournamentResult) {
 		String result;
@@ -81,8 +81,9 @@ public class RiskTournamentModel {
 	}
 
 	/**
-	 * @param mapsCount
-	 * @return 
+	 * This method is used to get the map file list according to the mapCount selected by the user
+	 * @param mapsCount, number of maps that are going to run
+	 * @return an array containing the list of map files
 	 */
 	private String[] getMapsNames(int mapsCount) {
 		String[] filesNamesList = new String[mapsCount];
@@ -101,9 +102,10 @@ public class RiskTournamentModel {
 	}
 
 	/**
-	 * @param riskTournamentView
-	 * @return 
-	 * @return
+	 * This method is used to get the player strategy selected for each player and return 
+	 * the behaviors in an array
+	 * @param riskTournamentView, instance of {@link RiskTournamentView} class
+	 * @return array of behaviors
 	 */
 	private String[] getPlayerBehaviour(RiskTournamentView riskTournamentView) {
 		String[] behaviors = new String[4];
@@ -115,8 +117,9 @@ public class RiskTournamentModel {
 	}
 
 	/**
-	 * @param player1StrategyCombo
-	 * @return
+	 * This method is used to get the strategy value selected for respective number of players
+	 * @param playerStrategyCombo, instance of JComboBox object
+	 * @return the behavior value selected of each player
 	 */
 	private String getPlayerStrategy(JComboBox<String> playerStrategyCombo) {
 		if(playerStrategyCombo.isVisible())
