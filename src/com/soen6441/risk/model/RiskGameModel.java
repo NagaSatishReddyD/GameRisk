@@ -42,6 +42,10 @@ public class RiskGameModel {
 		
 	}
 	
+	/**
+	 * showTournamentFrame method creates the RiskTournamentModel object and move to the RiskTournamentView frame
+	 * @param view, instance of the RiskGameView
+	 */
 	public void showTournamentFrame(RiskGameView view) {
 		view.getGameStartframe().setVisible(false);
 		RiskTournamentModel riskTournamentModel = new RiskTournamentModel();

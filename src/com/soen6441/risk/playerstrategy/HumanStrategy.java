@@ -16,8 +16,11 @@ import com.soen6441.risk.view.RiskBoardView;
  */
 public class HumanStrategy implements PlayerBehaviourStrategyInterface{
 
-	/* (non-Javadoc)
+	/**
+	 * This method contains the logic for reinforcement of human player
+	 * The human player can choose any country any number of armies to reinforce it
 	 * @see com.soen6441.risk.playerstrategy.PlayerBehaviourStrategyInterface#reinforceArmyToCountry(com.soen6441.risk.Country, com.soen6441.risk.view.RiskBoardView, boolean)
+	 * @return the number of armies selected by the player
 	 */
 	@Override
 	public Integer reinforceArmyToCountry(Country country, RiskBoardView riskBoardView, boolean isInitialPhase, Player player) {
@@ -29,8 +32,13 @@ public class HumanStrategy implements PlayerBehaviourStrategyInterface{
 				JOptionPane.INFORMATION_MESSAGE, null,possibilities, possibilities[0]);
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * This method contains the attack logic for human player
+	 * The human player can choose any country to attack if they are adjacent to any country the human player owns
+	 * The human player can select a specific number of armies and dice to attack or select "All Out" to get the maximum number of armies and dice
 	 * @see com.soen6441.risk.playerstrategy.PlayerBehaviourStrategyInterface#attackBetweenCountries(com.soen6441.risk.Country, com.soen6441.risk.Country, com.soen6441.risk.view.RiskBoardView, com.soen6441.risk.Player)
+	 * @return true if the human player conquered the opponent country
+	 * @return false if the human player failed to conquer the opponent country
 	 */
 	@Override
 	public boolean attackBetweenCountries(Country currentPlayerCountry, Country opponentPlayerCountry,
@@ -120,7 +128,9 @@ public class HumanStrategy implements PlayerBehaviourStrategyInterface{
 		return isOcuppiedTerritory;
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * This method contains the fortification logic for human player
+	 * The human player can select any country it owns and select a specific number of armies to move armies between two adjacent countries
 	 * @see com.soen6441.risk.playerstrategy.PlayerBehaviourStrategyInterface#foriticateArmies(com.soen6441.risk.Country, com.soen6441.risk.Country, com.soen6441.risk.view.RiskBoardView)
 	 */
 	@Override
