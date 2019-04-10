@@ -1477,7 +1477,6 @@ public class RiskBoardModel{
 	 * @param mapFileName, mapfileName to be used to save the game.
 	 */
 	public void saveGameCurrentState(RiskBoardView riskBoardView, String mapFileName) {
-		JOptionPane.showMessageDialog(null, "Save is under development");
 		if(Objects.nonNull(mapFileName)) {
 			File saveFile = new File(System.getProperty("user.dir")+RiskGameConstants.RESOURCES_FOLDER+"/Save/"+"save_"+mapFileName+RiskGameConstants.MAP_FILE_EXTENSION);
 			try {
