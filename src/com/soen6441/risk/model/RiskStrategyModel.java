@@ -36,8 +36,9 @@ public class RiskStrategyModel {
 	}
 
 	/**
-	 * @param player1StrategyCombo
-	 * @return
+	 * This method is used to get the strategy value selected for respective number of players
+	 * @param playerStrategyCombo
+	 * @return the behavior value selected of each player
 	 */
 	private String getPlayerStrategy(JComboBox<String> playerStrategyCombo) {
 		if(playerStrategyCombo.isVisible())

@@ -17,8 +17,11 @@ import com.soen6441.risk.view.RiskBoardView;
  */
 public class BenevolentStrategy implements PlayerBehaviourStrategyInterface{
 
-	/* (non-Javadoc)
+	/** This method contains the reinforcement logic for benevolent player
+	 * The player will reinforce its weakest country it owns if the current phase is the reinforcement phase and it is not the first turn
+	 * If it is the first turn of the game, it will place a random number of armies on a random country it owns
 	 * @see com.soen6441.risk.playerstrategy.PlayerBehaviourStrategyInterface#reinforceArmyToCountry(com.soen6441.risk.Country, com.soen6441.risk.view.RiskBoardView, boolean, com.soen6441.risk.Player)
+	 * @return 
 	 */
 	@Override
 	public Integer reinforceArmyToCountry(Country country, RiskBoardView riskBoardView, boolean isInitialPhase,
@@ -38,7 +41,7 @@ public class BenevolentStrategy implements PlayerBehaviourStrategyInterface{
 		return selectedValue;
 	}
 
-	/* (non-Javadoc)
+	/** This methods will not have any logic as the benevolent player behavior never attack in the game
 	 * @see com.soen6441.risk.playerstrategy.PlayerBehaviourStrategyInterface#attackBetweenCountries(com.soen6441.risk.Country, com.soen6441.risk.Country, com.soen6441.risk.view.RiskBoardView, com.soen6441.risk.Player, com.soen6441.risk.Player)
 	 */
 	@Override
@@ -48,7 +51,8 @@ public class BenevolentStrategy implements PlayerBehaviourStrategyInterface{
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/** This method contains the fortification logic for benevolent player
+	 * The player will always reinforce its weakest country it owns
 	 * @see com.soen6441.risk.playerstrategy.PlayerBehaviourStrategyInterface#foriticateArmies(com.soen6441.risk.Country, com.soen6441.risk.Country, com.soen6441.risk.view.RiskBoardView, com.soen6441.risk.Player)
 	 */
 	@Override

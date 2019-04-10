@@ -20,8 +20,11 @@ import com.soen6441.risk.view.RiskBoardView;
  */
 public class RandomStrategy implements PlayerBehaviourStrategyInterface{
 
-	/* (non-Javadoc)
+	/**
+	 * This method contains the reinforcement logic for random player in the game
+	 * The random player will randomly select a country it owns and then place a random number of armies on that country
 	 * @see com.soen6441.risk.playerstrategy.PlayerBehaviourStrategyInterface#reinforceArmyToCountry(com.soen6441.risk.Country, com.soen6441.risk.view.RiskBoardView, boolean, com.soen6441.risk.Player)
+	 * @return the random number of armies the random player is going to place
 	 */
 	@Override
 	public Integer reinforceArmyToCountry(Country country, RiskBoardView riskBoardView, boolean isInitialPhase,
@@ -37,8 +40,12 @@ public class RandomStrategy implements PlayerBehaviourStrategyInterface{
 		return selectedValue;
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * This method contains the attack logic for random player in the game
+	 * The random player will select a random number of armies, attack a random country
 	 * @see com.soen6441.risk.playerstrategy.PlayerBehaviourStrategyInterface#attackBetweenCountries(com.soen6441.risk.Country, com.soen6441.risk.Country, com.soen6441.risk.view.RiskBoardView, com.soen6441.risk.Player, com.soen6441.risk.Player)
+	 * @return true if the random player conquered the opponent territory
+	 * @return false if the random player failed to conquer the opponent territory
 	 */
 	@Override
 	public boolean attackBetweenCountries(Country currentPlayerCountry, Country opponentPlayerCountry,
@@ -128,7 +135,9 @@ public class RandomStrategy implements PlayerBehaviourStrategyInterface{
 		return isOcuppiedTerritory;
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * This method contains the fortification logic for random player
+	 * The random player will select a random number of armies and move the armies to a random country it owns
 	 * @see com.soen6441.risk.playerstrategy.PlayerBehaviourStrategyInterface#foriticateArmies(com.soen6441.risk.Country, com.soen6441.risk.Country, com.soen6441.risk.view.RiskBoardView, com.soen6441.risk.Player)
 	 */
 	@Override

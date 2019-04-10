@@ -18,8 +18,11 @@ import com.soen6441.risk.view.RiskBoardView;
  */
 public class CheaterStrategy implements PlayerBehaviourStrategyInterface{
 
-	/* (non-Javadoc)
+	/** 
+	 * This method contains the reinforcement logic for cheater player behavior. It will place a random number of armies to a random country
+	 * This method will only be triggered if it is the first turn of the game
 	 * @see com.soen6441.risk.playerstrategy.PlayerBehaviourStrategyInterface#reinforceArmyToCountry(com.soen6441.risk.Country, com.soen6441.risk.view.RiskBoardView, boolean, com.soen6441.risk.Player)
+	 * @return the number of armies that is generated randomly
 	 */
 	@Override
 	public Integer reinforceArmyToCountry(Country country, RiskBoardView riskBoardView, boolean isInitialPhase,
@@ -35,8 +38,11 @@ public class CheaterStrategy implements PlayerBehaviourStrategyInterface{
 		return selectedValue;
 	}
 
-	/* (non-Javadoc)
+	/** 
+	 * this method contains the attack logic for cheater player behavior.
+	 * It will automatically conquer all of the opponent countries that are adjacent to its countries
 	 * @see com.soen6441.risk.playerstrategy.PlayerBehaviourStrategyInterface#attackBetweenCountries(com.soen6441.risk.Country, com.soen6441.risk.Country, com.soen6441.risk.view.RiskBoardView, com.soen6441.risk.Player, com.soen6441.risk.Player)
+	 * @return true to indicate the method ends
 	 */
 	@Override
 	public boolean attackBetweenCountries(Country currentPlayerCountry, Country opponentPlayerCountry,
@@ -52,7 +58,9 @@ public class CheaterStrategy implements PlayerBehaviourStrategyInterface{
 		return true;
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * This method contains the fortification logic for cheater player behavior
+	 * It will double the number of armies on its countries if the country has neighbors that are belong to others players
 	 * @see com.soen6441.risk.playerstrategy.PlayerBehaviourStrategyInterface#foriticateArmies(com.soen6441.risk.Country, com.soen6441.risk.Country, com.soen6441.risk.view.RiskBoardView, com.soen6441.risk.Player)
 	 */
 	@Override
@@ -64,9 +72,11 @@ public class CheaterStrategy implements PlayerBehaviourStrategyInterface{
 	}
 
 	/**
-	 * @param adjacentCountries
-	 * @param currentCountry 
-	 * @return
+	 * This method is used to check if the countries owned by the cheater player have neighbors that are belong to others players
+	 * @param adjacentCountries, the list of adjacent countries of the current country being checked
+	 * @param currentCountry, the current country that is being checked
+	 * @return true if there is neighbor belongs to other players
+	 * @return false if there is no neighbor belongs to other players
 	 */
 	private boolean checkForFortification(List<Country> adjacentCountries, Country currentCountry) {
 		for(Country country : adjacentCountries) {
