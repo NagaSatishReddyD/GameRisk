@@ -5,8 +5,11 @@ package com.soen6441.risk.playerstrategy;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import com.soen6441.risk.Country;
 import com.soen6441.risk.Dice;
@@ -95,30 +98,27 @@ public class AggressiveStrategy implements PlayerBehaviourStrategyInterface{
 	@Override
 	public void foriticateArmies(Country currentPlayerCountry, Country adjacentCountry, RiskBoardView riskBoardview, Player player) {
 		boolean isMoved = false;
-		while(!isMoved) {
-			player.getTerritoryOccupied().sort(Comparator.comparing(Country::getArmiesOnCountry).reversed());
-			Country highestArmiesCountry = player.getTerritoryOccupied().get(0);
-			if(otherPlayerAdjacent(highestArmiesCountry)) {
-				highestArmiesCountry.getAdjacentCountries().stream().forEach(adjacent -> {
-					if(adjacent.getPlayerName().equals(highestArmiesCountry.getPlayerName())) {
-						int armies = adjacent.getArmiesOnCountry() - 1;
-						adjacent.decreaseArmiesOnCountry(armies);
-						highestArmiesCountry.incrementArmiesOnCountry(armies);
-					}
-				});
-				isMoved = true;
+		List<String> visitedCountryList = new ArrayList<>();
+		List<Country> adjacentCountriesList = new ArrayList<>(); 
+		player.getTerritoryOccupied().sort(Comparator.comparing(Country::getArmiesOnCountry).reversed());
+		Country highestArmiesCountry;
+		do {
+			adjacentCountriesList.add(player.getTerritoryOccupied().get(0));
+			adjacentCountriesList.addAll(adjacentCountriesList.get(0).getAdjacentCountries().stream().filter(data -> !visitedCountryList.contains(data.getCountryName())).collect(Collectors.toList()));
+			highestArmiesCountry = adjacentCountriesList.get(0);
+			visitedCountryList.add(highestArmiesCountry.getCountryName());
+			adjacentCountriesList.remove(0);
+			if(!otherPlayerAdjacent(highestArmiesCountry)) {
+				Country nextCountry = adjacentCountriesList.get(0);
+				int armies = highestArmiesCountry.getArmiesOnCountry() - 1;
+				highestArmiesCountry.decreaseArmiesOnCountry(armies);
+				nextCountry.incrementArmiesOnCountry(armies);
 			}else {
-				for(Country adjacent: highestArmiesCountry.getAdjacentCountries()) {
-					if(!otherPlayerAdjacent(adjacent)) {
-						int armies = highestArmiesCountry.getArmiesOnCountry() - 1;
-						highestArmiesCountry.decreaseArmiesOnCountry(armies);
-						adjacent.incrementArmiesOnCountry(armies);
-						isMoved = true;
-						break;
-					}
-				}
+				isMoved = true;
 			}
-		}
+		}while(!isMoved);
+		if(isMoved)
+			System.out.println(currentPlayerCountry.getCountryName()+" moved to "+highestArmiesCountry.getCountryName());
 	}
 
 	/**

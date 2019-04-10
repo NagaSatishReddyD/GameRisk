@@ -156,6 +156,10 @@ public class RiskBoardModel{
 		}
 		if(lineCounter % 6 == 1) {
 			playersData.get(currentIndex).setArmyCountAvailable(Integer.parseInt(line.split("=")[1].trim()));
+		}else if(lineCounter % 6 == 2) {
+			String playerStratergyName = line.split("=")[1].trim();
+			playersData.get(currentIndex).setPlayerStrategyName(playerStratergyName);
+			playersData.get(currentIndex).setPlayerStrategy(getStrategyOfPlayer(playerStratergyName));
 		}else if(lineCounter % 6 == 4) {
 			assignCountriesToPlayer(line, playersData.get(currentIndex));
 		}else if(lineCounter % 6 == 5) {
@@ -536,6 +540,8 @@ public class RiskBoardModel{
 			setTheBonusArmiesToPlayer(currentPlayer, riskBoardView);
 			isInitialPhase = false;
 		}
+		if(isGameResume && currentPlayerIndex == playersData.size() - 1 && (isGamePhase.equals(RiskGameConstants.FORTIFICATION_PHASE) || isInitialPhase&& isGamePhase.equals(RiskGameConstants.REINFORCEMENT_PHASE)))
+			isGameResume = false;
 		if(currentPlayer.getPlayerStrategy() instanceof HumanStrategy) {
 			updatePlayersInfo(playersData, riskBoardView);
 			if(isGamePhase.equals(RiskGameConstants.REINFORCEMENT_PHASE)) {
@@ -603,10 +609,7 @@ public class RiskBoardModel{
 	 */
 	private boolean anyPlayerOwn() {
 		List<String> playerNamesList = playersData.stream().filter(data -> !data.getTerritoryOccupied().isEmpty()).map(Player::getPlayerName).collect(Collectors.toList());
-		if(playerNamesList.size() == 1) {
-			return true;
-		}
-		return false;
+		return playerNamesList.size() == 1?true:false;
 	}
 
 	/**
@@ -1049,7 +1052,9 @@ public class RiskBoardModel{
 		List<String> playerCountriesNames = currentPlayer.getTerritoryOccupied().stream().map(Country::getCountryName).collect(Collectors.toList());
 		DefaultComboBoxModel<String> comboBoxModel = (DefaultComboBoxModel<String>) view.getCountryComboBox().getModel();
 		comboBoxModel.removeAllElements();
-		playerCountriesNames.stream().forEach(comboBoxModel::addElement);
+		for(String countryName:playerCountriesNames) {
+			comboBoxModel.addElement(countryName);
+		}
 		view.getCountryComboBox().setModel(comboBoxModel);
 	}
 
