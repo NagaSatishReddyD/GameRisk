@@ -21,7 +21,7 @@ public class BenevolentStrategy implements PlayerBehaviourStrategyInterface{
 	 * The player will reinforce its weakest country it owns if the current phase is the reinforcement phase and it is not the first turn
 	 * If it is the first turn of the game, it will place a random number of armies on a random country it owns
 	 * @see com.soen6441.risk.playerstrategy.PlayerBehaviourStrategyInterface#reinforceArmyToCountry(com.soen6441.risk.Country, com.soen6441.risk.view.RiskBoardView, boolean, com.soen6441.risk.Player)
-	 * @return 
+	 * @return number, how many armies to be reinforced.
 	 */
 	@Override
 	public Integer reinforceArmyToCountry(Country country, RiskBoardView riskBoardView, boolean isInitialPhase,
