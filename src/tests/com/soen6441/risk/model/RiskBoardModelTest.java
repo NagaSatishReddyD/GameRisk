@@ -710,24 +710,24 @@ public class RiskBoardModelTest {
 	@Test
 	public void testAggressiveFortification() {
 		Country testCountry1 = new Country("Country A");
-		testCountry1.setArmiesOnCountry(20);
+		testCountry1.setArmiesOnCountry(25);
 		testCountry1.setPlayerName("Test Player 1");
 		Country testCountry2 = new Country("Country B");
 		testCountry2.setArmiesOnCountry(20);
-		testCountry2.setPlayerName("Test Player 2");
+		testCountry2.setPlayerName("Test Player 1");
 		Country testCountry3 = new Country("Country C");
 		testCountry3.setArmiesOnCountry(20);
 		testCountry3.setPlayerName("Test Player 1");
 		Country testCountry4 = new Country("Country D");
 		testCountry4.setArmiesOnCountry(20);
-		testCountry4.setPlayerName("Test Player 2");
+		testCountry4.setPlayerName("Test Player 1");
 		Country testCountry5 = new Country("Country E");
 		testCountry5.setArmiesOnCountry(20);
-		testCountry5.setPlayerName("Test Player 1");
+		testCountry5.setPlayerName("Test Player 2");
 		testCountry1.addAdjacentCountry(testCountry2);
 		testCountry1.addAdjacentCountry(testCountry3);
 		testCountry1.addAdjacentCountry(testCountry4);
-		testCountry1.addAdjacentCountry(testCountry5);
+		testCountry2.addAdjacentCountry(testCountry5);
 		testCountry2.addAdjacentCountry(testCountry1);
 		testCountry3.addAdjacentCountry(testCountry1);
 		testCountry4.addAdjacentCountry(testCountry1);
@@ -738,12 +738,12 @@ public class RiskBoardModelTest {
 		Player testPlayer2 = new Player("Test Player 2", 0);
 		testPlayer2.setPlayerStrategy(riskBoardModel.getStrategyOfPlayer(RiskGameConstants.HUMAN));
 		testPlayer1.addTerritory(testCountry1);
-		testPlayer2.addTerritory(testCountry2);
+		testPlayer1.addTerritory(testCountry2);
 		testPlayer1.addTerritory(testCountry3);
-		testPlayer2.addTerritory(testCountry4);
-		testPlayer1.addTerritory(testCountry5);
+		testPlayer1.addTerritory(testCountry4);
+		testPlayer2.addTerritory(testCountry5);
 		testPlayer1.moveArmiesBetweenCountries(testCountry1, testCountry3, riskBoardView);
-		assertEquals(58, testPlayer1.getTerritoryOccupied().get(0).getArmiesOnCountry());
+		assertEquals(44, testPlayer1.getTerritoryOccupied().get(1).getArmiesOnCountry());
 	}
 	
 	/**
