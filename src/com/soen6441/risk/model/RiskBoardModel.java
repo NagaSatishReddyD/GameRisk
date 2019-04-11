@@ -129,7 +129,9 @@ public class RiskBoardModel{
 					currentPlayerIndex = Integer.parseInt(line.split("=")[1].trim());
 				}else if(lineCounter == 2) {
 					isGamePhase = line.split("=")[1].trim();
-				}else if(lineCounter == 4) {
+				}else if(lineCounter == 3) {
+					isInitialPhase = Boolean.parseBoolean(line.split("=")[1].trim());
+				}else if(lineCounter == 5) {
 					createCardsFromSaveFile(line);
 				}else if(lineCounter > 5) {
 					createPlayersFromSaveFile(line, lineCounter);
@@ -890,6 +892,7 @@ public class RiskBoardModel{
 		Country country = countriesMap.get(riskBoardView.getCountryComboBox().getSelectedItem().toString());
 		currentPlayer.reinforceArmyToCountry(country, riskBoardView, isInitialPhase);
 		createOrUpdateImage(riskBoardView);
+		isGameResume = false;
 		if(currentPlayer.getArmyCountAvailable() == 0) {
 			nextPlayer(riskBoardView);
 		}
@@ -1502,6 +1505,7 @@ public class RiskBoardModel{
 	private void savePlayersData(FileWriter writer, RiskBoardView view) throws IOException {
 		writer.write("Current Player Index="+currentPlayerIndex+"\n");
 		writer.write("CurrentPhase="+getCurrentPhase(view)+"\n");
+		writer.write("InitialPhase="+isInitialPhase);
 		writer.write("[CARDS]\n");
 		StringBuilder cardsData = new StringBuilder();
 		cardsList.stream().forEach(data -> 
