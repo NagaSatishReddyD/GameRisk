@@ -7,29 +7,35 @@ Player 1
 Army Count =0
 Player Strategy = Human
 Cards Count = 0
-India,20:Ukraine,1:East Africa,1:Madagascar,1:Ontario,1:Great Britain,1:Peru,1:Japan,1:Western Australia,1
+Eastern Australia,17:Siberia,1:Western United States,1:Madagascar,1:East Africa,1:Western Europe,1:Yatusk,1
 
 Player 2
 Army Count =0
-Player Strategy = Aggressive
+Player Strategy = Human
 Cards Count = 0
-Scandinavia,1:Middle East,9:South Africa,1:Eastern United States,1:China,9:Kamchatka,1:North Africa,1:Southern Europe,1:New Guinea,1
+Western Australia,14:Ukraine,1:India,1:Ural,1:Argentina,1:Egypt,1:Central America,1
 
 Player 3
 Army Count =0
-Player Strategy = Benevolent
+Player Strategy = Human
 Cards Count = 0
-Ural,8:Egypt,4:Greenland,1:Alberta,1:Mongolia,1:Yatusk,2:Iceland,7:Quebec,1
+Venezuala,14:Indonesia,1:Siam,1:Mongolia,1:China,1:Alberta,1:Japan,1
 
 Player 4
 Army Count =0
-Player Strategy = Random
+Player Strategy = Human
 Cards Count = 0
-Alaska,1:Siberia,1:Argentina,1:Irkutsk,1:Brazil,14:Northern Europe,1:Northwest Territory,1:Central America,5
+Northern Europe,14:Northwest Territory,1:Alaska,1:Congo,1:Brazil,1:Quebec,1:Southern Europe,1
 
 Player 5
 Army Count =0
-Player Strategy = Cheater
+Player Strategy = Human
 Cards Count = 0
-Western Europe,1:Congo,5:Eastern Australia,1:Siam,2:Western United States,13:Indonesia,1:Afghanistan,1:Venezuala,1
+Scandinavia,14:South Africa,1:Peru,1:Kamchatka,1:Iceland,1:Great Britain,1:Middle East,1
+
+Player 6
+Army Count =0
+Player Strategy = Human
+Cards Count = 0
+North Africa,14:Irkutsk,1:New Guinea,1:Afghanistan,1:Eastern United States,1:Greenland,1:Ontario,1
 

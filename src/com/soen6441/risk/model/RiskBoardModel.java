@@ -1536,7 +1536,7 @@ public class RiskBoardModel{
 	 * @param riskBoardView, RiskBoardView object used to update the components of the screen 
 	 * @return currentPhase.
 	 */
-	private String getCurrentPhase(RiskBoardView riskBoardView) {
+	public String getCurrentPhase(RiskBoardView riskBoardView) {
 		if(riskBoardView.getReinforceBtn().isVisible())
 			return RiskGameConstants.REINFORCEMENT_PHASE;
 		else if(riskBoardView.getAttackBtn().isVisible())

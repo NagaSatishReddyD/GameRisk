@@ -19,7 +19,9 @@ import com.soen6441.risk.Country;
 import com.soen6441.risk.Player;
 import com.soen6441.risk.RiskGameConstants;
 import com.soen6441.risk.model.RiskBoardModel;
+import com.soen6441.risk.model.RiskTournamentModel;
 import com.soen6441.risk.view.RiskBoardView;
+import com.soen6441.risk.view.RiskTournamentView;
 
 /**
  * RiskBoardModelTest class contains unit test cases to check the
@@ -34,6 +36,8 @@ public class RiskBoardModelTest {
 	private static HashMap<String, Country> countriesMap;
 	static RiskBoardView riskBoardView;
 	static List<Player> playersData;
+	static RiskTournamentView riskTournamentView;
+	static RiskTournamentModel riskTournamentModel;
 
 	/**
 	 * test for setUpBefore: ALL variables instantiated for the tests are defined
@@ -46,12 +50,14 @@ public class RiskBoardModelTest {
 		continentsMap = new HashMap<String, Continent>();
 		countriesMap = new HashMap<String, Country>();
 		riskBoardView = new RiskBoardView();
+		riskTournamentView = new RiskTournamentView();
+		riskTournamentModel = new RiskTournamentModel();
 		playersData = new ArrayList<>();
 		playersData.add(new Player("Player 1", 2));
 		playersData.add(new Player("Player 2", 2));
 		playersData.add(new Player("Player 3", 2));
 		playersData.add(new Player("Player 4", 2));
-		int playersCount = 4;
+		int playersCount = 6;
 		String[] behavior = {RiskGameConstants.HUMAN, RiskGameConstants.HUMAN, RiskGameConstants.HUMAN, 
 				RiskGameConstants.HUMAN, RiskGameConstants.HUMAN, RiskGameConstants.HUMAN};
 		riskBoardModel.loadRequiredData(System.getProperty("user.dir") + "/resources/World.map", true);
@@ -173,7 +179,7 @@ public class RiskBoardModelTest {
 	@Test
 	public void testEndFortificationPhase(){
 		riskBoardModel.endFortificationPhase(riskBoardView);
-		assertEquals(riskBoardModel.isInitialPhase(), true);
+		assertEquals("Reinforcement", riskBoardModel.getCurrentPhase(riskBoardView));
 	}
 
 	/**
@@ -811,5 +817,23 @@ public class RiskBoardModelTest {
 		riskBoardModel.sortTerritoryBasedOnArmies(testPlayer1, true);
 		testPlayer1.reinforceArmyToCountry(testPlayer1.getTerritoryOccupied().get(0), riskBoardView, false);
 		assertEquals(60, testPlayer1.getTerritoryOccupied().get(0).getArmiesOnCountry());
+	}
+	
+	/**
+	 * This method is used to test if the tournament mode can finish running and get the result
+	 */
+	@Test
+	public void testTournamentMode() {
+		riskTournamentView.getMapCountCombo().setSelectedItem("3");
+		riskTournamentView.getGameCountCombo().setSelectedItem("4");
+		riskTournamentView.getTurnCountCombo().setSelectedItem("30");
+		riskTournamentView.getPlayerCountCombo().setSelectedItem("4");
+		riskTournamentView.getPlayer3StrategyCombo().setVisible(true);
+		riskTournamentView.getPlayer4StrategyCombo().setVisible(true);
+		riskTournamentView.getPlayer1StrategyCombo().setSelectedItem(RiskGameConstants.AGGRESSIVE);
+		riskTournamentView.getPlayer2StrategyCombo().setSelectedItem(RiskGameConstants.RANDOM);
+		riskTournamentView.getPlayer3StrategyCombo().setSelectedItem(RiskGameConstants.BENEVOLENT);
+		riskTournamentView.getPlayer4StrategyCombo().setSelectedItem(RiskGameConstants.AGGRESSIVE);
+		riskTournamentModel.runTournament(riskTournamentView);
 	}
 }
