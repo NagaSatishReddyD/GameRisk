@@ -121,6 +121,7 @@ public class RiskBoardModel{
 	private void loadGameFromSaveFile(File saveFile) {
 		isGameResume = true;
 		playersData =  new ArrayList<>();
+		playersMap = new HashMap<>();
 		try(BufferedReader reader = new BufferedReader(new FileReader(saveFile))) {
 			String line;
 			int lineCounter = 1;
@@ -155,6 +156,7 @@ public class RiskBoardModel{
 		if(lineCounter % 6 == 0) {
 			Player player = new Player(line, 0);
 			playersData.add(player);
+			playersMap.put(player.getPlayerName(), player);
 		}
 		if(lineCounter % 6 == 1) {
 			playersData.get(currentIndex).setArmyCountAvailable(Integer.parseInt(line.split("=")[1].trim()));
@@ -859,6 +861,7 @@ public class RiskBoardModel{
 	 * @param riskBoardView, RiskBoardView object used to update the components of the screen
 	 */
 	public void attackBetweenCountries(RiskBoardView riskBoardView) {
+		isGameResume = false;
 		Player currentPlayer = playersData.get(currentPlayerIndex);
 		Country currentPlayerCountry = countriesMap.get(riskBoardView.getCountryComboBox().getSelectedItem().toString());
 		Country opponentPlayerCountry = countriesMap.get(riskBoardView.getAdjacentCountryComboBox().getSelectedItem().toString());
@@ -1199,6 +1202,7 @@ public class RiskBoardModel{
 	 * @param view, instance of {@link RiskBoardView} object
 	 */
 	public void endFortificationPhase(RiskBoardView view) {
+		isGameResume = false;
 		isInitialPhase = true;
 		nextPlayer(view);
 	}
@@ -1505,13 +1509,13 @@ public class RiskBoardModel{
 	private void savePlayersData(FileWriter writer, RiskBoardView view) throws IOException {
 		writer.write("Current Player Index="+currentPlayerIndex+"\n");
 		writer.write("CurrentPhase="+getCurrentPhase(view)+"\n");
-		writer.write("InitialPhase="+isInitialPhase);
+		writer.write("InitialPhase="+isInitialPhase+"\n");
 		writer.write("[CARDS]\n");
 		StringBuilder cardsData = new StringBuilder();
 		cardsList.stream().forEach(data -> 
 			cardsData.append(data.getArmyType()).append(",").append(data.getTerritoryName()).append(":")
 		);
-		writer.write(cardsData.toString()+"\n\n");
+		writer.write(cardsData.toString()+"\n");
 		for(Player player:playersData) {
 			writer.write(player.getPlayerName()+"\n");
 			writer.write("Army Count ="+player.getArmyCountAvailable()+"\n");
