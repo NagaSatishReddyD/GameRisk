@@ -135,7 +135,7 @@ public class RiskBoardModel{
 					createPlayersFromSaveFile(line, lineCounter);
 				}
 				lineCounter++;
-			}
+			}	
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -1504,14 +1504,14 @@ public class RiskBoardModel{
 		writer.write("CurrentPhase="+getCurrentPhase(view)+"\n");
 		writer.write("[CARDS]\n");
 		StringBuilder cardsData = new StringBuilder();
-		cardsList.stream().forEach(data -> {
-			cardsData.append(data.getArmyType()).append(",").append(data.getTerritoryName()).append(":");
-		});
+		cardsList.stream().forEach(data -> 
+			cardsData.append(data.getArmyType()).append(",").append(data.getTerritoryName()).append(":")
+		);
 		writer.write(cardsData.toString()+"\n\n");
 		for(Player player:playersData) {
 			writer.write(player.getPlayerName()+"\n");
 			writer.write("Army Count ="+player.getArmyCountAvailable()+"\n");
-			writer.write("Conutry Count = "+player.getTerritoryOccupied().size()+"\n");
+			writer.write("Player Strategy = "+player.getPlayerStrategyName()+"\n");
 			writer.write("Cards Count = "+player.getPlayerCards().size()+"\n");
 			StringBuilder countryNames = new StringBuilder();
 			for( Country country:player.getTerritoryOccupied()) {

@@ -1,0 +1,35 @@
+Current Player Index=0
+CurrentPhase=Reinforcement
+[CARDS]
+Infantry,Alaska:Cavalry,Northwest Territory:Artillery,Alberta:Infantry,Greenland:Cavalry,Ontario:Artillery,Quebec:Infantry,Western United States:Cavalry,Eastern United States:Artillery,Central America:Infantry,Venezuala:Cavalry,Peru:Artillery,Argentina:Infantry,Brazil:Cavalry,North Africa:Artillery,Congo:Infantry,South Africa:Cavalry,Madagascar:Artillery,East Africa:Infantry,Egypt:Cavalry,Iceland:Artillery,Great Britain:Infantry,Western Europe:Cavalry,Scandinavia:Artillery,Northern Europe:Infantry,Southern Europe:Cavalry,Ukraine:Artillery,Middle East:Infantry,Ural:Cavalry,Afghanistan:Artillery,India:Infantry,Siberia:Cavalry,China:Artillery,Siam:Infantry,Mongolia:Cavalry,Irkutsk:Artillery,Yatusk:Infantry,Kamchatka:Cavalry,Japan:Artillery,Indonesia:Infantry,New Guinea:Cavalry,Western Australia:Artillery,Eastern Australia:
+
+Player 1
+Army Count =3
+Player Strategy = Human
+Cards Count = 0
+Siam,17:Southern Europe,1:Northwest Territory,1:Irkutsk,1:Middle East,1:Western Europe,1:China,1:Peru,1:Iceland,1
+
+Player 2
+Army Count =0
+Player Strategy = Aggressive
+Cards Count = 0
+Argentina,6:Mongolia,2:Alaska,10:Scandinavia,1:Eastern United States,1:Northern Europe,1:Siberia,1:Brazil,2:Indonesia,1
+
+Player 3
+Army Count =0
+Player Strategy = Benevolent
+Cards Count = 0
+Ukraine,1:India,1:Eastern Australia,4:Venezuala,1:Congo,1:South Africa,1:Western Australia,2:Yatusk,14
+
+Player 4
+Army Count =0
+Player Strategy = Random
+Cards Count = 0
+Central America,1:Madagascar,4:Alberta,3:Western United States,1:Afghanistan,1:Ural,13:New Guinea,1:Egypt,1
+
+Player 5
+Army Count =0
+Player Strategy = Cheater
+Cards Count = 0
+Japan,1:Quebec,1:Great Britain,1:Kamchatka,1:East Africa,1:Ontario,9:Greenland,10:North Africa,1
+
